@@ -1,0 +1,14 @@
+1.0.1:
+    - 'Initialize plugin.'
+1.0.2:
+    - 'Created table diveramkt_miscelanious_companies'
+    - builder_table_create_diveramkt_miscelanious_companies.php
+1.0.3:
+    - 'Created table diveramkt_miscelanious_testmonials'
+    - builder_table_create_diveramkt_miscelanious_testmonials.php
+1.0.4:
+    - 'Created table diveramkt_miscelanious_social'
+    - builder_table_create_diveramkt_miscelanious_social.php
+1.0.5:
+    - 'Created table diveramkt_miscelanious_phones'
+    - builder_table_create_diveramkt_miscelanious_phones.php

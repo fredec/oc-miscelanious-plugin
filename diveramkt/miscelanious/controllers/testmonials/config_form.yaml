@@ -1,0 +1,10 @@
+name: Testmonials
+modelClass: Diveramkt\Miscelanious\Models\Testmonial
+form: $/diveramkt/miscelanious/models/testmonial/fields.yaml
+defaultRedirect: diveramkt/miscelanious/testmonials
+create:
+    redirect: 'diveramkt/miscelanious/testmonials/update/:id'
+    redirectClose: diveramkt/miscelanious/testmonials
+update:
+    redirect: diveramkt/miscelanious/testmonials
+    redirectClose: diveramkt/miscelanious/testmonials

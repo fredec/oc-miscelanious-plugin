@@ -1,0 +1,15 @@
+title: Testmonials
+modelClass: Diveramkt\Miscelanious\Models\Testmonial
+list: $/diveramkt/miscelanious/models/testmonial/columns.yaml
+recordUrl: 'diveramkt/miscelanious/testmonials/update/:id'
+noRecordsMessage: 'backend::lang.list.no_records'
+recordsPerPage: '10'
+showSetup: true
+showCheckboxes: true
+defaultSort:
+    column: created_at
+    direction: desc
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'

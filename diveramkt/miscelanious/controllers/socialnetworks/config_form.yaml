@@ -1,0 +1,10 @@
+name: SocialNetworks
+form: $/diveramkt/miscelanious/models/social/fields.yaml
+modelClass: Diveramkt\Miscelanious\Models\Social
+defaultRedirect: diveramkt/miscelanious/socialnetworks
+create:
+    redirect: 'diveramkt/miscelanious/socialnetworks/update/:id'
+    redirectClose: diveramkt/miscelanious/socialnetworks
+update:
+    redirect: diveramkt/miscelanious/socialnetworks
+    redirectClose: diveramkt/miscelanious/socialnetworks

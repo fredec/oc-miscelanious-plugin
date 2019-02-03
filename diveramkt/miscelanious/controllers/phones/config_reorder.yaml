@@ -1,0 +1,4 @@
+title: Phones
+modelClass: Diveramkt\Miscelanious\Models\Phone
+toolbar:
+    buttons: reorder_toolbar

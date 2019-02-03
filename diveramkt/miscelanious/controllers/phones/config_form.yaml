@@ -1,0 +1,10 @@
+name: Phones
+form: $/diveramkt/miscelanious/models/phone/fields.yaml
+modelClass: Diveramkt\Miscelanious\Models\Phone
+defaultRedirect: diveramkt/miscelanious/phones
+create:
+    redirect: 'diveramkt/miscelanious/phones/update/:id'
+    redirectClose: diveramkt/miscelanious/phones
+update:
+    redirect: diveramkt/miscelanious/phones
+    redirectClose: diveramkt/miscelanious/phones

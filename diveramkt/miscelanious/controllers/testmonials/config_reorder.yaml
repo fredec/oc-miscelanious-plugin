@@ -1,0 +1,4 @@
+title: Testmonials
+modelClass: Diveramkt\Miscelanious\Models\Testmonial
+toolbar:
+    buttons: reorder_toolbar

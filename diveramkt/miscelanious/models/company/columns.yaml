@@ -1,0 +1,16 @@
+columns:
+    name:
+        label: 'diveramkt.miscelanious::lang.company.name'
+        type: text
+        searchable: true
+        sortable: true
+    street:
+        label: 'diveramkt.miscelanious::lang.company.street'
+        type: text
+        searchable: true
+        sortable: true
+    neighborhood:
+        label: 'diveramkt.miscelanious::lang.company.neighborhood'
+        type: text
+        searchable: true
+        sortable: true

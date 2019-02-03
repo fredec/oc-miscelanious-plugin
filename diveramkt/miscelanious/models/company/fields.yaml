@@ -1,0 +1,85 @@
+tabs:
+    fields:
+        name:
+            label: 'diveramkt.miscelanious::lang.company.name'
+            span: full
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.company'
+        social:
+            label: 'diveramkt.miscelanious::lang.company.socia'
+            span: auto
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.company'
+        cnpj:
+            label: 'diveramkt.miscelanious::lang.company.cnpj'
+            span: auto
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.company'
+        area_code:
+            label: 'diveramkt.miscelanious::lang.company.area_code'
+            span: auto
+            type: text
+            comment: 'diveramkt.miscelanious::lang.company.area_code_comment'
+            tab: 'diveramkt.miscelanious::lang.tab.company'
+        phone:
+            label: 'diveramkt.miscelanious::lang.company.phone'
+            span: auto
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.company'
+        area_code_mobile:
+            label: 'diveramkt.miscelanious::lang.company.area_code_mobile'
+            span: auto
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.company'
+        mobile:
+            label: 'diveramkt.miscelanious::lang.company.mobile'
+            span: auto
+            type: text
+            comment: 'diveramkt.miscelanious::lang.company.mobile_comment'
+            tab: 'diveramkt.miscelanious::lang.tab.company'
+        skype:
+            label: 'diveramkt.miscelanious::lang.company.skype'
+            span: auto
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.company'
+        street:
+            label: 'diveramkt.miscelanious::lang.company.street'
+            span: full
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.address'
+        number:
+            label: 'diveramkt.miscelanious::lang.company.number'
+            span: auto
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.address'
+        addon:
+            label: 'diveramkt.miscelanious::lang.company.addon'
+            span: auto
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.address'
+        neighborhood:
+            label: 'diveramkt.miscelanious::lang.company.neighborhood'
+            span: auto
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.address'
+        city:
+            label: 'diveramkt.miscelanious::lang.company.city'
+            span: auto
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.address'
+        state:
+            label: 'diveramkt.miscelanious::lang.company.state'
+            span: auto
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.address'
+        zipcode:
+            label: 'diveramkt.miscelanious::lang.company.zipcode'
+            span: auto
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.address'
+        maps_link:
+            label: 'diveramkt.miscelanious::lang.company.maps_link'
+            span: full
+            type: text
+            comment: 'diveramkt.miscelanious::lang.company.maps_link_comment'
+            tab: 'diveramkt.miscelanious::lang.tab.address'

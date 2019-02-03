@@ -1,0 +1,10 @@
+name: Companies
+form: $/diveramkt/miscelanious/models/company/fields.yaml
+modelClass: Diveramkt\Miscelanious\Models\Company
+defaultRedirect: diveramkt/miscelanious/companies
+create:
+    redirect: 'diveramkt/miscelanious/companies/update/:id'
+    redirectClose: diveramkt/miscelanious/companies
+update:
+    redirect: diveramkt/miscelanious/companies
+    redirectClose: diveramkt/miscelanious/companies

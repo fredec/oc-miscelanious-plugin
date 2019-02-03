@@ -1,0 +1,6 @@
+columns:
+    name:
+        label: 'diveramkt.miscelanious::lang.social.social_name'
+        type: text
+        searchable: true
+        sortable: true

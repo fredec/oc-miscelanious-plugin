@@ -1,0 +1,20 @@
+columns:
+    name:
+        label: 'diveramkt.miscelanious::lang.testmonial.name'
+        type: text
+        searchable: true
+        sortable: true
+    business:
+        label: 'diveramkt.miscelanious::lang.testmonial.business'
+        type: text
+        searchable: true
+        sortable: true
+    position:
+        label: 'diveramkt.miscelanious::lang.testmonial.position'
+        type: text
+        searchable: true
+        sortable: true
+    created_at:
+        label: 'diveramkt.miscelanious::lang.testmonial.created_at'
+        type: datetime
+        sortable: true

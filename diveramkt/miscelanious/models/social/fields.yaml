@@ -1,0 +1,37 @@
+fields:
+    icon:
+        label: 'diveramkt.miscelanious::lang.social.icon'
+        mode: image
+        useCaption: true
+        thumbOptions:
+            mode: crop
+            extension: auto
+        span: right
+        type: fileupload
+        comment: 'diveramkt.miscelanious::lang.social.icon_comment'
+    name:
+        label: 'diveramkt.miscelanious::lang.social.social_name'
+        options:
+            facebook: Facebook
+            twitter: Twitter
+            instagram: Instagram
+            linkedin: Linkedin
+            pinterest: Pinterest
+            google-plus: Google+
+            youtube: Youtube
+            whatsapp: WhatsApp
+            skype: Skype
+            flickr: Flickr
+            spotify: Spotify
+        span: auto
+        required: 1
+        type: dropdown
+    link:
+        label: Link
+        span: left
+        required: 1
+        type: text
+    description:
+        label: 'diveramkt.miscelanious::lang.social.description'
+        span: left
+        type: text

@@ -1,0 +1,21 @@
+columns:
+    area_code:
+        label: 'diveramkt.miscelanious::lang.phone.area_code'
+        type: text
+        searchable: true
+        sortable: true
+    number:
+        label: 'diveramkt.miscelanious::lang.phone.number'
+        type: text
+        searchable: true
+        sortable: true
+    info:
+        label: 'diveramkt.miscelanious::lang.phone.info'
+        type: text
+        searchable: true
+        sortable: true
+    description:
+        label: 'diveramkt.miscelanious::lang.phone.description'
+        type: text
+        searchable: true
+        sortable: true

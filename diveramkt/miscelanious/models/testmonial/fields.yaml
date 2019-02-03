@@ -1,0 +1,36 @@
+fields:
+    image:
+        label: 'diveramkt.miscelanious::lang.testmonial.image'
+        oc.commentPosition: ''
+        mode: image
+        span: right
+        type: mediafinder
+    name:
+        label: 'diveramkt.miscelanious::lang.testmonial.name'
+        oc.commentPosition: ''
+        span: left
+        required: 1
+        type: text
+    business:
+        label: 'diveramkt.miscelanious::lang.testmonial.business'
+        oc.commentPosition: ''
+        span: left
+        required: 0
+        type: text
+    position:
+        label: 'diveramkt.miscelanious::lang.testmonial.position'
+        oc.commentPosition: ''
+        span: left
+        type: text
+    link:
+        label: Link
+        oc.commentPosition: ''
+        span: full
+        type: text
+    testmonial:
+        label: 'diveramkt.miscelanious::lang.testmonial.testmonial'
+        size: large
+        oc.commentPosition: ''
+        span: full
+        required: 1
+        type: textarea
