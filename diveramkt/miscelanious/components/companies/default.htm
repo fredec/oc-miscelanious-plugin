@@ -1,0 +1,12 @@
+{% set company = __SELF__.company %}
+<address>
+<i class="fa fa-map-marker"></i>
+{% if company.street %}{{ company.street }}{% endif %}
+{% if company.number %}, {{ company.number }}{% endif %}
+{% if company.addon %} - {{ company.addon }}{% endif %}
+{% if company.neighborhood %} - {{ company.neighborhood }}{% endif %}
+{% if company.city %} - {{ company.city }}{% endif %}
+{% if company.state %}/{{ company.state }}{% endif %}
+{% if company.zipcode %} - {{ company.zipcode }}{% endif %}
+{% if company.maps_link %} - <a href="{{ company.maps_link }}{% endif %}" title="Ver no mapa" target="_blank">Ver no mapa</a>
+</address>

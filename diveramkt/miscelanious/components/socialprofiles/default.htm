@@ -1,0 +1,11 @@
+{% set profiles = __SELF__.social_profiles %}
+
+<ul class="social">
+	{% for profile in profiles %}
+	<li class="{{ profile.name }}">
+		<a href="{{ profile.link }}" title="{{ profile.description}}" target="_blank">
+			<i class="fa fa-{{ profile.name }}"></i>	
+		</a>
+	</li>
+	{% endfor %}
+</ul>

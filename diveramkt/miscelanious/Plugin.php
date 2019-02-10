@@ -6,10 +6,19 @@ class Plugin extends PluginBase
 {
     public function registerComponents()
     {
+        return [
+            'Diveramkt\Miscelanious\Components\Companies' => 'Companies',
+            'Diveramkt\Miscelanious\Components\Phones' => 'Phones',
+            'Diveramkt\Miscelanious\Components\SocialProfiles' => 'SocialProfiles',
+        ];
     }
-
-    public function registerSettings()
+    public function registerPageSnippets()
     {
+        return [
+            'Diveramkt\Miscelanious\Components\Companies' => 'Companies',
+            'Diveramkt\Miscelanious\Components\Phones' => 'Phones',
+            'Diveramkt\Miscelanious\Components\SocialProfiles' => 'SocialProfiles',
+        ];
     }
 
     /**
