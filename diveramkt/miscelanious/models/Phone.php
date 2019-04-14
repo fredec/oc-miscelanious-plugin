@@ -8,6 +8,7 @@ use Model;
 class Phone extends Model
 {
     use \October\Rain\Database\Traits\Validation;
+    use \October\Rain\Database\Traits\Sortable;
     
     /*
      * Validation
