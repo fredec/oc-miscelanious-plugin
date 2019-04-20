@@ -12,3 +12,9 @@
 1.0.5:
     - 'Created table diveramkt_miscelanious_phones'
     - builder_table_create_diveramkt_miscelanious_phones.php
+1.0.6:
+    - 'Updated table diveramkt_miscelanious_testmonials'
+    - builder_table_update_diveramkt_miscelanious_testmonials.php
+1.0.7:
+    - 'Updated table diveramkt_miscelanious_testmonials'
+    - builder_table_update_diveramkt_miscelanious_testmonials_2.php

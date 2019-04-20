@@ -10,6 +10,7 @@ class Plugin extends PluginBase
             'Diveramkt\Miscelanious\Components\Companies' => 'Companies',
             'Diveramkt\Miscelanious\Components\Phones' => 'Phones',
             'Diveramkt\Miscelanious\Components\SocialProfiles' => 'SocialProfiles',
+            'Diveramkt\Miscelanious\Components\Testimonials' => 'Testimonials',
         ];
     }
     public function registerPageSnippets()
@@ -18,6 +19,7 @@ class Plugin extends PluginBase
             'Diveramkt\Miscelanious\Components\Companies' => 'Companies',
             'Diveramkt\Miscelanious\Components\Phones' => 'Phones',
             'Diveramkt\Miscelanious\Components\SocialProfiles' => 'SocialProfiles',
+            'Diveramkt\Miscelanious\Components\Testimonials' => 'Testimonials',
         ];
     }
 

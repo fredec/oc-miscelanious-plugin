@@ -1,0 +1,13 @@
+{% set testimonials = __SELF__.testimonials %}
+
+<ul class="testimonials">
+	{% for testimonial in testimonials %}
+	<li>
+		<img src="{{ testimonial.image|media }}" />
+		<p>
+			{{ testimonial.name }} - {{ testimonial.business }}
+			<span>{{ testimonial.testmonial }}</span>
+		</p>
+	</li>
+	{% endfor %}
+</ul>
