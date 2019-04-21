@@ -18,3 +18,6 @@
 1.0.7:
     - 'Updated table diveramkt_miscelanious_testmonials'
     - builder_table_update_diveramkt_miscelanious_testmonials_2.php
+1.0.8:
+    - 'Updated table diveramkt_miscelanious_social'
+    - builder_table_update_diveramkt_miscelanious_social.php
