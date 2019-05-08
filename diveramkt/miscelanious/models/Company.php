@@ -1,6 +1,7 @@
 <?php namespace Diveramkt\Miscelanious\Models;
 
 use Model;
+use Detection\MobileDetect as Mobile_Detect;
 
 /**
  * Model
@@ -53,14 +54,30 @@ class Company extends Model
         return $address;
     }
 
-    public function getPhoneCompleteAttribute()
+    public function getDetectMobileAttribute()
     {
-        return '(' . $this->area_code . ') ' . $this->phone;
+        $detect = new Mobile_Detect;
+
+        $this->device = 'desktop';
+        if ($detect->isMobile()) {
+            $this->device = 'mobile';
+            return true;
+        }else
+            return false;
     }
 
-    public function getMobileCompleteAttribute()
+    public function getPhonelinkAttribute()
     {
-        return '(' . $this->area_code_mobile . ') ' . $this->mobile;
+        $search = [' ', '+', '(', ')', '-', '.'];
+        return 'tel:55'.str_replace($search, '', $this->phone);
     }
 
+    public function getWhatsapplinkAttribute()
+    {
+        $search = [' ', '+', '(', ')', '-', '.'];
+        if ($this->detectMobile)
+            return 'https://api.whatsapp.com/send?phone=55'.str_replace($search, '', $this->mobile);
+        else
+            return 'https://web.whatsapp.com/send?phone=55'.str_replace($search, '', $this->mobile);
+    }
 }
