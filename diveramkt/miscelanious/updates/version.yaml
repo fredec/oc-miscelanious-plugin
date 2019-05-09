@@ -21,3 +21,6 @@
 1.0.8:
     - 'Updated table diveramkt_miscelanious_social'
     - builder_table_update_diveramkt_miscelanious_social.php
+1.0.9:
+    - 'Updated table diveramkt_miscelanious_companies'
+    - builder_table_update_diveramkt_miscelanious_companies.php

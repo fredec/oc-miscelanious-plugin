@@ -80,4 +80,9 @@ class Company extends Model
         else
             return 'https://web.whatsapp.com/send?phone=55'.str_replace($search, '', $this->mobile);
     }
+
+    public function getEmaillinkAttribute()
+    {
+        return 'mailto:'.$this->email;
+    }
 }
