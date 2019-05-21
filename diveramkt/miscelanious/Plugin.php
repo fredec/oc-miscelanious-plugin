@@ -9,6 +9,7 @@ class Plugin extends PluginBase
         return [
             'Diveramkt\Miscelanious\Components\Companies' => 'Companies',
             'Diveramkt\Miscelanious\Components\Phones' => 'Phones',
+            'Diveramkt\Miscelanious\Components\Contacts' => 'Contacts',
             'Diveramkt\Miscelanious\Components\SocialProfiles' => 'SocialProfiles',
             'Diveramkt\Miscelanious\Components\Testimonials' => 'Testimonials',
         ];
@@ -18,6 +19,7 @@ class Plugin extends PluginBase
         return [
             'Diveramkt\Miscelanious\Components\Companies' => 'Companies',
             'Diveramkt\Miscelanious\Components\Phones' => 'Phones',
+            'Diveramkt\Miscelanious\Components\Contacts' => 'Contacts',
             'Diveramkt\Miscelanious\Components\SocialProfiles' => 'SocialProfiles',
             'Diveramkt\Miscelanious\Components\Testimonials' => 'Testimonials',
         ];
@@ -33,6 +35,10 @@ class Plugin extends PluginBase
         return [
             'phone_number' => function ($string) {
             	$search = [' ', '+', '(', ')', '-', '.'];
+                return str_replace($search, '', $string);
+            },
+            'only_numbers' => function ($string) {
+                $search = [' ', '+', '(', ')', '-', '.'];
                 return str_replace($search, '', $string);
             },
         ];

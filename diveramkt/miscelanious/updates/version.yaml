@@ -16,11 +16,17 @@
     - 'Updated table diveramkt_miscelanious_testmonials'
     - builder_table_update_diveramkt_miscelanious_testmonials.php
 1.0.7:
-    - 'Updated table diveramkt_miscelanious_testmonials'
-    - builder_table_update_diveramkt_miscelanious_testmonials_2.php
+    - 'Created table diveramkt_miscelanious_contacs'
+    - builder_table_create_diveramkt_miscelanious_contacs.php
 1.0.8:
-    - 'Updated table diveramkt_miscelanious_social'
-    - builder_table_update_diveramkt_miscelanious_social.php
+    - 'Updated table diveramkt_miscelanious_contacs'
+    - builder_table_update_diveramkt_miscelanious_contacs.php
 1.0.9:
-    - 'Updated table diveramkt_miscelanious_companies'
-    - builder_table_update_diveramkt_miscelanious_companies.php
+    - 'Updated table diveramkt_miscelanious_contacs'
+    - builder_table_update_diveramkt_miscelanious_contacs2.php
+1.0.10:
+    - 'Updated table diveramkt_miscelanious_phones'
+    - builder_table_update_diveramkt_miscelanious_phones.php
+1.0.11:
+    - 'Updated table diveramkt_miscelanious_social'
+    - builder_table_update_diveramkt_miscelanious_social_2.php

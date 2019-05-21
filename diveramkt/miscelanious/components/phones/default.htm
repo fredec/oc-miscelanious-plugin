@@ -3,12 +3,12 @@
 {% for phone in phones %}
 <li>
 	{% if phone.icon == 'phone' %}
-		<a href="tel:+55{{ phone.number|phone_number }}" title="Ligue pra gente">
+		<a href="tel:+55{{ phone.area_code}}{{ phone.number|phone_number }}" title="Ligue pra gente">
 	{% elseif phone.icon == 'whatsapp' %}
-		{% if __SELF__.device == 'mobile' %}
-			<a href="https://api.whatsapp.com/send?phone=55{{ phone.number|phone_number }}" title="Fale pelo Whatsapp" target="_blank">
+		{% if __SELF__.devide == 'mobile' %}
+			<a href="https://api.whatsapp.com/send?phone=55{{ phone.area_code}}{{ phone.number|phone_number }}" title="Fale pelo Whatsapp" target="_blank">
 		{% else %}
-			<a href="https://web.whatsapp.com/send?phone=55{{ phone.number|phone_number }}" title="Fale pelo Whatsapp" target="_blank">
+			<a href="https://web.whatsapp.com/send?phone=55{{ phone.area_code}}{{ phone.number|phone_number }}" title="Fale pelo Whatsapp" target="_blank">
 		{% endif %}
 	{% endif %}
 

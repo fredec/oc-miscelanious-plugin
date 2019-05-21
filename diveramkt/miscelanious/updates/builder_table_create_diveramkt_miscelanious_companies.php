@@ -2,6 +2,7 @@
 
 use Schema;
 use October\Rain\Database\Updates\Migration;
+use DB;
 
 class BuilderTableCreateDiveramktMiscelaniousCompanies extends Migration
 {
@@ -30,6 +31,12 @@ class BuilderTableCreateDiveramktMiscelaniousCompanies extends Migration
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
         });
+        
+        DB::table('diveramkt_miscelanious_companies')->insert(
+            array(
+                'id' => '1'
+            )
+        );
     }
     
     public function down()

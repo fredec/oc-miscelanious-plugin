@@ -17,4 +17,10 @@ columns:
     created_at:
         label: 'diveramkt.miscelanious::lang.testmonial.created_at'
         type: datetime
+        searchable: true
+        sortable: true
+    enabled:
+        label: 'diveramkt.miscelanious::lang.testmonial.enabled'
+        type: switch
+        searchable: true
         sortable: true

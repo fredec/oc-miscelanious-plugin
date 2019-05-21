@@ -85,4 +85,5 @@ class Company extends Model
     {
         return 'mailto:'.$this->email;
     }
+
 }

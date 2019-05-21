@@ -1,4 +1,5 @@
 title: SocialNetworks
+nameFrom: name
 modelClass: Diveramkt\Miscelanious\Models\Social
 toolbar:
     buttons: reorder_toolbar

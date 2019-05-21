@@ -5,6 +5,11 @@ fields:
         mode: image
         span: right
         type: mediafinder
+    enabled:
+        label: 'diveramkt.miscelanious::lang.testmonial.enabled'
+        span: auto
+        default: 1
+        type: switch
     name:
         label: 'diveramkt.miscelanious::lang.testmonial.name'
         oc.commentPosition: ''

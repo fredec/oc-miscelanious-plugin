@@ -1,0 +1,10 @@
+name: Contacts
+form: $/diveramkt/miscelanious/models/contact/fields.yaml
+modelClass: Diveramkt\Miscelanious\Models\Contact
+defaultRedirect: diveramkt/miscelanious/contacts
+create:
+    redirect: 'diveramkt/miscelanious/contacts/update/:id'
+    redirectClose: diveramkt/miscelanious/contacts
+update:
+    redirect: diveramkt/miscelanious/contacts
+    redirectClose: diveramkt/miscelanious/contacts

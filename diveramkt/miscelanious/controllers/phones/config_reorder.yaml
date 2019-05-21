@@ -1,4 +1,5 @@
 title: Phones
+nameFrom: number
 modelClass: Diveramkt\Miscelanious\Models\Phone
 toolbar:
     buttons: reorder_toolbar

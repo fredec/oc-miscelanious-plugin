@@ -1,0 +1,23 @@
+{% set contacts = __SELF__.contacts %}
+
+{% for contact in contacts %}
+<li>
+	{% if contact.type == 'phone' %}
+		<a href="tel:+55{{ phone.value|only_numbers }}" title="{{ contact.description }}" target="_blank">
+	{% elseif contact.type == 'whatsapp' %}
+		{% if __SELF__.devide == 'mobile' %}
+			<a href="https://api.whatsapp.com/send?phone=55{{ contact.value|only_numbers }}" title="{{ contact.description }}" target="_blank">
+		{% else %}
+			<a href="https://web.whatsapp.com/send?phone=55{{ contact.value|only_numbers }}" title="{{ contact.description }}" target="_blank">
+		{% endif %}
+	{% elseif contact.type == 'email' %}
+		<a href="mailto:{{ phone.value }}" title="{{ contact.description }}" target="_blank">
+	{% else %}
+		<a href="{{ phone.value }}" title="{{ contact.description }}" target="_blank">
+	{% endif %}
+
+	<i class="{{ contact.icon }}"></i>{{ contact.number }}
+	
+	</a>
+</li>
+{% endfor %}

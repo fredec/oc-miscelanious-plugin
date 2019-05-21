@@ -17,6 +17,9 @@ permissions:
     manage_company:
         tab: 'diveramkt.miscelanious::lang.plugin.name'
         label: 'diveramkt.miscelanious::lang.company.mange_company'
+    manage_contacts:
+        tab: 'diveramkt.miscelanious::lang.plugin.name'
+        label: 'diveramkt.miscelanious::lang.contacts.manage_contacts'
 navigation:
     miscelanious:
         label: 'diveramkt.miscelanious::lang.config.miscelanious'
@@ -27,6 +30,10 @@ navigation:
                 label: 'diveramkt.miscelanious::lang.testmonial.tesmonials'
                 url: diveramkt/miscelanious/testmonials
                 icon: icon-bullhorn
+            side-menu-contacts:
+                label: 'diveramkt.miscelanious::lang.contacts.contacts'
+                url: diveramkt/miscelanious/contacts
+                icon: icon-phone
             menu-phones:
                 label: 'diveramkt.miscelanious::lang.phone.phones'
                 url: diveramkt/miscelanious/phones
@@ -37,5 +44,5 @@ navigation:
                 icon: icon-group
             menu-company:
                 label: 'diveramkt.miscelanious::lang.company.companies'
-                url: diveramkt/miscelanious/companies
+                url: diveramkt/miscelanious/companies/update/1
                 icon: icon-building

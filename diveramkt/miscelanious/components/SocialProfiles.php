@@ -16,7 +16,9 @@ class SocialProfiles extends ComponentBase
 
 	public function onRun(){
 		$this->social_profiles = Social::all();
+		$this->profiles = Social::all();
 	}
 
 	public $social_profiles;
+	public $profiles;
 }

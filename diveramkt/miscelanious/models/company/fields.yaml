@@ -15,8 +15,19 @@ tabs:
             span: auto
             type: text
             tab: 'diveramkt.miscelanious::lang.tab.company'
+        area_code:
+            label: 'diveramkt.miscelanious::lang.company.area_code'
+            span: auto
+            type: text
+            comment: 'diveramkt.miscelanious::lang.company.area_code_comment'
+            tab: 'diveramkt.miscelanious::lang.tab.company'
         phone:
             label: 'diveramkt.miscelanious::lang.company.phone'
+            span: auto
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.company'
+        area_code_mobile:
+            label: 'diveramkt.miscelanious::lang.company.area_code_mobile'
             span: auto
             type: text
             tab: 'diveramkt.miscelanious::lang.tab.company'
@@ -29,11 +40,6 @@ tabs:
         skype:
             label: 'diveramkt.miscelanious::lang.company.skype'
             span: auto
-            type: text
-            tab: 'diveramkt.miscelanious::lang.tab.company'
-        email:
-            label: Email
-            span: right
             type: text
             tab: 'diveramkt.miscelanious::lang.tab.company'
         street:

@@ -9,6 +9,7 @@ class BuilderTableUpdateDiveramktMiscelaniousTestmonials extends Migration
     {
         Schema::table('diveramkt_miscelanious_testmonials', function($table)
         {
+            $table->boolean('enabled');
             $table->integer('sort_order');
         });
     }
@@ -17,6 +18,7 @@ class BuilderTableUpdateDiveramktMiscelaniousTestmonials extends Migration
     {
         Schema::table('diveramkt_miscelanious_testmonials', function($table)
         {
+            $table->dropColumn('enabled');
             $table->dropColumn('sort_order');
         });
     }

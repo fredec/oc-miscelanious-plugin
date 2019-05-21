@@ -3,21 +3,21 @@
 use Backend\Classes\Controller;
 use BackendMenu;
 
-class Testmonials extends Controller
+class Contacts extends Controller
 {
-    public $implement = ['Backend\Behaviors\ListController','Backend\Behaviors\FormController','Backend\Behaviors\ReorderController'];
+    public $implement = [        'Backend\Behaviors\ListController',        'Backend\Behaviors\FormController',        'Backend\Behaviors\ReorderController'    ];
     
     public $listConfig = 'config_list.yaml';
     public $formConfig = 'config_form.yaml';
     public $reorderConfig = 'config_reorder.yaml';
-   
+
     public $requiredPermissions = [
-        'manage_testmonials' 
+        'manage_contacts' 
     ];
 
     public function __construct()
     {
         parent::__construct();
-        BackendMenu::setContext('Diveramkt.Miscelanious', 'miscelanious', 'menu-testmonials');
+        BackendMenu::setContext('Diveramkt.Miscelanious', 'miscelanious', 'side-menu-contacts');
     }
 }
