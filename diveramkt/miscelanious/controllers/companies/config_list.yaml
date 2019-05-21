@@ -1,12 +1,12 @@
-list: $/diveramkt/miscelanious/models/company/columns.yaml
-modelClass: Diveramkt\Miscelanious\Models\Company
 title: Companies
+modelClass: Diveramkt\Miscelanious\Models\Company
+list: $/diveramkt/miscelanious/models/company/columns.yaml
+recordUrl: diveramkt/miscelanious/companies/update/1
 noRecordsMessage: 'backend::lang.list.no_records'
+recordsPerPage: 20
 showSetup: true
 showCheckboxes: true
-recordsPerPage: 20
 toolbar:
     buttons: list_toolbar
     search:
         prompt: 'backend::lang.list.search_prompt'
-recordUrl: 'diveramkt/miscelanious/companies/update/:id'
