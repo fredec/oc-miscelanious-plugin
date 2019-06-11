@@ -50,6 +50,7 @@
         'image' => 'Imagem',
         'manage_testmonials' => 'Gerenciar Depoimentos',
         'tesmonials' => 'Depoimentos',
+        'enabled' => 'Habilitado/Desabilitado',
     ],
     'phone' => [
         'number' => 'Número',
@@ -62,5 +63,13 @@
         'description' => 'Descrição',
         'description_comment' => 'Um nome para o telefone. Ex.: Para diferenciar telefones de diferentes filiais ou setores da empresa.',
         'area_code' => 'Código de área',
+    ],
+    'contacts' => [
+        'value' => 'Valor',
+        'type' => 'Tipo',
+        'description' => 'Descrição',
+        'icon' => 'Ícone',
+        'manage_contacts' => 'Gerenciar Contatos',
+        'contacts' => 'Contatos',
     ],
 ];
