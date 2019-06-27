@@ -1,6 +1,7 @@
 <?php namespace Diveramkt\Miscelanious\Models;
 
 use Model;
+use Detection\MobileDetect as Mobile_Detect;
 
 /**
  * Model
@@ -15,6 +16,8 @@ class Contact extends Model
      */
     public $timestamps = false;
 
+
+/* ==== FUNCTION NOT USED ANYMORE, JUST TO KEEP COMPATIBILITY == */
     public function beforeSave()
     {
         // Autogenerate link according to the type of contact
@@ -28,6 +31,7 @@ class Contact extends Model
             $this->link = $this->value;
         }
     }
+/* ==== END FUNCTION NOT USED ANYMORE == */
 
 
     /**
@@ -44,6 +48,18 @@ class Contact extends Model
     private function only_numbers($string) {
         $search = [' ', '+', '(', ')', '-', '.'];
         return str_replace($search, '', $string);
+    }
+
+    public function getWhatsapplinkAttribute()
+    {
+        if ($this->type == 'whatsapp') {
+            $search = [' ', '+', '(', ')', '-', '.'];
+            if ($this->detectMobile)
+                return 'https://api.whatsapp.com/send?phone=55'.str_replace($search, '', $this->value);
+            else
+                return 'https://web.whatsapp.com/send?phone=55'.str_replace($search, '', $this->value);
+        } else
+            return null;
     }
 
 }
