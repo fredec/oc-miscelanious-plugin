@@ -34,12 +34,31 @@ class Plugin extends PluginBase
     {
         return [
             'phone_number' => function ($string) {
-            	$search = [' ', '+', '(', ')', '-', '.'];
+                $search = [' ', '+', '(', ')', '-', '.'];
                 return str_replace($search, '', $string);
+            },
+            'phone_link' => function ($string) {
+                $search = [' ', '+', '(', ')', '-', '.'];
+                return 'tel:+55'.str_replace($search, '', $string);
             },
             'only_numbers' => function ($string) {
                 $search = [' ', '+', '(', ')', '-', '.'];
                 return str_replace($search, '', $string);
+            },
+            'whats_link' => function ($tel) {
+                $iphone = strpos($_SERVER['HTTP_USER_AGENT'],"iPhone");
+                $android = strpos($_SERVER['HTTP_USER_AGENT'],"Android");
+                $palmpre = strpos($_SERVER['HTTP_USER_AGENT'],"webOS");
+                $berry = strpos($_SERVER['HTTP_USER_AGENT'],"BlackBerry");
+                $ipod = strpos($_SERVER['HTTP_USER_AGENT'],"iPod");
+
+                if ($iphone || $android || $palmpre || $ipod || $berry == true) {
+                    $link='https://api.whatsapp.com/send?phone=55';
+                } else {
+                    $link='https://web.whatsapp.com/send?phone=55';
+                }
+                
+                return $link.preg_replace("/[^0-9]/", "", $tel);
             },
         ];
     }
