@@ -25,24 +25,36 @@ navigation:
         label: 'diveramkt.miscelanious::lang.config.miscelanious'
         url: diveramkt/miscelanious/testmonials
         icon: icon-asterisk
+        permissions:
+                    - manage_testmonials
         sideMenu:
             menu-testmonials:
                 label: 'diveramkt.miscelanious::lang.testmonial.tesmonials'
                 url: diveramkt/miscelanious/testmonials
                 icon: icon-bullhorn
+                permissions:
+                    - manage_testmonials
             side-menu-contacts:
                 label: 'diveramkt.miscelanious::lang.contacts.contacts'
                 url: diveramkt/miscelanious/contacts
                 icon: icon-phone
+                permissions:
+                    - manage_contacts
             menu-phones:
                 label: 'diveramkt.miscelanious::lang.phone.phones'
                 url: diveramkt/miscelanious/phones
                 icon: icon-phone
+                permissions:
+                    - manage_phones
             menu-social:
                 label: 'diveramkt.miscelanious::lang.social.social_networks'
                 url: diveramkt/miscelanious/socialnetworks
                 icon: icon-group
+                permissions:
+                    - manage_social
             menu-company:
                 label: 'diveramkt.miscelanious::lang.company.companies'
                 url: diveramkt/miscelanious/companies/update/1
                 icon: icon-building
+                permissions:
+                    - manage_company
