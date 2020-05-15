@@ -34,16 +34,18 @@ class Plugin extends PluginBase
     {
         return [
             'phone_number' => function ($string) {
-                $search = [' ', '+', '(', ')', '-', '.'];
+            	$search = [' ', '+', '(', ')', '-', '.'];
                 return str_replace($search, '', $string);
             },
             'phone_link' => function ($string) {
-                $search = [' ', '+', '(', ')', '-', '.'];
-                return 'tel:+55'.str_replace($search, '', $string);
+                // $search = [' ', '+', '(', ')', '-', '.'];
+                // return 'tel:+55'.str_replace($search, '', $string);
+                return 'tel:+55'.preg_replace("/[^0-9]/", "", $string);
             },
             'only_numbers' => function ($string) {
-                $search = [' ', '+', '(', ')', '-', '.'];
-                return str_replace($search, '', $string);
+                // $search = [' ', '+', '(', ')', '-', '.'];
+                // return str_replace($search, '', $string);
+                return preg_replace("/[^0-9]/", "", $string);
             },
             'whats_link' => function ($tel) {
                 $iphone = strpos($_SERVER['HTTP_USER_AGENT'],"iPhone");
@@ -57,7 +59,6 @@ class Plugin extends PluginBase
                 } else {
                     $link='https://web.whatsapp.com/send?phone=55';
                 }
-                
                 return $link.preg_replace("/[^0-9]/", "", $tel);
             },
             'whats_share' => function ($text) {
@@ -66,7 +67,6 @@ class Plugin extends PluginBase
                 $palmpre = strpos($_SERVER['HTTP_USER_AGENT'],"webOS");
                 $berry = strpos($_SERVER['HTTP_USER_AGENT'],"BlackBerry");
                 $ipod = strpos($_SERVER['HTTP_USER_AGENT'],"iPod");
-
                 if ($iphone || $android || $palmpre || $ipod || $berry == true) {
                     $link='https://api.whatsapp.com/send';
                 } else {
@@ -83,7 +83,7 @@ class Plugin extends PluginBase
                 if(!strpos("[".$link."]", $_SERVER['HTTP_HOST'])) return 'target="_blank"';
                 else return 'target="_parent"';
             },
-            'video_embed' => function($url, $autoplay=0) {
+            'video_embed' => function($url, $autoplay=0, $controls=1) {
                 if(strpos("[".$url."]", "youtu.be/") || strpos("[".$url."]", "youtube")){
                     if(strpos("[".$url."]", "&feature")){
                         preg_match_all("#&feature(.*?)&#s", $url, $result);
@@ -93,8 +93,15 @@ class Plugin extends PluginBase
                             $url=$url[0];
                         }
                     }
-
                     $retorno='';
+
+                    if(strpos("[".$url."]", "&")){
+                        $exp=explode('&', $url);
+                        foreach ($exp as $key => $value) {
+                            if($key > 0) $url=str_replace('&'.$value,'', $url);
+                        }
+                    }
+
                     if(strpos("[".$url."]", "watch?v=")) $retorno=str_replace('/watch?v=', '/embed/', str_replace('&feature=youtu.be','',$url));
                     elseif(strpos("[".$url."]", "youtu.be/")){
                         $exp=explode('youtu.be/', $url);
@@ -103,7 +110,8 @@ class Plugin extends PluginBase
                         }else $retorno=$url;
                     }else $retorno=$url;
 
-                    return $retorno.'?controls=0&amp;start=1&amp;autoplay='.$autoplay.'&amp;loop=1&amp;background=1';
+                    
+                    return $retorno.'?rel=0&controls='.$controls.'&amp;start=1&amp;autoplay='.$autoplay.'&amp;loop=1&amp;background=1';
                 }elseif(strpos("[".$url."]", "vimeo.com")){
                     $par=explode('/', $url);
                     return 'https://player.vimeo.com/video/'.end($par).'?autoplay='.$autoplay.'&loop=1&background=1';
@@ -115,9 +123,15 @@ class Plugin extends PluginBase
                 if(strpos("[".$url."]", "embed")){
                     $exp=explode('/', $url);
                     $exp=explode('?',end($exp));
-
                     $url=array();
                     $url[0]='v='.$exp[0];
+                }elseif(strpos("[".$url."]", "youtu.be/")){
+                    // https://youtu.be/ftFSKcSubKQ
+                    $url_=explode('/', $url);
+                    $url_=end($url_);
+
+                    $url=array();
+                    $url[0]='v='.$url_;
                 }else{
                     $url = str_replace('&', '&amp;', $url);
                     $url = explode('&amp;', $url);
@@ -133,7 +147,6 @@ class Plugin extends PluginBase
                         return 'https://img.youtube.com/vi/' . substr(stristr($url[0], 'v='), 2) . '/maxresdefault.jpg';
                     }
                 }
-
                 return false;
             },
             'create_slug' => function($string) {
@@ -150,6 +163,20 @@ class Plugin extends PluginBase
                 $stripped = preg_replace(array('/\s{2,}/', '/[\t\n]/'), ' ', $string);
                 return strtolower(strtr($string, $table));
             },
+            'file_exists_media' => function($string){
+                if(str_replace(' ','',$string) == '' || is_numeric($string)) return false;
+                $base='storage/app/media';
+                if(file_exists($base.$string)) return true;
+                else return false;
+            },
+            'verificar_video_youtube' => function($url){
+                if ((strstr($url, 'youtube') || strstr($url, 'youtu.be'))) return true;
+                else return false;
+            },
+            'str_replace' => function($string, $busca, $subistituir){
+                return str_replace($busca, $subistituir, $string);
+            }
+
         ];
     }
 

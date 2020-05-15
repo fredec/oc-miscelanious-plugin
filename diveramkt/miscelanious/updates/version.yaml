@@ -33,3 +33,6 @@
 1.0.12:
     - 'Updated table diveramkt_miscelanious_companies'
     - builder_table_update_diveramkt_miscelanious_companies_2.php
+1.0.13:
+    - 'Updated table diveramkt_miscelanious_companies'
+    - builder_table_update_diveramkt_miscelanious_companies_3.php

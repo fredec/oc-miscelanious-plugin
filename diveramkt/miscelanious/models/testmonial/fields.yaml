@@ -18,8 +18,8 @@ fields:
         type: text
     business:
         label: 'diveramkt.miscelanious::lang.testmonial.business'
-        oc.commentPosition: ''
         span: left
+        hidden: 1
         required: 0
         type: text
     position:
@@ -29,8 +29,8 @@ fields:
         type: text
     link:
         label: Link
-        oc.commentPosition: ''
         span: full
+        hidden: 1
         type: text
     testmonial:
         label: 'diveramkt.miscelanious::lang.testmonial.testmonial'

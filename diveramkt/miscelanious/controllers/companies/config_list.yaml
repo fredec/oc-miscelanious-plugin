@@ -1,7 +1,8 @@
 title: Companies
 modelClass: Diveramkt\Miscelanious\Models\Company
 list: $/diveramkt/miscelanious/models/company/columns.yaml
-recordUrl: diveramkt/miscelanious/companies/update/1
+# recordUrl: diveramkt/miscelanious/companies/update/1
+recordUrl: diveramkt/miscelanious/companies/update/:id
 noRecordsMessage: 'backend::lang.list.no_records'
 recordsPerPage: 20
 showSetup: true

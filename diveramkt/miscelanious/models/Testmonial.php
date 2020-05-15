@@ -14,6 +14,8 @@ class Testmonial extends Model
      * Validation
      */
     public $rules = [
+        'name' => 'required',
+        'testmonial' => 'required',
     ];
 
     /**

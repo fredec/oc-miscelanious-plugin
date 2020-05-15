@@ -1,10 +1,17 @@
 name: Companies
 modelClass: Diveramkt\Miscelanious\Models\Company
 form: $/diveramkt/miscelanious/models/company/fields.yaml
-defaultRedirect: diveramkt/miscelanious/companies/update/1
+# defaultRedirect: diveramkt/miscelanious/companies/update/1
+# create:
+#     redirect: diveramkt/miscelanious/companies/update/1
+#     redirectClose: diveramkt/miscelanious/companies/update/1
+# update:
+#     redirect: diveramkt/miscelanious/companies/update/1
+#     redirectClose: diveramkt/miscelanious/companies/update/1
+defaultRedirect: diveramkt/miscelanious/companies
 create:
-    redirect: diveramkt/miscelanious/companies/update/1
-    redirectClose: diveramkt/miscelanious/companies/update/1
+    redirect: 'diveramkt/miscelanious/companies/update/:id'
+    redirectClose: diveramkt/miscelanious/companies
 update:
-    redirect: diveramkt/miscelanious/companies/update/1
-    redirectClose: diveramkt/miscelanious/companies/update/1
+    redirect: 'diveramkt/miscelanious/companies'
+    redirectClose: diveramkt/miscelanious/companies

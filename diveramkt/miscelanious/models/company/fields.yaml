@@ -18,12 +18,14 @@ tabs:
         mobile:
             label: 'diveramkt.miscelanious::lang.company.mobile'
             span: auto
+            hidden: 1
             type: text
             comment: 'diveramkt.miscelanious::lang.company.mobile_comment'
             tab: 'diveramkt.miscelanious::lang.tab.company'
         phone:
             label: 'diveramkt.miscelanious::lang.company.phone'
             span: auto
+            hidden: 1
             type: text
             tab: 'diveramkt.miscelanious::lang.tab.company'
         area_code:
@@ -49,6 +51,31 @@ tabs:
             span: right
             type: text
             tab: 'diveramkt.miscelanious::lang.tab.company'
+        mobiles:
+            label: Celulares
+            prompt: 'Acrescentar novo número'
+            span: left
+            type: repeater
+            comment: Whatsapp
+            tab: 'diveramkt.miscelanious::lang.tab.company'
+            form:
+                fields:
+                    number:
+                        label: Número
+                        span: full
+                        type: text
+        phones:
+            label: Telefones
+            prompt: 'Acrescentar novo número'
+            span: right
+            type: repeater
+            tab: 'diveramkt.miscelanious::lang.tab.company'
+            form:
+                fields:
+                    number:
+                        label: Número
+                        span: full
+                        type: text
         street:
             label: 'diveramkt.miscelanious::lang.company.street'
             span: full

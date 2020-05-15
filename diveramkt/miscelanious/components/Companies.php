@@ -34,7 +34,7 @@ class Companies extends ComponentBase
 
 	protected function getCompany(){
 		if ($this->property('company') == "") {
-			return Company::first();
+			return Company::get();
 		}else{
 			return Company::where('id',$this->property('company')+1)->first();
 		}
@@ -44,6 +44,7 @@ class Companies extends ComponentBase
 	protected function getAllCompany(){
 		$query = Company::all();
 
+		$result[''] = 'Todos';
 		foreach ($query as $id=>$c)
 	        $result[$id] = $c->name;
 

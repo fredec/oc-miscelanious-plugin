@@ -3,13 +3,14 @@
 use Schema;
 use October\Rain\Database\Updates\Migration;
 
-class BuilderTableUpdateDiveramktMiscelaniousCompanies2 extends Migration
+class BuilderTableUpdateDiveramktMiscelaniousCompanies3 extends Migration
 {
     public function up()
     {
         Schema::table('diveramkt_miscelanious_companies', function($table)
         {
-            $table->string('email', 255)->nullable();
+            $table->text('phones')->nullable();
+            $table->text('mobiles')->nullable();
         });
     }
     
@@ -17,7 +18,8 @@ class BuilderTableUpdateDiveramktMiscelaniousCompanies2 extends Migration
     {
         Schema::table('diveramkt_miscelanious_companies', function($table)
         {
-            $table->dropColumn('email');
+            $table->dropColumn('phones');
+            $table->dropColumn('mobiles');
         });
     }
 }

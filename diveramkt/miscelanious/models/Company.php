@@ -16,6 +16,8 @@ class Company extends Model
     public $rules = [
     ];
 
+    public $jsonable = ['mobiles','phones'];
+
     /**
      * @var string The database table used by the model.
      */

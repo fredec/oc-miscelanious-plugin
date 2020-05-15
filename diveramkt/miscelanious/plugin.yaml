@@ -54,7 +54,7 @@ navigation:
                     - manage_social
             menu-company:
                 label: 'diveramkt.miscelanious::lang.company.companies'
-                url: diveramkt/miscelanious/companies/update/1
+                url: diveramkt/miscelanious/companies
                 icon: icon-building
                 permissions:
                     - manage_company
