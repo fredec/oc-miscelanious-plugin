@@ -6,6 +6,8 @@ fields:
             whatsapp: WhatsApp
             email: Email
             link: Link
+            address: Address
+        showSearch: true
         span: auto
         required: 1
         type: dropdown
