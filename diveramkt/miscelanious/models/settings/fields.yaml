@@ -1,0 +1,22 @@
+tabs:
+    fields:
+        redirect_https:
+            label: 'diveramkt.miscelanious::lang.config.enabled_http2'
+            type: 'switch'
+            span: full
+            tab: 'diveramkt.miscelanious::lang.config.redirects'
+        redirect_www:
+            label: 'diveramkt.miscelanious::lang.config.redirect_www'
+            span: auto
+            options:
+                0: 'diveramkt.miscelanious::lang.config.disabled'
+                301: 'diveramkt.miscelanious::lang.config.301'
+                302: 'diveramkt.miscelanious::lang.config.302'
+            showSearch: true
+            type: dropdown
+            tab: 'diveramkt.miscelanious::lang.config.redirects'
+        sub_dominios:
+            label: 'diveramkt.miscelanious::lang.config.prefix_subdominio'
+            span: auto
+            type: textarea
+            tab: 'diveramkt.miscelanious::lang.config.redirects'

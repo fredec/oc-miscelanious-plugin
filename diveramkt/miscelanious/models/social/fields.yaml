@@ -17,7 +17,8 @@ fields:
             instagram: Instagram
             linkedin: Linkedin
             pinterest: Pinterest
-            google-plus: Google+
+            # google-plus: Google+
+            tiktok: Tiktok
             youtube: Youtube
             whatsapp: WhatsApp
             skype: Skype

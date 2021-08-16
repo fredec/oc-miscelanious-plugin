@@ -26,7 +26,7 @@ class Companies extends ComponentBase
 
 	public function onRun(){
 		$this->company = $this->getCompany();
-}
+	}
 
 	public function getCompanyOptions(){
 		return $this->getAllCompany();
@@ -34,7 +34,10 @@ class Companies extends ComponentBase
 
 	protected function getCompany(){
 		if ($this->property('company') == "") {
-			return Company::get();
+			return Company::orderBy('sort_order', 'desc')->get();
+		}elseif ($this->property('company') == "sim" || $this->property('company') == "nao") {
+			if($this->property('company') == 'sim') return Company::where('main',1)->orderBy('sort_order', 'desc')->get();
+			else return Company::where('main',0)->orderBy('sort_order', 'desc')->get();
 		}else{
 			return Company::where('id',$this->property('company')+1)->first();
 		}
@@ -45,10 +48,12 @@ class Companies extends ComponentBase
 		$query = Company::all();
 
 		$result[''] = 'Todos';
+		$result['sim'] = 'Principais';
+		$result['nao'] = 'Secundários';
 		foreach ($query as $id=>$c)
-	        $result[$id] = $c->name;
+			$result[$id] = $c->name;
 
-	    return $result;
+		return $result;
 	}
 
 	public $company;

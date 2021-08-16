@@ -10,12 +10,24 @@ class Testmonial extends Model
     use \October\Rain\Database\Traits\Validation;
     use \October\Rain\Database\Traits\Sortable;
 
+    public $implement = array();
+    public $translatable = array();
+
+    // \Diveramkt\Miscelanious\Models\Testmonial::extend(function($model) {
+    //     $model->implement = ['RainLab.Translate.Behaviors.TranslatableModel'];
+    //     $model->translatable = ['name','position','testmonial','image'];
+    // });
+    
     /*
      * Validation
      */
     public $rules = [
         'name' => 'required',
         'testmonial' => 'required',
+    ];
+
+    public $attachOne = [
+        'foto' => 'System\Models\File',
     ];
 
     /**

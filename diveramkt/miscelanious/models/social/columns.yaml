@@ -3,4 +3,11 @@ columns:
         label: 'diveramkt.miscelanious::lang.social.social_name'
         type: text
         searchable: true
+    link:
+        label: 'Link'
+        type: text
+        searchable: true
+    sort_order:
+        label: 'diveramkt.miscelanious::lang.company.order'
+        type: number
         sortable: true

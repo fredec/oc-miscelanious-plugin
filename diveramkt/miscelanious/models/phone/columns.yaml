@@ -1,21 +1,12 @@
 columns:
-    area_code:
-        label: 'diveramkt.miscelanious::lang.phone.area_code'
-        type: text
-        searchable: true
-        sortable: true
-    number:
+    numbers:
         label: 'diveramkt.miscelanious::lang.phone.number'
-        type: text
-        searchable: true
-        sortable: true
-    info:
-        label: 'diveramkt.miscelanious::lang.phone.info'
-        type: text
-        searchable: true
-        sortable: true
+        type: partial
+        path: ~/plugins/diveramkt/miscelanious/models/phone/numbers.htm
     description:
         label: 'diveramkt.miscelanious::lang.phone.description'
         type: text
         searchable: true
         sortable: true
+    sort_order:
+        label: 'Ordem'

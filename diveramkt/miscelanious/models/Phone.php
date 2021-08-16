@@ -10,10 +10,18 @@ class Phone extends Model
     use \October\Rain\Database\Traits\Validation;
     use \October\Rain\Database\Traits\Sortable;
     
+    public $implement = array();
+    public $translatable = array();
+    
     /*
      * Validation
      */
+
+    public $jsonable = ['numbers'];
+
     public $rules = [
+        'numbers' => 'required',
+        'description' => 'required',
     ];
 
     /**

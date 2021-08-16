@@ -1,0 +1,5 @@
+title: Companies
+nameFrom: name
+modelClass: Diveramkt\Miscelanious\Models\Company
+toolbar:
+    buttons: reorder_toolbar

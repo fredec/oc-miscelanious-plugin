@@ -1,32 +1,44 @@
 fields:
     area_code:
         label: 'diveramkt.miscelanious::lang.phone.area_code'
-        oc.commentPosition: ''
         span: auto
+        hidden: 1
         required: 0
         type: text
     number:
         label: 'diveramkt.miscelanious::lang.phone.number'
-        oc.commentPosition: ''
         span: auto
+        hidden: 1
         required: 1
         type: text
     description:
         label: 'diveramkt.miscelanious::lang.phone.description'
-        oc.commentPosition: ''
-        span: auto
+        span: full
         type: text
         comment: 'diveramkt.miscelanious::lang.phone.description_comment'
     icon:
         label: 'diveramkt.miscelanious::lang.phone.icon'
         span: auto
         default: phone
+        hidden: 1
         required: 0
         type: text
         comment: 'diveramkt.miscelanious::lang.phone.icon_comment'
     info:
         label: 'diveramkt.miscelanious::lang.phone.info'
         span: auto
+        hidden: 1
         required: 0
         type: text
         comment: 'diveramkt.miscelanious::lang.phone.info_comment'
+    numbers:
+        label: Números
+        prompt: 'Acrescentar novo número'
+        span: full
+        type: repeater
+        form:
+            fields:
+                number:
+                    label: Número
+                    span: auto
+                    type: text

@@ -27,15 +27,20 @@ class Testimonials extends ComponentBase
 				'title' => 'Sort Testimonials',
 				'description' => 'Sort those testimonials',
 				'type' => 'dropdown',
-				'default' => 'created_at desc'
+				// 'default' => 'created_at desc'
+				'default' => 'desc'
 			],
 		];
 	}
 
 	public function getSortOrderOptions() {
+		// return [
+		// 	'created_at asc' => 'Created at (ascending)',
+		// 	'created_at desc' => 'Created at (descending)',
+		// ];
 		return [
-			'created_at asc' => 'Created at (ascending)',
-			'created_at desc' => 'Created at (descending)',
+			'asc' => 'Ordem (ascending)',
+			'desc' => 'Ordem (descending)',
 		];
 	}
 
@@ -43,19 +48,29 @@ class Testimonials extends ComponentBase
 		$this->testimonials = $this->getAllTestimonials();
 	}
 
+	// protected function getAllTestimonials() {
+	// 	$query = Testmonial::all();
+
+	// 	$query = $query->where('enabled', true);
+
+	// 	$query = $query->sortBy($this->property('sortOrder'));
+
+	// 	if ($this->property('total') > 0) {
+	// 		$query = $query->take($this->property('total'));
+	// 	}
+
+	// 	return $query;
+	// }
+
 	protected function getAllTestimonials() {
-		$query = Testmonial::all();
+		$query = Testmonial::where('enabled', true);
+		$query = $query->orderBy('sort_order',$this->property('sortOrder'));
 
-		$query = $query->where('enabled', true);
+		$this->total=$query->count();
+		if ($this->property('total') > 0) $query = $query->take($this->property('total'));
 
-		$query = $query->sortBy($this->property('sortOrder'));
-
-		if ($this->property('total') > 0) {
-			$query = $query->take($this->property('total'));
-		}
-
-		return $query;
+		return $query->get();
 	}
 
-	public $testimonials;
+	public $testimonials, $total=0;
 }

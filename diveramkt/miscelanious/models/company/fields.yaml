@@ -1,8 +1,18 @@
+fields:
+    main:
+        label: Principal
+        span: auto
+        type: switch
 tabs:
     fields:
         name:
             label: 'diveramkt.miscelanious::lang.company.name'
-            span: full
+            span: left
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.company'
+        opening_hours:
+            label: 'diveramkt.miscelanious::lang.company.opening_hours'
+            span: right
             type: text
             tab: 'diveramkt.miscelanious::lang.tab.company'
         social:
@@ -44,6 +54,7 @@ tabs:
         skype:
             label: 'diveramkt.miscelanious::lang.company.skype'
             span: auto
+            hidden: 1
             type: text
             tab: 'diveramkt.miscelanious::lang.tab.company'
         email:
@@ -51,30 +62,47 @@ tabs:
             span: right
             type: text
             tab: 'diveramkt.miscelanious::lang.tab.company'
-        mobiles:
-            label: Celulares
-            prompt: 'Acrescentar novo número'
-            span: left
-            type: repeater
-            comment: Whatsapp
+        text_about:
+            label: 'Texto sobre'
+            size: giant
+            span: auto
+            type: richeditor
+            toolbarButtons: bold|italic|color
             tab: 'diveramkt.miscelanious::lang.tab.company'
-            form:
-                fields:
-                    number:
-                        label: Número
-                        span: full
-                        type: text
         phones:
-            label: Telefones
-            prompt: 'Acrescentar novo número'
+            label: 'diveramkt.miscelanious::lang.phone.phones'
+            prompt: 'diveramkt.miscelanious::lang.plugin.add_new'
             span: right
             type: repeater
+            comment: 'diveramkt.miscelanious::lang.company.first_number'
             tab: 'diveramkt.miscelanious::lang.tab.company'
             form:
                 fields:
                     number:
-                        label: Número
-                        span: full
+                        label: 'diveramkt.miscelanious::lang.phone.phones'
+                        span: auto
+                        type: text
+                        comment: 'diveramkt.miscelanious::lang.company.first_number'
+                    description:
+                        label: Descrição
+                        span: right
+                        type: text
+        mobiles:
+            label: 'diveramkt.miscelanious::lang.phone.mobiles'
+            prompt: 'diveramkt.miscelanious::lang.plugin.add_new'
+            span: right
+            type: repeater
+            comment: 'diveramkt.miscelanious::lang.company.first_number'
+            tab: 'diveramkt.miscelanious::lang.tab.company'
+            form:
+                fields:
+                    number:
+                        label: 'diveramkt.miscelanious::lang.company.number'
+                        span: left
+                        type: text
+                    description:
+                        label: Descrição
+                        span: right
                         type: text
         street:
             label: 'diveramkt.miscelanious::lang.company.street'

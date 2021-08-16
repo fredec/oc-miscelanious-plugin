@@ -24,4 +24,18 @@ class Phones extends Controller
         parent::__construct();
         BackendMenu::setContext('Diveramkt.Miscelanious', 'miscelanious', 'menu-phones');
     }
+
+    public function listExtendQuery($query)
+    {
+        $query->orderBy('sort_order', 'desc');
+        return $query;
+    }
+
+    public function reorderExtendQuery($query)
+    {
+        // $query->withTrashed();
+        $query->orderBy('sort_order', 'desc');
+        return $query;
+    }
+
 }

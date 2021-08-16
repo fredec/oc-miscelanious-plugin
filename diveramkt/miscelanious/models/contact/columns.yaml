@@ -4,6 +4,11 @@ columns:
         type: text
         searchable: true
         sortable: true
+    description:
+        label: 'diveramkt.miscelanious::lang.contacts.description'
+        type: text
+        searchable: true
+        sortable: true
     type:
         label: 'diveramkt.miscelanious::lang.contacts.type'
         type: text

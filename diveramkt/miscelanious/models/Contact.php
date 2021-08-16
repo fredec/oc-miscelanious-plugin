@@ -10,6 +10,9 @@ class Contact extends Model
 {
     use \October\Rain\Database\Traits\Validation;
     
+    public $implement = array();
+    public $translatable = array();
+    
     /*
      * Disable timestamps by default.
      * Remove this line if timestamps are defined in the database table.
@@ -24,7 +27,7 @@ class Contact extends Model
         if ($this->type == 'phone') {
             $this->link = 'tel:+55' . $this->only_numbers($this->value);
         }else if ($this->type == 'whatsapp') {
-            $this->link = 'https://api.whatsapp.com/send?phone=55' . $this->only_numbers($this->value);
+            $this->link = 'https://web.whatsapp.com/send?phone=55' . $this->only_numbers($this->value);
         }else if ($this->type == 'email') {
             $this->link = 'mailto:' . $this->value;
         }else if ($this->type == 'link') {
@@ -54,34 +57,12 @@ class Contact extends Model
     {
         if ($this->type == 'whatsapp') {
             $search = [' ', '+', '(', ')', '-', '.'];
-            $return = 'https://api.whatsapp.com/send?phone=55'.str_replace($search, '', $this->value);
-
-            if ($this->description) {
-                $return .= '&text='.urlencode($this->description);
-            }
-
-            return $return;
+            if ($this->detectMobile)
+                return 'https://api.whatsapp.com/send?phone=55'.str_replace($search, '', $this->value);
+            else
+                return 'https://web.whatsapp.com/send?phone=55'.str_replace($search, '', $this->value);
         } else
             return null;
-    }
-
-    public function getFormattedlink()
-    {
-        if ($this->type == 'whatsapp') {
-            $search = [' ', '+', '(', ')', '-', '.'];
-            $return = 'https://api.whatsapp.com/send?phone=55'.str_replace($search, '', $this->value);
-
-            if ($this->description) {
-                $return .= '&text='.urlencode($this->description);
-            }
-
-            return $return;
-        } else if ($this->type == 'email') {
-            return "mailto:".$this->value;
-        } else if ($this->type == 'address') {
-            return $this->description;
-        } else
-            return $this->link;
     }
 
 }

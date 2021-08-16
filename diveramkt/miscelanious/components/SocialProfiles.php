@@ -15,7 +15,7 @@ class SocialProfiles extends ComponentBase
 	}
 
 	public function onRun(){
-		$this->social_profiles = Social::all();
+		$this->social_profiles = Social::orderBy('sort_order','desc')->get();
 		$this->profiles = Social::all();
 	}
 

@@ -10,7 +10,7 @@ class SocialNetworks extends Controller
     public $listConfig = 'config_list.yaml';
     public $formConfig = 'config_form.yaml';
     public $reorderConfig = 'config_reorder.yaml';
-  
+
     public $requiredPermissions = [
         'manage_social' 
     ];
@@ -20,4 +20,17 @@ class SocialNetworks extends Controller
         parent::__construct();
         BackendMenu::setContext('Diveramkt.Miscelanious', 'miscelanious', 'menu-social');
     }
+
+    public function reorderExtendQuery($query)
+    {
+        $query->orderBy('sort_order', 'desc');
+        return $query;
+    }
+
+    public function listExtendQuery($query)
+    {
+        $query->orderBy('sort_order', 'desc');
+        return $query;
+    }
+
 }

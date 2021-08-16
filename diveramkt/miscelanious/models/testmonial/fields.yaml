@@ -5,6 +5,17 @@ fields:
         mode: image
         span: right
         type: mediafinder
+        hidden: 1
+    foto:
+        label: 'diveramkt.miscelanious::lang.testmonial.image'
+        mode: image
+        imageWidth: '150'
+        useCaption: true
+        thumbOptions:
+            mode: crop
+            extension: auto
+        span: right
+        type: fileupload
     enabled:
         label: 'diveramkt.miscelanious::lang.testmonial.enabled'
         span: auto

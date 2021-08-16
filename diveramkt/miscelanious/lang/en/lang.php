@@ -2,6 +2,7 @@
     'plugin' => [
         'name' => 'Miscelanious',
         'description' => '',
+        'add_new' => 'Acrescentar novo',
     ],
     'tab' => [
         'company' => 'Empresa',
@@ -15,6 +16,7 @@
         'area_code_comment' => 'DDD,DDI',
         'phone' => 'Telefone',
         'street' => 'Rua/Av.',
+        'opening_hours' => 'Horário de funcionamento',
         'number' => 'Número',
         'addon' => 'Complemento',
         'neighborhood' => 'Bairro',
@@ -29,6 +31,9 @@
         'mobile' => 'Celular',
         'mobile_comment' => 'WhatApp',
         'skype' => 'Skype',
+        'main' => 'Principal',
+        'first_number' => 'O primeiro será o principal',
+        'order' => 'Ordem',
     ],
     'social' => [
         'social_name' => 'Rede Social',
@@ -40,6 +45,16 @@
     ],
     'config' => [
         'miscelanious' => 'Diversos',
+        'description' => 'Cadastro de informações em geral',
+
+        'enabled_http2' => 'Habilitar http2',
+        'redirect_www' => 'Redirect no_www para www',
+        'prefix_subdominio' => 'Prefixos dos Sub domínios',
+        'redirects' => 'Redirecionamentos',
+
+        'disabled' => 'Desabilitado',
+        '301' => '301 - Permanente',
+        '302' => '302 - Temporário',
     ],
     'testmonial' => [
         'name' => 'Nome',
@@ -60,6 +75,7 @@
         'info_comment' => 'Operadora do número (Vivo, Claro, Oi, etc).',
         'manage_phones' => 'Gerenciar Telefones',
         'phones' => 'Telefones',
+        'mobiles' => 'Celulares',
         'description' => 'Descrição',
         'description_comment' => 'Um nome para o telefone. Ex.: Para diferenciar telefones de diferentes filiais ou setores da empresa.',
         'area_code' => 'Código de área',

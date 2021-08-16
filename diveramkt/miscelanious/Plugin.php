@@ -1,9 +1,16 @@
 <?php namespace Diveramkt\Miscelanious;
 
 use System\Classes\PluginBase;
+use Str;
+use Validator;
+use Request;
+use System\Models\PluginVersion;
+use Event;
+use RainLab\Translate\Classes\Translator;
 
 class Plugin extends PluginBase
 {
+    public $translator=false, $activeLocale=false, $translate_active=false;
     public function registerComponents()
     {
         return [
@@ -25,6 +32,23 @@ class Plugin extends PluginBase
         ];
     }
 
+    public function registerSettings()
+    {
+        return [
+            'settings' => [
+                'label'       => 'diveramkt.miscelanious::lang.config.miscelanious',
+                'description' => 'diveramkt.miscelanious::lang.config.description',
+                'category'    => 'DiveraMkt',
+                'icon'        => 'icon-cog',
+                'class'       => 'DiveraMkt\Miscelanious\Models\Settings',
+                'order'       => 500,
+                'keywords'    => 'diversos miscelanious diveramkt',
+                // 'permissions' => ['Miscelanious.manage_upload'],
+                'permissions' => [],
+            ]
+        ];
+    }
+
     /**
      * Returns plain PHP functions.
      *
@@ -37,50 +61,114 @@ class Plugin extends PluginBase
             	$search = [' ', '+', '(', ')', '-', '.'];
                 return str_replace($search, '', $string);
             },
-            'phone_link' => function ($string) {
+            'phone_link' => function ($string, $cod='') {
                 // $search = [' ', '+', '(', ')', '-', '.'];
                 // return 'tel:+55'.str_replace($search, '', $string);
-                return 'tel:+55'.preg_replace("/[^0-9]/", "", $string);
+
+                $link='';
+                $link.=$cod.preg_replace("/[^0-9]/", "", $string);
+                if(!strpos("[".$string."]", "+")) $link='+55'.$link;
+                else $link='+'.$link;
+                return 'tel:'.$link;
             },
             'only_numbers' => function ($string) {
                 // $search = [' ', '+', '(', ')', '-', '.'];
                 // return str_replace($search, '', $string);
                 return preg_replace("/[^0-9]/", "", $string);
             },
-            'whats_link' => function ($tel) {
-                $iphone = strpos($_SERVER['HTTP_USER_AGENT'],"iPhone");
-                $android = strpos($_SERVER['HTTP_USER_AGENT'],"Android");
-                $palmpre = strpos($_SERVER['HTTP_USER_AGENT'],"webOS");
-                $berry = strpos($_SERVER['HTTP_USER_AGENT'],"BlackBerry");
-                $ipod = strpos($_SERVER['HTTP_USER_AGENT'],"iPod");
+            'whats_link' => function ($tel, $msg=false) {
+                if(isset($_SERVER['HTTP_USER_AGENT'])){
+                    $iphone = strpos($_SERVER['HTTP_USER_AGENT'],"iPhone");
+                    $android = strpos($_SERVER['HTTP_USER_AGENT'],"Android");
+                    $palmpre = strpos($_SERVER['HTTP_USER_AGENT'],"webOS");
+                    $berry = strpos($_SERVER['HTTP_USER_AGENT'],"BlackBerry");
+                    $ipod = strpos($_SERVER['HTTP_USER_AGENT'],"iPod");
 
-                if ($iphone || $android || $palmpre || $ipod || $berry == true) {
-                    $link='https://api.whatsapp.com/send?phone=55';
-                } else {
-                    $link='https://web.whatsapp.com/send?phone=55';
-                }
-                return $link.preg_replace("/[^0-9]/", "", $tel);
+                    $extra=''; if(!strpos("[".$tel."]", "+")) $extra='55';
+
+                    if ($iphone || $android || $palmpre || $ipod || $berry == true) {
+                        $link='https://api.whatsapp.com/send?phone='.$extra;
+                    } else {
+                        $link='https://web.whatsapp.com/send?phone='.$extra;
+                    }
+                    $link=$link.preg_replace("/[^0-9]/", "", $tel);
+                    if($msg) $link.='&text='.$msg;
+                    return $link;
+                }else return $tel;
             },
             'whats_share' => function ($text) {
-                $iphone = strpos($_SERVER['HTTP_USER_AGENT'],"iPhone");
-                $android = strpos($_SERVER['HTTP_USER_AGENT'],"Android");
-                $palmpre = strpos($_SERVER['HTTP_USER_AGENT'],"webOS");
-                $berry = strpos($_SERVER['HTTP_USER_AGENT'],"BlackBerry");
-                $ipod = strpos($_SERVER['HTTP_USER_AGENT'],"iPod");
-                if ($iphone || $android || $palmpre || $ipod || $berry == true) {
-                    $link='https://api.whatsapp.com/send';
-                } else {
-                    $link='https://web.whatsapp.com/send';
-                }
-                
-                return $link.'/?text='.$text;
+                if(isset($_SERVER['HTTP_USER_AGENT'])){
+                    $iphone = strpos($_SERVER['HTTP_USER_AGENT'],"iPhone");
+                    $android = strpos($_SERVER['HTTP_USER_AGENT'],"Android");
+                    $palmpre = strpos($_SERVER['HTTP_USER_AGENT'],"webOS");
+                    $berry = strpos($_SERVER['HTTP_USER_AGENT'],"BlackBerry");
+                    $ipod = strpos($_SERVER['HTTP_USER_AGENT'],"iPod");
+                    if ($iphone || $android || $palmpre || $ipod || $berry == true) {
+                        $link='https://api.whatsapp.com/send';
+                    } else {
+                        $link='https://web.whatsapp.com/send';
+                    }
+                    
+                    return $link.'/?text='.$text;
+                }else return $text;
             },
             'prep_url' => function($url) {
-                if(!strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")) $url='http://'.$url;
+                // $base = 'http' . ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . str_replace('//', '/', dirname($_SERVER['SCRIPT_NAME']) . '/');
+
+                $base = 'http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://' . Request::server('HTTP_HOST') . str_replace('//', '/', dirname(Request::server('SCRIPT_NAME')) . '/');
+
+                // if(!strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")){
+                //     $veri=str_replace('www.','',$_SERVER['HTTP_HOST']. str_replace('//', '/', dirname($_SERVER['SCRIPT_NAME'])));
+                //     if(!strpos("[".$url."]", ".") && !strpos("[".$veri."]", "https://")){
+                //         $url='http' . ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 's' : '') . '://www.'.str_replace(array('//','\/'),array('/','/'),$veri.'/'.$url);
+                //     }else $url='http://'.$url;
+                // }
+
+
+                if(!strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")){
+                    $veri=str_replace('www.','',Request::server('HTTP_HOST'). str_replace('//', '/', dirname(Request::server('SCRIPT_NAME'))));
+                    if(!strpos("[".$url."]", ".") && !strpos("[".$veri."]", "https://")){
+                        $url='http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://www.'.str_replace(array('//','\/'),array('/','/'),$veri.'/'.$url);
+                    }else $url='http://'.$url;
+                }
+
+
+                return str_replace('//www.','//',$url);
+            },
+            // 'canonical_url' => function($padrao=''){
+            //     $base=$_SERVER['HTTP_HOST'] . str_replace('//', '/', dirname($_SERVER['SCRIPT_NAME']));
+            //     $base_=$base;
+            //     if(!strpos("[".$base_."]", ".october")) $base=$padrao;
+
+            //     if(isset($_SERVER['REDIRECT_URL'])) $base.=$_SERVER['REDIRECT_URL'];
+            //     elseif(isset($_SERVER['REQUEST_URI'])) $base.=$_SERVER['REQUEST_URI'];
+
+            //     $base=str_replace('//','/',$base);
+
+            //     if(strpos("[".$base_."]", ".october")){
+            //         $base='http' . ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 's' : '') . '://'.$base;
+            //     }else{
+            //         if(!strpos("[".$base."]", "www.")){
+            //             $base='https://www.'.$base;
+            //         }else $base='https://'.$base;
+            //     }
+
+            //     return str_replace('\\', '', $base);
+            // },
+            'canonical_url' => function($url=''){
+                // $url=Request::url('/');
+                if($this->isTranslate()){
+                    $translator=\RainLab\Translate\Classes\Translator::instance();
+                    $lang=$translator->getLocale();
+                    if((strstr($url.' ', '/'.$lang.' '))) $url=str_replace('/'.$lang.' ', '', $url.' ');
+                    elseif((strstr($url.'/', '/'.$lang.'/'))) $url=str_replace('/'.$lang.'/', '/', $url.'/');
+                }
                 return $url;
             },
             'target' => function($link){
-                if(!strpos("[".$link."]", $_SERVER['HTTP_HOST'])) return 'target="_blank"';
+                $url = 'http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://' . Request::server('HTTP_HOST');
+                $link=str_replace('//www.','//',$link); $url=str_replace('//www.','//',$url);
+                if(!strpos("[".$link."]", $url)) return 'target="_blank"';
                 else return 'target="_parent"';
             },
             'video_embed' => function($url, $autoplay=0, $controls=1) {
@@ -150,18 +238,19 @@ class Plugin extends PluginBase
                 return false;
             },
             'create_slug' => function($string) {
-                $table = array(
-                    'Š'=>'S', 'š'=>'s', 'Đ'=>'Dj', 'đ'=>'dj', 'Ž'=>'Z', 'ž'=>'z', 'Č'=>'C', 'č'=>'c', 'Ć'=>'C', 'ć'=>'c',
-                    'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A', 'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E',
-                    'Ê'=>'E', 'Ë'=>'E', 'Ì'=>'I', 'Í'=>'I', 'Î'=>'I', 'Ï'=>'I', 'Ñ'=>'N', 'Ò'=>'O', 'Ó'=>'O', 'Ô'=>'O',
-                    'Õ'=>'O', 'Ö'=>'O', 'Ø'=>'O', 'Ù'=>'U', 'Ú'=>'U', 'Û'=>'U', 'Ü'=>'U', 'Ý'=>'Y', 'Þ'=>'B', 'ß'=>'Ss',
-                    'à'=>'a', 'á'=>'a', 'â'=>'a', 'ã'=>'a', 'ä'=>'a', 'å'=>'a', 'æ'=>'a', 'ç'=>'c', 'è'=>'e', 'é'=>'e',
-                    'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i', 'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ò'=>'o', 'ó'=>'o',
-                    'ô'=>'o', 'õ'=>'o', 'ö'=>'o', 'ø'=>'o', 'ù'=>'u', 'ú'=>'u', 'û'=>'u', 'ý'=>'y', 'ý'=>'y', 'þ'=>'b',
-                    'ÿ'=>'y', 'Ŕ'=>'R', 'ŕ'=>'r', '/' => '-', ' ' => '-'
-                );
-                $stripped = preg_replace(array('/\s{2,}/', '/[\t\n]/'), ' ', $string);
-                return strtolower(strtr($string, $table));
+                // $table = array(
+                //     'Š'=>'S', 'š'=>'s', 'Đ'=>'Dj', 'đ'=>'dj', 'Ž'=>'Z', 'ž'=>'z', 'Č'=>'C', 'č'=>'c', 'Ć'=>'C', 'ć'=>'c',
+                //     'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A', 'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E',
+                //     'Ê'=>'E', 'Ë'=>'E', 'Ì'=>'I', 'Í'=>'I', 'Î'=>'I', 'Ï'=>'I', 'Ñ'=>'N', 'Ò'=>'O', 'Ó'=>'O', 'Ô'=>'O',
+                //     'Õ'=>'O', 'Ö'=>'O', 'Ø'=>'O', 'Ù'=>'U', 'Ú'=>'U', 'Û'=>'U', 'Ü'=>'U', 'Ý'=>'Y', 'Þ'=>'B', 'ß'=>'Ss',
+                //     'à'=>'a', 'á'=>'a', 'â'=>'a', 'ã'=>'a', 'ä'=>'a', 'å'=>'a', 'æ'=>'a', 'ç'=>'c', 'è'=>'e', 'é'=>'e',
+                //     'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i', 'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ò'=>'o', 'ó'=>'o',
+                //     'ô'=>'o', 'õ'=>'o', 'ö'=>'o', 'ø'=>'o', 'ù'=>'u', 'ú'=>'u', 'û'=>'u', 'ý'=>'y', 'ý'=>'y', 'þ'=>'b',
+                //     'ÿ'=>'y', 'Ŕ'=>'R', 'ŕ'=>'r', '/' => '-', ' ' => '-', ',' => '', ':' => '-'
+                // );
+                // $stripped = preg_replace(array('/\s{2,}/', '/[\t\n]/'), ' ', $string);
+                // return strtolower(strtr($string, $table));
+                return Str::slug(strip_tags($string));
             },
             'file_exists_media' => function($string){
                 if(str_replace(' ','',$string) == '' || is_numeric($string)) return false;
@@ -175,9 +264,132 @@ class Plugin extends PluginBase
             },
             'str_replace' => function($string, $busca, $subistituir){
                 return str_replace($busca, $subistituir, $string);
-            }
+            },
+            'urllinkstring' => function( $text ) {
+                $text = ' ' . html_entity_decode( $text );
+    // Full-formed links
+                $text = preg_replace(
+                    '#(((f|ht){1}tps?://)[-a-zA-Z0-9@:%_\+.~\#?&//=]+)#i',
+                    '<a style="text-decoration: underline;" href="\\1" target=_blank>\\1</a>',
+                    $text
+                );
+    // Links without scheme prefix (i.e. http://)
+                $text = preg_replace(
+                    '#([[:space:]()[{}])(www.[-a-zA-Z0-9@:%_\+.~\#?&//=]+)#i',
+                    '\\1<a style="text-decoration: underline;" href="http://\\2" target=_blank>\\2</a>',
+                    $text
+                );
+    // E-mail links (mailto)
+                $text = preg_replace(
+                    '#([_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3})#i',
+                    '<a style="text-decoration: underline;" href="mailto:\\1" target=_blank>\\1</a>',
+                    $text
+                );
+
+                return $text;
+            },
+            'strpos' => function($string, $procura){
+                return strpos("[".$string."]", "$procura");
+            },
+            'data_formato' => function($data, $for='%A, %d de %B de %Y'){
+
+                if($this->isTranslate()) $translator=\RainLab\Translate\Classes\Translator::instance();
+                if(!isset($translator) || ($tranlsator->getLocale() == 'pb' || $translator->getLocale() == 'pt-br')) setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
+                // date_default_timezone_set('America/Sao_Paulo');
+
+                if(!$data) $data='today';
+                else $data=date($data);
+                return strftime($for, strtotime($data));
+
+            // return strftime($info, strtotime('today'));
+            // return strftime($info, strtotime($date));
+            // return date($for, mktime($data));
+            // return $data;
+
+            // return end($date2);
+            // return $date->format('Y-m-d H:i:s');
+            // return strftime('%A, %d de %B de %Y', $data);
+                if($for == 'hora_minuto'){
+                    $exp=explode(' ', $data);
+                    $exp=end($exp);
+                    $exp=explode(':', $exp);
+
+                    $retorno='';
+                    if(isset($exp[0])) $retorno.=$exp[0];
+                    if(isset($exp[1])) $retorno.=':'.$exp[1];
+                    if($retorno != '') $retorno=' ás '.$retorno;
+                }else{
+                    $date = new \DateTime($data);
+                    $retorno=$date->format($for);
+                }
+
+                $array1=array(''); $array2=array('');
+                if($for == 'F'){
+                    $array1=array('January','February','March','April','May','June','July','August','September','October','November','December');
+                    $array2=array('Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro');
+                }elseif($for == 'M'){
+                    $array1=array('Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec');
+                    $array2=array('Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez');
+                }
+                return str_replace($array1, $array2, $retorno);
+
+            // https://docs.microsoft.com/pt-br/dotnet/standard/base-types/standard-date-and-time-format-strings
+            // $date = new \DateTime($data);
+            // $idioma = new \CultureInfo("pt-BR");
+            // $retorno=$date.ToString($for, $idioma);
+                // return $retorno;
+            },
+
+            'get_translate' => function($translate=false, $parent=false, $get=false){
+                if(!$this->isTranslate()) return $translate;
+                if(!$this->translator){
+                    $this->translator = Translator::instance();
+                    $this->activeLocale = $this->translator->getLocale();
+                }
+
+                if(!$translate) return;
+                if(!$this->translate_active || (isset($translate->translations) && count($translate->translations) > 0)){
+                    foreach ($translate->translations as $key => $value) {
+                        if($value->locale!=$this->activeLocale) continue;
+                        $this->translate_active=$value;
+                    }
+                }
+
+                if(isset($this->translate_active['attribute_data']) && !empty($this->translate_active['attribute_data'])){
+                    $trans=json_decode($this->translate_active['attribute_data']);
+                    if(!$parent){
+                        foreach ($trans as $key => $value) {
+                            if(isset($translate->$key)) $translate->$key=$value; 
+                        }
+                        return $translate;
+                    }elseif($get && isset($trans->$parent->$get)){
+                        if($trans->$parent->$get) return $trans->$parent->$get;
+                        elseif(isset($translate->$parent[$get])) return $translate->$parent[$get];
+                    }elseif(!$get && isset($trans->$parent)){
+                        $retorno=[];
+
+                        foreach ($trans->$parent as $key => $value) {
+                            if(!empty($value)) $retorno[$key]=$value;
+                            else $retorno[$key]=$translate->$parent[$key];
+                        }
+                        return $retorno;
+                        // if($trans->$parent) return $trans->$parent;
+                        // elseif(isset($translate->$parent)) return $translate->$parent;
+                    }
+                }elseif($parent){
+                    if(isset($translate->$parent[$get])) return $translate->$parent[$get];
+                    elseif(isset($translate->$parent)) return $translate->$parent;
+                }
+                // return false;
+                return $translate;
+            },
 
         ];
+    }
+
+    public function isTranslate(){
+        $plugins=new PluginVersion();
+        return class_exists('\RainLab\Translate\Classes\Translator') && class_exists('\RainLab\Translate\Models\Message') && $plugins->where('code','RainLab.Translate')->ApplyEnabled()->count();
     }
 
     /**
@@ -200,4 +412,209 @@ class Plugin extends PluginBase
             'filters'   => $filters,
         ];
     }
+
+    public function boot(){
+        if($this->isTranslate()){
+            Event::listen('cms.page.beforeDisplay', function($controller, $url, $page) {
+                $translator=\RainLab\Translate\Classes\Translator::instance();
+                $controller->vars['code_lang']=$translator->getLocale();
+            });
+            
+            \Arcane\Seo\Models\Settings::extend(function($model) {
+                $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+                if (!$model->propertyExists('translatable')) $model->addDynamicProperty('translatable', []);
+                $model->translatable = ['og_locale'];
+            });
+        }
+        $this->validacoes();
+        $class=get_declared_classes();
+
+        $settings = \Diveramkt\Miscelanious\Models\Settings::instance();
+        $config=[];
+        // $config['base_url'] = str_replace('\/','/','http' . ( Request::server('HTTPS') == 'on' ? 's' : '') . '://' . Request::server('HTTP_HOST') . str_replace('//', '/', dirname(Request::server('SCRIPT_NAME')) . '/'));
+        $config['base_url']=url('/');
+
+        if(Request::server('HTTPS') == 'on' || $settings['redirect_https']){
+            $pos = strpos($config['base_url'], 'https:');
+            if ($pos === false) {
+                header("HTTP/1.1 302 Moved Temporary");
+                header("Location:".str_replace('http:','https:',Request::url()));
+                exit();
+            }
+        }
+        
+        $veri='';
+        if(Request::server('DOCUMENT_ROOT')) $veri.=' '.Request::server('DOCUMENT_ROOT').' ';
+        if(Request::server('CONTEXT_DOCUMENT_ROOT')) $veri.=' '.Request::server('CONTEXT_DOCUMENT_ROOT').' ';
+
+        if(isset($settings['redirect_www']) && $settings['redirect_www']
+            && (!strpos("[".$veri."]", "C:/") || !strpos("[".$veri."]", "xampp/") || !strpos("[".$veri."]", ".october") || !strpos("[".$veri."]", "public_html"))
+        ){
+
+            $red=$settings['redirect_www'];
+
+
+        $pos = strpos($config['base_url'], 'www');
+        if ($pos === false) {
+
+            $redirecionar=true;
+            if(str_replace(' ','',$settings['sub_dominios']) != ''){
+
+                $subs = preg_replace('/[\n|\r|\n\r|\r\n]{2,}/',',', $settings['sub_dominios']);
+                $subs = preg_replace("/\r?\n/",',', $subs);
+                $subs=explode(',', str_replace(';', ',', $subs));
+
+                if(count($subs) > 0){
+                    foreach ($subs as $key => $sub) {
+                        if(strpos("[".$config['base_url']."]", "http://".$sub) || strpos("[".$config['base_url']."]", "https://".$sub)) $redirecionar=false; 
+                    }
+                }
+
+            }
+
+            if($redirecionar){
+                // $url=(@Request::server('HTTPS') == 'on' ? 'https://' : 'http://').'www.'.Request::server('SERVER_NAME').Request::server('REQUEST_URI');
+                $url='http://www.'.Request::server('SERVER_NAME').Request::server('REQUEST_URI');
+
+                header("HTTP/1.1 ".$red." Moved Permanently");
+                header("Location:".$url);
+                exit();
+            }
+
+        }
+    }
+
+
+
+
+    if(in_array('RainLab\Translate\Plugin', $class) || in_array('RainLab\Translate\Classes\Translator', $class)){
+
+        \Diveramkt\Miscelanious\Models\Company::extend(function($model) {
+            if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+            $model->translatable = ['name','city','neighborhood','street','addon','number','state','opening_hours','mobiles','phones'];
+        });
+
+        \Diveramkt\Miscelanious\Models\Testmonial::extend(function($model) {
+            if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+            $model->translatable = ['name','position','testmonial','image'];
+        });
+
+        \Diveramkt\Miscelanious\Models\Contact::extend(function($model) {
+            if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+            $model->translatable = ['description','value'];
+        });
+
+        \Diveramkt\Miscelanious\Models\Phone::extend(function($model) {
+            if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+            $model->translatable = ['area_code','description','info'];
+        });
+
+        \Diveramkt\Miscelanious\Models\Social::extend(function($model) {
+            if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+            $model->translatable = ['description'];
+        });
+
+    }
+}
+
+
+public function validacoes(){
+
+    Validator::extend('cnpj', function($attribute, $value, $parameters) {
+        $cnpj = preg_replace('/[^0-9]/', '', (string) $value);
+
+    // Valida tamanho
+        if (strlen($cnpj) != 14)
+            return false;
+
+    // Verifica se todos os digitos são iguais
+        if (preg_match('/(\d)\1{13}/', $cnpj))
+            return false;   
+
+    // Valida primeiro dígito verificador
+        for ($i = 0, $j = 5, $soma = 0; $i < 12; $i++)
+        {
+            $soma += $cnpj[$i] * $j;
+            $j = ($j == 2) ? 9 : $j - 1;
+        }
+
+        $resto = $soma % 11;
+
+        if ($cnpj[12] != ($resto < 2 ? 0 : 11 - $resto))
+            return false;
+
+    // Valida segundo dígito verificador
+        for ($i = 0, $j = 6, $soma = 0; $i < 13; $i++)
+        {
+            $soma += $cnpj[$i] * $j;
+            $j = ($j == 2) ? 9 : $j - 1;
+        }
+
+        $resto = $soma % 11;
+
+        return $cnpj[13] == ($resto < 2 ? 0 : 11 - $resto);
+    });
+
+    Validator::extend('cpf', function($attribute, $value, $parameters) {
+             // Extrai somente os números
+        $cpf = preg_replace( '/[^0-9]/is', '', $value );
+
+    // Verifica se foi informado todos os digitos corretamente
+        if (strlen($cpf) != 11) {
+            return false;
+        }
+
+    // Verifica se foi informada uma sequência de digitos repetidos. Ex: 111.111.111-11
+        if (preg_match('/(\d)\1{10}/', $cpf)) {
+            return false;
+        }
+
+    // Faz o calculo para validar o CPF
+        for ($t = 9; $t < 11; $t++) {
+            for ($d = 0, $c = 0; $c < $t; $c++) {
+                $d += $cpf[$c] * (($t + 1) - $c);
+            }
+            $d = ((10 * $d) % 11) % 10;
+            if ($cpf[$c] != $d) {
+                return false;
+            }
+        }
+        return true;
+    });
+
+
+    Validator::extend('data', function($attribute, $value, $parameters) {
+             $data = explode("/","$value"); // fatia a string $dat em pedados, usando / como referência
+             $d = $data[0];
+             $m = $data[1];
+             $y = $data[2];
+
+    // verifica se a data é válida!
+    // 1 = true (válida)
+    // 0 = false (inválida)
+             $res = checkdate($m,$d,$y);
+             return $res;
+             if ($res == 1){
+                 echo "data ok!";
+             } else {
+                 echo "data inválida!";
+             }
+         });
+
+
+    Validator::extend('phone', function($attribute, $value, $parameters) {
+        $telefone= trim(str_replace('/', '', str_replace(' ', '', str_replace('-', '', str_replace(')', '', str_replace('(', '', $value))))));
+
+        $regexTelefone = "^[0-9]{11}$";
+
+    $regexCel = '/[0-9]{2}[6789][0-9]{3,4}[0-9]{4}/'; // Regex para validar somente celular
+    if (preg_match($regexTelefone, $telefone) or preg_match($regexCel, $telefone)) {
+        return true;
+    }else{
+        return false;
+    }
+});
+}
+
+
 }

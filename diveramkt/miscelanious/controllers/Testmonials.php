@@ -20,4 +20,17 @@ class Testmonials extends Controller
         parent::__construct();
         BackendMenu::setContext('Diveramkt.Miscelanious', 'miscelanious', 'menu-testmonials');
     }
+
+    public function reorderExtendQuery($query)
+    {
+        $query->orderBy('sort_order', 'desc');
+        return $query;
+    }
+
+    public function listExtendQuery($query)
+    {
+        $query->orderBy('sort_order', 'desc');
+        return $query;
+    }
+
 }

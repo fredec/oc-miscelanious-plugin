@@ -14,3 +14,10 @@ columns:
         type: text
         searchable: true
         sortable: true
+    main:
+        label: 'diveramkt.miscelanious::lang.company.main'
+        type: partial
+        path: ~/plugins/diveramkt/miscelanious/models/_column_yesno.htm
+    sort_order:
+        label: 'diveramkt.miscelanious::lang.company.order'
+        type: text

@@ -9,11 +9,21 @@ use Detection\MobileDetect as Mobile_Detect;
 class Company extends Model
 {
     use \October\Rain\Database\Traits\Validation;
+    use \October\Rain\Database\Traits\Sortable;
     
+    public $implement = array();
+    public $translatable = array();
+
+    // \Diveramkt\Miscelanious\Models\Company::extend(function($model) {
+    //     $model->implement = ['RainLab.Translate.Behaviors.TranslatableModel'];
+    //     $model->translatable = ['name','city'];
+    // });
+
     /**
      * @var array Validation rules
      */
     public $rules = [
+        'name' => 'required',
     ];
 
     public $jsonable = ['mobiles','phones'];
@@ -65,7 +75,7 @@ class Company extends Model
             $this->device = 'mobile';
             return true;
         }else
-            return false;
+        return false;
     }
 
     public function getPhonelinkAttribute()
