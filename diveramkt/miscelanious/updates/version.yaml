@@ -47,4 +47,10 @@
     - builder_table_update_diveramkt_miscelanious_phones_2.php
 1.0.17:
     - 'Updated table diveramkt_miscelanious_companies'
-    - builder_table_update_diveramkt_miscelanious_companies6.php
+    - builder_table_update_diveramkt_miscelanious_companies_6.php
+1.0.18:
+    - 'Updated table diveramkt_miscelanious_companies'
+    - builder_table_update_diveramkt_miscelanious_companies7.php
+1.0.19:
+    - 'Updated table diveramkt_miscelanious_companies'
+    - builder_table_update_diveramkt_miscelanious_companies_7.php

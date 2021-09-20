@@ -104,9 +104,29 @@ tabs:
                         label: Descrição
                         span: right
                         type: text
+        zipcode:
+            label: 'diveramkt.miscelanious::lang.company.zipcode'
+            span: full
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.address'
+        state:
+            label: 'diveramkt.miscelanious::lang.company.state'
+            span: auto
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.address'
+        city:
+            label: 'diveramkt.miscelanious::lang.company.city'
+            span: auto
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.address'
+        neighborhood:
+            label: 'diveramkt.miscelanious::lang.company.neighborhood'
+            span: auto
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.address'
         street:
             label: 'diveramkt.miscelanious::lang.company.street'
-            span: full
+            span: auto
             type: text
             tab: 'diveramkt.miscelanious::lang.tab.address'
         number:
@@ -119,29 +139,26 @@ tabs:
             span: auto
             type: text
             tab: 'diveramkt.miscelanious::lang.tab.address'
-        neighborhood:
-            label: 'diveramkt.miscelanious::lang.company.neighborhood'
-            span: auto
-            type: text
-            tab: 'diveramkt.miscelanious::lang.tab.address'
-        city:
-            label: 'diveramkt.miscelanious::lang.company.city'
-            span: auto
-            type: text
-            tab: 'diveramkt.miscelanious::lang.tab.address'
-        state:
-            label: 'diveramkt.miscelanious::lang.company.state'
-            span: auto
-            type: text
-            tab: 'diveramkt.miscelanious::lang.tab.address'
-        zipcode:
-            label: 'diveramkt.miscelanious::lang.company.zipcode'
-            span: auto
-            type: text
-            tab: 'diveramkt.miscelanious::lang.tab.address'
         maps_link:
             label: 'diveramkt.miscelanious::lang.company.maps_link'
             span: full
-            type: text
+            size: small
+            type: textarea
             comment: 'diveramkt.miscelanious::lang.company.maps_link_comment'
             tab: 'diveramkt.miscelanious::lang.tab.address'
+        # stateid:
+        #     label: Estado
+        #     nameFrom: titulo
+        #     descriptionFrom: description
+        #     emptyOption: 'Selecionar estado'
+        #     span: auto
+        #     type: relation
+        #     default: 2
+        #     tab: 'diveramkt.miscelanious::lang.tab.address'
+        # cityid:
+        #     label: Cidade
+        #     span: auto
+        #     type: dropdown
+        #     dependsOn: stateid
+        #     # placeholder: 'Selecionar cidade'
+        #     tab: 'diveramkt.miscelanious::lang.tab.address'
