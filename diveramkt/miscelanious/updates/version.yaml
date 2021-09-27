@@ -54,3 +54,15 @@
 1.0.19:
     - 'Updated table diveramkt_miscelanious_companies'
     - builder_table_update_diveramkt_miscelanious_companies_7.php
+1.0.20:
+    - 'Updated table diveramkt_miscelanious_testmonials'
+    - builder_table_update_diveramkt_miscelanious_testmonials_3.php
+1.0.21:
+    - 'Created table diveramkt_miscelanious_parceiros'
+    - builder_table_create_diveramkt_miscelanious_parceiros.php
+1.0.22:
+    - 'Created table diveramkt_miscelanious_equipe_categorias'
+    - builder_table_create_diveramkt_miscelanious_equipe_categorias.php
+1.0.23:
+    - 'Created table diveramkt_miscelanious_equipe'
+    - builder_table_create_diveramkt_miscelanious_equipe.php

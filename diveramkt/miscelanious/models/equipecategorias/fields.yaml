@@ -1,0 +1,25 @@
+fields:
+    enabled:
+        label: Habilitado
+        span: full
+        type: switch
+        default: 1
+    title:
+        label: Título
+        span: full
+        type: text
+    description:
+        label: Descrição
+        size: tiny
+        span: full
+        type: textarea
+tabs:
+    fields:
+        equipe_backend:
+            span: full
+            path: $/diveramkt/miscelanious/controllers/_equipe.htm
+            context:
+                - update
+                - preview
+            type: partial
+            tab: 'diveramkt.miscelanious::lang.equipe.name'

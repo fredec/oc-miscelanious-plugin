@@ -1,0 +1,60 @@
+fields:
+    enabled:
+        label: Habilitado
+        span: full
+        type: switch
+        default: 1
+    name:
+        label: Nome
+        span: auto
+        type: text
+    image:
+        label: Foto
+        mode: image
+        imageWidth: '150'
+        useCaption: true
+        thumbOptions:
+            mode: crop
+            extension: auto
+        span: auto
+        type: fileupload
+    position:
+        label: Posição
+        span: auto
+        type: text
+tabs:
+    fields:
+        links:
+            label: Links
+            prompt: 'Acrescentar novo link'
+            style: default
+            span: full
+            type: repeater
+            tab: Links
+            form:
+                fields:
+                    type:
+                        label: Tipo
+                        options:
+                            facebook: Facebook
+                            twitter: Twitter
+                            instagram: Instagram
+                            linkedin: Linkedin
+                            youtube: Youtube
+                            tiktok: Tiktok
+                            phone: Telefone
+                            whatsapp: Whatsapp
+                            email: Email
+                        showSearch: true
+                        span: auto
+                        type: dropdown
+                    link:
+                        label: Link
+                        span: auto
+                        type: text
+        description:
+            label: Descrição
+            size: large
+            span: full
+            type: richeditor
+            tab: Texto

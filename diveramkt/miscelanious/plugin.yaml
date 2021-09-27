@@ -20,13 +20,19 @@ permissions:
     manage_contacts:
         tab: 'diveramkt.miscelanious::lang.plugin.name'
         label: 'diveramkt.miscelanious::lang.contacts.manage_contacts'
+    manage_parceiros:
+        tab: 'diveramkt.miscelanious::lang.plugin.name'
+        label: 'diveramkt.miscelanious::lang.parceiros.manage'
+    manage_equipe:
+        tab: 'diveramkt.miscelanious::lang.plugin.name'
+        label: 'diveramkt.miscelanious::lang.equipe.manage'
 navigation:
     miscelanious:
         label: 'diveramkt.miscelanious::lang.config.miscelanious'
         url: diveramkt/miscelanious/testmonials
         icon: icon-asterisk
         permissions:
-                    - manage_testmonials
+            - manage_testmonials
         sideMenu:
             menu-testmonials:
                 label: 'diveramkt.miscelanious::lang.testmonial.tesmonials'
@@ -58,3 +64,13 @@ navigation:
                 icon: icon-building
                 permissions:
                     - manage_company
+            miscelanious-parceiros:
+                label: 'diveramkt.miscelanious::lang.parceiros.name'
+                url: diveramkt/miscelanious/parceiros
+                icon: icon-thumbs-up
+                permissions:
+                    - manage_parceiros
+            miscelanious:
+                label: 'diveramkt.miscelanious::lang.equipe.name'
+                url: diveramkt/miscelanious/equipecategorias
+                icon: icon-users

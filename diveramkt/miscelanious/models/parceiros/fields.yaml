@@ -1,0 +1,29 @@
+fields:
+    enabled:
+        label: Habilitado
+        span: full
+        type: switch
+        default: 1
+    title:
+        label: Título
+        span: auto
+        type: text
+    logo:
+        label: Logo
+        mode: image
+        imageWidth: '200'
+        useCaption: true
+        thumbOptions:
+            mode: crop
+            extension: auto
+        span: auto
+        type: fileupload
+    url:
+        label: Url
+        span: auto
+        type: text
+    description:
+        label: Descrição
+        size: tiny
+        span: left
+        type: textarea

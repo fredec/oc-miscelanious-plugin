@@ -1,0 +1,5 @@
+title: Equipecategorias
+nameFrom: title
+modelClass: Diveramkt\Miscelanious\Models\Equipecategorias
+toolbar:
+    buttons: reorder_toolbar

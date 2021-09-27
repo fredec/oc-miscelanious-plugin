@@ -1,0 +1,10 @@
+name: Equipecategorias
+form: $/diveramkt/miscelanious/models/equipecategorias/fields.yaml
+modelClass: Diveramkt\Miscelanious\Models\Equipecategorias
+defaultRedirect: diveramkt/miscelanious/equipecategorias
+create:
+    redirect: 'diveramkt/miscelanious/equipecategorias/update/:id'
+    redirectClose: diveramkt/miscelanious/equipecategorias
+update:
+    redirect: diveramkt/miscelanious/equipecategorias
+    redirectClose: diveramkt/miscelanious/equipecategorias

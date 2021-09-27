@@ -1,0 +1,10 @@
+name: Equipe
+form: $/diveramkt/miscelanious/models/equipe/fields.yaml
+modelClass: Diveramkt\Miscelanious\Models\Equipe
+defaultRedirect: diveramkt/miscelanious/equipe
+create:
+    redirect: 'diveramkt/miscelanious/equipe/update/:id'
+    redirectClose: diveramkt/miscelanious/equipe
+update:
+    redirect: diveramkt/miscelanious/equipe
+    redirectClose: diveramkt/miscelanious/equipe

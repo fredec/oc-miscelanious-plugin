@@ -1,0 +1,10 @@
+name: Parceiros
+form: $/diveramkt/miscelanious/models/parceiros/fields.yaml
+modelClass: Diveramkt\Miscelanious\Models\Parceiros
+defaultRedirect: diveramkt/miscelanious/parceiros
+create:
+    redirect: 'diveramkt/miscelanious/parceiros/update/:id'
+    redirectClose: diveramkt/miscelanious/parceiros
+update:
+    redirect: diveramkt/miscelanious/parceiros
+    redirectClose: diveramkt/miscelanious/parceiros

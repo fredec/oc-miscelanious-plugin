@@ -1,0 +1,12 @@
+equipe_backend:
+    label: Equipe
+    manage:
+        form: $/diveramkt/miscelanious/models/equipe/fields.yaml
+        list: $/diveramkt/miscelanious/models/equipe/columns.yaml
+    view:
+        list: $/diveramkt/miscelanious/models/equipe/columns.yaml
+        toolbarButtons: create|delete|sort
+        # recordUrl: diveramkt/miscelanious/equipe/update/:id
+        defaultSort:
+            column: sort_order
+            direction: desc

@@ -19,6 +19,8 @@ class Plugin extends PluginBase
             'Diveramkt\Miscelanious\Components\Contacts' => 'Contacts',
             'Diveramkt\Miscelanious\Components\SocialProfiles' => 'SocialProfiles',
             'Diveramkt\Miscelanious\Components\Testimonials' => 'Testimonials',
+            'Diveramkt\Miscelanious\Components\Parceiros' => 'Parceiros',
+            'Diveramkt\Miscelanious\Components\Equipe' => 'Equipe',
         ];
     }
     public function registerPageSnippets()

@@ -1,0 +1,15 @@
+list: $/diveramkt/miscelanious/models/equipecategorias/columns.yaml
+modelClass: Diveramkt\Miscelanious\Models\Equipecategorias
+title: Equipecategorias
+noRecordsMessage: 'backend::lang.list.no_records'
+showSetup: true
+showCheckboxes: true
+recordsPerPage: 20
+defaultSort:
+    direction: desc
+    column: sort_order
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'
+recordUrl: 'diveramkt/miscelanious/equipecategorias/update/:id'

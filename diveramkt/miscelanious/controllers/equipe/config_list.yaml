@@ -1,0 +1,15 @@
+list: $/diveramkt/miscelanious/models/equipe/columns.yaml
+modelClass: Diveramkt\Miscelanious\Models\Equipe
+title: Equipe
+noRecordsMessage: 'backend::lang.list.no_records'
+showSetup: true
+showCheckboxes: true
+recordsPerPage: 20
+defaultSort:
+    column: sort_order
+    direction: desc
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'
+recordUrl: 'diveramkt/miscelanious/equipe/update/:id'

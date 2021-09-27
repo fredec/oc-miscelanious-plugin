@@ -1,0 +1,15 @@
+list: $/diveramkt/miscelanious/models/parceiros/columns.yaml
+modelClass: Diveramkt\Miscelanious\Models\Parceiros
+title: Parceiros
+noRecordsMessage: 'backend::lang.list.no_records'
+showSetup: true
+showCheckboxes: true
+recordsPerPage: 20
+defaultSort:
+    column: sort_order
+    direction: desc
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'
+recordUrl: 'diveramkt/miscelanious/parceiros/update/:id'

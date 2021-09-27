@@ -88,4 +88,12 @@
         'manage_contacts' => 'Gerenciar Contatos',
         'contacts' => 'Contatos',
     ],
+    'parceiros' => [
+        'name' => 'Parceiros',
+        'manage' => 'Gerenciar Parceiros',
+    ],
+    'equipe' => [
+        'name' => 'Equipe',
+        'manage' => 'Gerenciar Equipe',
+    ],
 ];

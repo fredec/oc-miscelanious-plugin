@@ -1,0 +1,11 @@
+columns:
+    name:
+        label: Nome
+        type: text
+        searchable: true
+    enabled:
+        label: Habilitado
+        type: switch
+    sort_order:
+        label: Ordem
+        type: number

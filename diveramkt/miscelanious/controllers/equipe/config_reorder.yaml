@@ -1,0 +1,5 @@
+title: Equipe
+nameFrom: name
+modelClass: Diveramkt\Miscelanious\Models\Equipe
+toolbar:
+    buttons: reorder_toolbar

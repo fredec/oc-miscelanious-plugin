@@ -1,0 +1,13 @@
+<div data-control="toolbar">
+	<?php
+	if(isset($this->params[0]) && is_numeric($this->params[0])){
+	?>
+	<a href="<?= Backend::url('diveramkt/miscelanious/equipecategorias/update/'.$this->params[0]) ?>" class="btn btn-primary oc-icon-caret-left"><?= e(trans('backend::lang.form.return_to_list')) ?></a>
+	<?php
+}else{
+?>
+<a href="<?= Backend::url('diveramkt/miscelanious/equipe') ?>" class="btn btn-primary oc-icon-caret-left"><?= e(trans('backend::lang.form.return_to_list')) ?></a>
+<?php	
+}
+?>
+</div>
