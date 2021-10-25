@@ -78,8 +78,8 @@ class Companies extends ComponentBase
 
 		if(count($result) && $this->checkLocais()){
 			foreach ($result as $key => $value) {
-				$result[$key]->state=$value->stateid->sigla;
-				$result[$key]->city=$value->cityid->titulo;
+				if(isset($value->stateid)) $result[$key]->state=$value->stateid->sigla;
+				if(isset($value->cityid)) $result[$key]->city=$value->cityid->titulo;
 			}
 		}
 		

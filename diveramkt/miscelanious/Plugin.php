@@ -126,16 +126,22 @@ class Plugin extends PluginBase
                 //     }else $url='http://'.$url;
                 // }
 
-
                 if(!strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")){
-                    $veri=str_replace('www.','',Request::server('HTTP_HOST'). str_replace('//', '/', dirname(Request::server('SCRIPT_NAME'))));
+                    $veri=Request::server('HTTP_HOST'). str_replace('//', '/', dirname(Request::server('SCRIPT_NAME')));
                     if(!strpos("[".$url."]", ".") && !strpos("[".$veri."]", "https://")){
                         $url='http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://www.'.str_replace(array('//','\/'),array('/','/'),$veri.'/'.$url);
                     }else $url='http://'.$url;
                 }
+                return $url;
 
+                // if(!strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")){
+                //     $veri=str_replace('www.','',Request::server('HTTP_HOST'). str_replace('//', '/', dirname(Request::server('SCRIPT_NAME'))));
+                //     if(!strpos("[".$url."]", ".") && !strpos("[".$veri."]", "https://")){
+                //         $url='http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://www.'.str_replace(array('//','\/'),array('/','/'),$veri.'/'.$url);
+                //     }else $url='http://'.$url;
+                // }
 
-                return str_replace('//www.','//',$url);
+                // return str_replace('//www.','//',$url);
             },
             // 'canonical_url' => function($padrao=''){
             //     $base=$_SERVER['HTTP_HOST'] . str_replace('//', '/', dirname($_SERVER['SCRIPT_NAME']));
@@ -597,11 +603,11 @@ public function validacoes(){
              $res = checkdate($m,$d,$y);
              return $res;
              if ($res == 1){
-                 echo "data ok!";
-             } else {
-                 echo "data inválida!";
-             }
-         });
+               echo "data ok!";
+           } else {
+               echo "data inválida!";
+           }
+       });
 
 
     Validator::extend('phone', function($attribute, $value, $parameters) {
