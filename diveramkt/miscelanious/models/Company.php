@@ -11,8 +11,8 @@ class Company extends Model
     use \October\Rain\Database\Traits\Validation;
     use \October\Rain\Database\Traits\Sortable;
     
-    public $implement = array();
-    public $translatable = array();
+    public $implement = [];
+    public $translatable = [];
 
     // \Diveramkt\Miscelanious\Models\Company::extend(function($model) {
     //     $model->implement = ['RainLab.Translate.Behaviors.TranslatableModel'];

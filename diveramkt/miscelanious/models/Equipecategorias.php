@@ -9,6 +9,9 @@ class Equipecategorias extends Model
 {
     use \October\Rain\Database\Traits\Validation;
     use \October\Rain\Database\Traits\Sortable;
+
+    public $implement = [];
+    public $translatable = [];
     
     /*
      * Disable timestamps by default.
@@ -17,6 +20,11 @@ class Equipecategorias extends Model
     public $timestamps = false;
 
     public $hasMany = [
+        'members' => [
+            'Diveramkt\Miscelanious\Models\Equipe',
+            'order'      => 'sort_order desc',
+            'conditions' => 'enabled = 1',
+        ],
         'equipe' => [
             'Diveramkt\Miscelanious\Models\Equipe',
             'order'      => 'sort_order desc',

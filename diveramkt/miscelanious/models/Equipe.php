@@ -16,6 +16,9 @@ class Equipe extends Model
      */
     public $timestamps = false;
 
+    public $implement = [];
+    public $translatable = [];
+
     public $attachOne = [
         'image' => 'System\Models\File',
     ];

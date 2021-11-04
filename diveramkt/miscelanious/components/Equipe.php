@@ -15,8 +15,8 @@ class Equipe extends ComponentBase
 	}
 
 	public function onRun(){
-		$this->equipe = Equipecategorias::orderBy('sort_order','desc')->enabled()->get();
+		$this->records = $this->equipe = Equipecategorias::orderBy('sort_order','desc')->enabled()->get();
 	}
 
-	public $equipe;
+	public $equipe, $records;
 }

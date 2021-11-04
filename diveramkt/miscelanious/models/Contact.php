@@ -10,8 +10,8 @@ class Contact extends Model
 {
     use \October\Rain\Database\Traits\Validation;
     
-    public $implement = array();
-    public $translatable = array();
+    public $implement = [];
+    public $translatable = [];
     
     /*
      * Disable timestamps by default.

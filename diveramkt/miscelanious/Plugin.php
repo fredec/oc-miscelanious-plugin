@@ -115,54 +115,17 @@ class Plugin extends PluginBase
                 }else return $text;
             },
             'prep_url' => function($url) {
-                // $base = 'http' . ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . str_replace('//', '/', dirname($_SERVER['SCRIPT_NAME']) . '/');
-
-                $base = 'http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://' . Request::server('HTTP_HOST') . str_replace('//', '/', dirname(Request::server('SCRIPT_NAME')) . '/');
-
-                // if(!strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")){
-                //     $veri=str_replace('www.','',$_SERVER['HTTP_HOST']. str_replace('//', '/', dirname($_SERVER['SCRIPT_NAME'])));
-                //     if(!strpos("[".$url."]", ".") && !strpos("[".$veri."]", "https://")){
-                //         $url='http' . ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 's' : '') . '://www.'.str_replace(array('//','\/'),array('/','/'),$veri.'/'.$url);
-                //     }else $url='http://'.$url;
-                // }
+                // $base = 'http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://' . Request::server('HTTP_HOST') . str_replace('//', '/', dirname(Request::server('SCRIPT_NAME')) . '/');
 
                 if(!strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")){
                     $veri=Request::server('HTTP_HOST'). str_replace('//', '/', dirname(Request::server('SCRIPT_NAME')));
                     if(!strpos("[".$url."]", ".") && !strpos("[".$veri."]", "https://")){
-                        $url='http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://www.'.str_replace(array('//','\/'),array('/','/'),$veri.'/'.$url);
+                        // $url='http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://www.'.str_replace(array('//','\/'),array('/','/'),$veri.'/'.$url);
+                        $url='http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://'.str_replace(array('//','\/'),array('/','/'),$veri.'/'.$url);
                     }else $url='http://'.$url;
                 }
                 return $url;
-
-                // if(!strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")){
-                //     $veri=str_replace('www.','',Request::server('HTTP_HOST'). str_replace('//', '/', dirname(Request::server('SCRIPT_NAME'))));
-                //     if(!strpos("[".$url."]", ".") && !strpos("[".$veri."]", "https://")){
-                //         $url='http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://www.'.str_replace(array('//','\/'),array('/','/'),$veri.'/'.$url);
-                //     }else $url='http://'.$url;
-                // }
-
-                // return str_replace('//www.','//',$url);
             },
-            // 'canonical_url' => function($padrao=''){
-            //     $base=$_SERVER['HTTP_HOST'] . str_replace('//', '/', dirname($_SERVER['SCRIPT_NAME']));
-            //     $base_=$base;
-            //     if(!strpos("[".$base_."]", ".october")) $base=$padrao;
-
-            //     if(isset($_SERVER['REDIRECT_URL'])) $base.=$_SERVER['REDIRECT_URL'];
-            //     elseif(isset($_SERVER['REQUEST_URI'])) $base.=$_SERVER['REQUEST_URI'];
-
-            //     $base=str_replace('//','/',$base);
-
-            //     if(strpos("[".$base_."]", ".october")){
-            //         $base='http' . ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 's' : '') . '://'.$base;
-            //     }else{
-            //         if(!strpos("[".$base."]", "www.")){
-            //             $base='https://www.'.$base;
-            //         }else $base='https://'.$base;
-            //     }
-
-            //     return str_replace('\\', '', $base);
-            // },
             'canonical_url' => function($url=''){
                 // $url=Request::url('/');
                 if($this->isTranslate()){
@@ -497,6 +460,16 @@ class Plugin extends PluginBase
 
     if(in_array('RainLab\Translate\Plugin', $class) || in_array('RainLab\Translate\Classes\Translator', $class)){
 
+        \Diveramkt\Miscelanious\Models\Equipe::extend(function($model) {
+            if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+            $model->translatable = ['name','description','position'];
+        });
+
+        \Diveramkt\Miscelanious\Models\Equipecategorias::extend(function($model) {
+            if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+            $model->translatable = ['title','description'];
+        });
+
         \Diveramkt\Miscelanious\Models\Company::extend(function($model) {
             if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
             $model->translatable = ['name','city','neighborhood','street','addon','number','state','opening_hours','mobiles','phones'];
@@ -603,17 +576,18 @@ public function validacoes(){
              $res = checkdate($m,$d,$y);
              return $res;
              if ($res == 1){
-               echo "data ok!";
-           } else {
-               echo "data inválida!";
-           }
-       });
+                 echo "data ok!";
+             } else {
+                 echo "data inválida!";
+             }
+         });
 
 
     Validator::extend('phone', function($attribute, $value, $parameters) {
         $telefone= trim(str_replace('/', '', str_replace(' ', '', str_replace('-', '', str_replace(')', '', str_replace('(', '', $value))))));
 
-        $regexTelefone = "^[0-9]{11}$";
+        // $regexTelefone = "^[0-9]{11}$";
+        $regexTelefone = "/[0-9]{11}/";
 
     $regexCel = '/[0-9]{2}[6789][0-9]{3,4}[0-9]{4}/'; // Regex para validar somente celular
     if (preg_match($regexTelefone, $telefone) or preg_match($regexCel, $telefone)) {
