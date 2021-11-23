@@ -7,6 +7,7 @@ use Request;
 use System\Models\PluginVersion;
 use Event;
 use RainLab\Translate\Classes\Translator;
+use Diveramkt\Miscelanious\Classes\Functions;
 
 class Plugin extends PluginBase
 {
@@ -64,14 +65,7 @@ class Plugin extends PluginBase
                 return str_replace($search, '', $string);
             },
             'phone_link' => function ($string, $cod='') {
-                // $search = [' ', '+', '(', ')', '-', '.'];
-                // return 'tel:+55'.str_replace($search, '', $string);
-
-                $link='';
-                $link.=$cod.preg_replace("/[^0-9]/", "", $string);
-                if(!strpos("[".$string."]", "+")) $link='+55'.$link;
-                else $link='+'.$link;
-                return 'tel:'.$link;
+                return Functions::phone_link($string, $cod);
             },
             'only_numbers' => function ($string) {
                 // $search = [' ', '+', '(', ')', '-', '.'];
@@ -79,52 +73,13 @@ class Plugin extends PluginBase
                 return preg_replace("/[^0-9]/", "", $string);
             },
             'whats_link' => function ($tel, $msg=false) {
-                if(isset($_SERVER['HTTP_USER_AGENT'])){
-                    $iphone = strpos($_SERVER['HTTP_USER_AGENT'],"iPhone");
-                    $android = strpos($_SERVER['HTTP_USER_AGENT'],"Android");
-                    $palmpre = strpos($_SERVER['HTTP_USER_AGENT'],"webOS");
-                    $berry = strpos($_SERVER['HTTP_USER_AGENT'],"BlackBerry");
-                    $ipod = strpos($_SERVER['HTTP_USER_AGENT'],"iPod");
-
-                    $extra=''; if(!strpos("[".$tel."]", "+")) $extra='55';
-
-                    if ($iphone || $android || $palmpre || $ipod || $berry == true) {
-                        $link='https://api.whatsapp.com/send?phone='.$extra;
-                    } else {
-                        $link='https://web.whatsapp.com/send?phone='.$extra;
-                    }
-                    $link=$link.preg_replace("/[^0-9]/", "", $tel);
-                    if($msg) $link.='&text='.$msg;
-                    return $link;
-                }else return $tel;
+                return Functions::whats_link($tel, $msg);
             },
             'whats_share' => function ($text) {
-                if(isset($_SERVER['HTTP_USER_AGENT'])){
-                    $iphone = strpos($_SERVER['HTTP_USER_AGENT'],"iPhone");
-                    $android = strpos($_SERVER['HTTP_USER_AGENT'],"Android");
-                    $palmpre = strpos($_SERVER['HTTP_USER_AGENT'],"webOS");
-                    $berry = strpos($_SERVER['HTTP_USER_AGENT'],"BlackBerry");
-                    $ipod = strpos($_SERVER['HTTP_USER_AGENT'],"iPod");
-                    if ($iphone || $android || $palmpre || $ipod || $berry == true) {
-                        $link='https://api.whatsapp.com/send';
-                    } else {
-                        $link='https://web.whatsapp.com/send';
-                    }
-                    
-                    return $link.'/?text='.$text;
-                }else return $text;
+                return Functions::whats_share($text);
             },
             'prep_url' => function($url) {
-                // $base = 'http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://' . Request::server('HTTP_HOST') . str_replace('//', '/', dirname(Request::server('SCRIPT_NAME')) . '/');
-
-                if(!strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")){
-                    $veri=Request::server('HTTP_HOST'). str_replace('//', '/', dirname(Request::server('SCRIPT_NAME')));
-                    if(!strpos("[".$url."]", ".") && !strpos("[".$veri."]", "https://")){
-                        // $url='http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://www.'.str_replace(array('//','\/'),array('/','/'),$veri.'/'.$url);
-                        $url='http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://'.str_replace(array('//','\/'),array('/','/'),$veri.'/'.$url);
-                    }else $url='http://'.$url;
-                }
-                return $url;
+                return Functions::prep_url($url);
             },
             'canonical_url' => function($url=''){
                 // $url=Request::url('/');
@@ -137,10 +92,7 @@ class Plugin extends PluginBase
                 return $url;
             },
             'target' => function($link){
-                $url = 'http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://' . Request::server('HTTP_HOST');
-                $link=str_replace('//www.','//',$link); $url=str_replace('//www.','//',$url);
-                if(!strpos("[".$link."]", $url)) return 'target="_blank"';
-                else return 'target="_parent"';
+                return Functions::target($link);
             },
             'video_embed' => function($url, $autoplay=0, $controls=1) {
                 if(strpos("[".$url."]", "youtu.be/") || strpos("[".$url."]", "youtube")){
@@ -576,11 +528,11 @@ public function validacoes(){
              $res = checkdate($m,$d,$y);
              return $res;
              if ($res == 1){
-                 echo "data ok!";
-             } else {
-                 echo "data inválida!";
-             }
-         });
+               echo "data ok!";
+           } else {
+               echo "data inválida!";
+           }
+       });
 
 
     Validator::extend('phone', function($attribute, $value, $parameters) {

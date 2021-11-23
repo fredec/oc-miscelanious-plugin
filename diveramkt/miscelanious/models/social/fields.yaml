@@ -21,9 +21,11 @@ fields:
             tiktok: Tiktok
             youtube: Youtube
             whatsapp: WhatsApp
+            phone: Telefone
             skype: Skype
             flickr: Flickr
             spotify: Spotify
+            email: Email
         span: auto
         required: 1
         type: dropdown

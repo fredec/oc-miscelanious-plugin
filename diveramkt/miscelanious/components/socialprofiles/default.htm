@@ -4,7 +4,7 @@
 <ul class="social">
 	{% for profile in profiles %}
 	<li class="{{ profile.name }}">
-		<a href="{{ profile.link|prep_url }}" title="{{ profile.description}}" target="_blank">
+		<a href="{{ profile.url }}" title="{{ profile.description}}" target="_blank">
 			<!-- {{profile.name == 'facebook'?'-f':''}} -->
 			<i class="fa fa-{{ profile.name }}"></i>
 		</a>
