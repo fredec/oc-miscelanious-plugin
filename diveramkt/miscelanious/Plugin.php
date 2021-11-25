@@ -307,6 +307,10 @@ class Plugin extends PluginBase
                 return $translate;
             },
 
+            'formatValue' => function($value){
+                return Functions::formatValue($value);
+            },
+
         ];
     }
 

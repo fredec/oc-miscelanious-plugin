@@ -69,4 +69,10 @@ class Functions
     return 'tel:'.$link;
   }
 
+  public static function formatValue($number=false){
+    $number=preg_replace("/[^0-9.,]/", "", $number);
+    $number=floatval(str_replace(',', '.', $number));
+    return number_format($number, 2, ',', '.');
+  }
+
 }
