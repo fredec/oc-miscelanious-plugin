@@ -47,7 +47,7 @@ class Plugin extends PluginBase
                 'order'       => 500,
                 'keywords'    => 'diversos miscelanious diveramkt',
                 // 'permissions' => ['Miscelanious.manage_upload'],
-                'permissions' => [],
+                'permissions' => ['manage_miscelanious_config'],
             ]
         ];
     }
@@ -309,6 +309,13 @@ class Plugin extends PluginBase
 
             'formatValue' => function($value){
                 return Functions::formatValue($value);
+            },
+
+            'limit_word' => function($string, $limit=10, $com='...'){
+                $exp=array_filter(explode(' ', $string));
+                $return=implode(' ', array_splice($exp, 0, $limit));
+                if(count($exp)>$limit) $return.=$com;
+                return $return;
             },
 
         ];

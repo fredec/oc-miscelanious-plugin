@@ -44,6 +44,7 @@
         'icon_comment' => 'Opcional quando o layout utiliza Font-Awesome.',
     ],
     'config' => [
+        'manage' => 'Gerenciar configurações do diversos',
         'miscelanious' => 'Diversos',
         'description' => 'Cadastro de informações em geral',
 

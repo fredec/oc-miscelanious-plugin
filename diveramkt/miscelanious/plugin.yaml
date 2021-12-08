@@ -26,6 +26,9 @@ permissions:
     manage_equipe:
         tab: 'diveramkt.miscelanious::lang.plugin.name'
         label: 'diveramkt.miscelanious::lang.equipe.manage'
+    manage_miscelanious_config:
+        tab: 'diveramkt.miscelanious::lang.plugin.name'
+        label: 'diveramkt.miscelanious::lang.config.manage'
 navigation:
     miscelanious:
         label: 'diveramkt.miscelanious::lang.config.miscelanious'
