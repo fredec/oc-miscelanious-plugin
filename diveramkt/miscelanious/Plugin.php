@@ -318,6 +318,10 @@ class Plugin extends PluginBase
                 return $return;
             },
 
+            'strip_tags' => function($text) {
+                return strip_tags($text);
+            },
+
         ];
     }
 
