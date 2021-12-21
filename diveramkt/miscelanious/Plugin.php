@@ -322,6 +322,14 @@ class Plugin extends PluginBase
                 return strip_tags($text);
             },
 
+            'empty_text' => function($text_html){
+                $text=str_replace(' ','',strip_tags($text_html));
+                $conter='a-zA-Z0-9';
+                $text= preg_replace("/[^".$conter."]/", "", $text);
+                if(empty($text)) return 1;
+                else return 0;
+            },
+
         ];
     }
 

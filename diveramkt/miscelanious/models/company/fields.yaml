@@ -12,8 +12,10 @@ tabs:
             tab: 'diveramkt.miscelanious::lang.tab.company'
         opening_hours:
             label: 'diveramkt.miscelanious::lang.company.opening_hours'
+            size: small
             span: right
-            type: text
+            type: richeditor
+            toolbarButtons: 'bold|italic|color'
             tab: 'diveramkt.miscelanious::lang.tab.company'
         social:
             label: 'diveramkt.miscelanious::lang.company.socia'
@@ -146,19 +148,3 @@ tabs:
             type: textarea
             comment: 'diveramkt.miscelanious::lang.company.maps_link_comment'
             tab: 'diveramkt.miscelanious::lang.tab.address'
-        # stateid:
-        #     label: Estado
-        #     nameFrom: titulo
-        #     descriptionFrom: description
-        #     emptyOption: 'Selecionar estado'
-        #     span: auto
-        #     type: relation
-        #     default: 2
-        #     tab: 'diveramkt.miscelanious::lang.tab.address'
-        # cityid:
-        #     label: Cidade
-        #     span: auto
-        #     type: dropdown
-        #     dependsOn: stateid
-        #     # placeholder: 'Selecionar cidade'
-        #     tab: 'diveramkt.miscelanious::lang.tab.address'
