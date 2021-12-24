@@ -338,6 +338,12 @@ class Plugin extends PluginBase
                 } else {
                     return 'dark';
                 }
+            },
+
+            'hex_to_rgba' => function($hex, $opacity = 0.5) {
+                list($r, $g, $b) = sscanf($hex, "#%02x%02x%02x");
+                $rgba = 'rgba('.$r.', '.$g.', '.$g.', '.$opacity.')';
+                return $rgba;
             }
 
         ];
