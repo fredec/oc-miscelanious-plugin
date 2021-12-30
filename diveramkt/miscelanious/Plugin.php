@@ -287,6 +287,22 @@ class Plugin extends PluginBase
                 else return 0;
             },
 
+            'dark_or_light_color' => function($rgb_color) {
+                $rgb = $this->HTMLToRGB($rgb_color);
+                $hsl = $this->RGBToHSL($rgb);
+                if($hsl->lightness > 200) {
+                    return 'light';
+                } else {
+                    return 'dark';
+                }
+            },
+
+            'hex_to_rgba' => function($hex, $opacity = 0.5) {
+                list($r, $g, $b) = sscanf($hex, "#%02x%02x%02x");
+                $rgba = 'rgba('.$r.', '.$g.', '.$g.', '.$opacity.')';
+                return $rgba;
+            }
+
         ];
     }
 
