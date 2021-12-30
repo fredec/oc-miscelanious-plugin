@@ -215,52 +215,13 @@ class Plugin extends PluginBase
                 return strpos("[".$string."]", "$procura");
             },
             'data_formato' => function($data, $for='%A, %d de %B de %Y'){
-
                 if($this->isTranslate()) $translator=\RainLab\Translate\Classes\Translator::instance();
                 if(!isset($translator) || ($tranlsator->getLocale() == 'pb' || $translator->getLocale() == 'pt-br')) setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                 // date_default_timezone_set('America/Sao_Paulo');
 
                 if(!$data) $data='today';
                 else $data=date($data);
-                return strftime($for, strtotime($data));
-
-            // return strftime($info, strtotime('today'));
-            // return strftime($info, strtotime($date));
-            // return date($for, mktime($data));
-            // return $data;
-
-            // return end($date2);
-            // return $date->format('Y-m-d H:i:s');
-            // return strftime('%A, %d de %B de %Y', $data);
-                if($for == 'hora_minuto'){
-                    $exp=explode(' ', $data);
-                    $exp=end($exp);
-                    $exp=explode(':', $exp);
-
-                    $retorno='';
-                    if(isset($exp[0])) $retorno.=$exp[0];
-                    if(isset($exp[1])) $retorno.=':'.$exp[1];
-                    if($retorno != '') $retorno=' ás '.$retorno;
-                }else{
-                    $date = new \DateTime($data);
-                    $retorno=$date->format($for);
-                }
-
-                $array1=array(''); $array2=array('');
-                if($for == 'F'){
-                    $array1=array('January','February','March','April','May','June','July','August','September','October','November','December');
-                    $array2=array('Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro');
-                }elseif($for == 'M'){
-                    $array1=array('Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec');
-                    $array2=array('Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez');
-                }
-                return str_replace($array1, $array2, $retorno);
-
-            // https://docs.microsoft.com/pt-br/dotnet/standard/base-types/standard-date-and-time-format-strings
-            // $date = new \DateTime($data);
-            // $idioma = new \CultureInfo("pt-BR");
-            // $retorno=$date.ToString($for, $idioma);
-                // return $retorno;
+                return utf8_encode(strftime($for, strtotime($data)));
             },
 
             'get_translate' => function($translate=false, $parent=false, $get=false){
@@ -312,14 +273,10 @@ class Plugin extends PluginBase
             },
 
             'limit_word' => function($string, $limit=10, $com='...'){
-                $exp=array_filter(explode(' ', $string));
+                $exp=array_filter(explode(' ', strip_tags($string)));
                 $return=implode(' ', array_splice($exp, 0, $limit));
                 if(count($exp)>$limit) $return.=$com;
                 return $return;
-            },
-
-            'strip_tags' => function($text) {
-                return strip_tags($text);
             },
 
             'empty_text' => function($text_html){
@@ -329,22 +286,6 @@ class Plugin extends PluginBase
                 if(empty($text)) return 1;
                 else return 0;
             },
-
-            'dark_or_light_color' => function($rgb_color) {
-                $rgb = $this->HTMLToRGB($rgb_color);
-                $hsl = $this->RGBToHSL($rgb);
-                if($hsl->lightness > 200) {
-                    return 'light';
-                } else {
-                    return 'dark';
-                }
-            },
-
-            'hex_to_rgba' => function($hex, $opacity = 0.5) {
-                list($r, $g, $b) = sscanf($hex, "#%02x%02x%02x");
-                $rgba = 'rgba('.$r.', '.$g.', '.$g.', '.$opacity.')';
-                return $rgba;
-            }
 
         ];
     }
@@ -588,70 +529,6 @@ public function validacoes(){
     }
 });
 }
-
-
-    function HTMLToRGB($htmlCode)
-    {
-        if($htmlCode[0] == '#')
-        $htmlCode = substr($htmlCode, 1);
-
-        if (strlen($htmlCode) == 3)
-        {
-        $htmlCode = $htmlCode[0] . $htmlCode[0] . $htmlCode[1] . $htmlCode[1] . $htmlCode[2] . $htmlCode[2];
-        }
-
-        $r = hexdec($htmlCode[0] . $htmlCode[1]);
-        $g = hexdec($htmlCode[2] . $htmlCode[3]);
-        $b = hexdec($htmlCode[4] . $htmlCode[5]);
-
-        return $b + ($g << 0x8) + ($r << 0x10);
-    }
-
-    function RGBToHSL($RGB) {
-        $r = 0xFF & ($RGB >> 0x10);
-        $g = 0xFF & ($RGB >> 0x8);
-        $b = 0xFF & $RGB;
-
-        $r = ((float)$r) / 255.0;
-        $g = ((float)$g) / 255.0;
-        $b = ((float)$b) / 255.0;
-
-        $maxC = max($r, $g, $b);
-        $minC = min($r, $g, $b);
-
-        $l = ($maxC + $minC) / 2.0;
-
-        if($maxC == $minC)
-        {
-        $s = 0;
-        $h = 0;
-        }
-        else
-        {
-        if($l < .5)
-        {
-            $s = ($maxC - $minC) / ($maxC + $minC);
-        }
-        else
-        {
-            $s = ($maxC - $minC) / (2.0 - $maxC - $minC);
-        }
-        if($r == $maxC)
-            $h = ($g - $b) / ($maxC - $minC);
-        if($g == $maxC)
-            $h = 2.0 + ($b - $r) / ($maxC - $minC);
-        if($b == $maxC)
-            $h = 4.0 + ($r - $g) / ($maxC - $minC);
-
-        $h = $h / 6.0; 
-        }
-
-        $h = (int)round(255.0 * $h);
-        $s = (int)round(255.0 * $s);
-        $l = (int)round(255.0 * $l);
-
-        return (object) Array('hue' => $h, 'saturation' => $s, 'lightness' => $l);
-    }
 
 
 }

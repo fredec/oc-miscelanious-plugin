@@ -66,3 +66,6 @@
 1.0.23:
     - 'Created table diveramkt_miscelanious_equipe'
     - builder_table_create_diveramkt_miscelanious_equipe.php
+1.0.24:
+    - 'Updated table diveramkt_miscelanious_companies'
+    - builder_table_update_diveramkt_miscelanious_companies_9.php

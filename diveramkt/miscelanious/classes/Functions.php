@@ -75,4 +75,53 @@ class Functions
     return number_format($number, 2, ',', '.');
   }
 
+  // 'data_formato' => function($data, $for='%A, %d de %B de %Y'){
+
+  //   if($this->isTranslate()) $translator=\RainLab\Translate\Classes\Translator::instance();
+  //   if(!isset($translator) || ($tranlsator->getLocale() == 'pb' || $translator->getLocale() == 'pt-br')) setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
+  //               // date_default_timezone_set('America/Sao_Paulo');
+
+  //   if(!$data) $data='today';
+  //   else $data=date($data);
+  //   return utf8_encode(strftime($for, strtotime($data)));
+
+  //           // return strftime($info, strtotime('today'));
+  //           // return strftime($info, strtotime($date));
+  //           // return date($for, mktime($data));
+  //           // return $data;
+
+  //           // return end($date2);
+  //           // return $date->format('Y-m-d H:i:s');
+  //           // return strftime('%A, %d de %B de %Y', $data);
+  //   if($for == 'hora_minuto'){
+  //     $exp=explode(' ', $data);
+  //     $exp=end($exp);
+  //     $exp=explode(':', $exp);
+
+  //     $retorno='';
+  //     if(isset($exp[0])) $retorno.=$exp[0];
+  //     if(isset($exp[1])) $retorno.=':'.$exp[1];
+  //     if($retorno != '') $retorno=' ás '.$retorno;
+  //   }else{
+  //     $date = new \DateTime($data);
+  //     $retorno=$date->format($for);
+  //   }
+
+  //   $array1=array(''); $array2=array('');
+  //   if($for == 'F'){
+  //     $array1=array('January','February','March','April','May','June','July','August','September','October','November','December');
+  //     $array2=array('Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro');
+  //   }elseif($for == 'M'){
+  //     $array1=array('Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec');
+  //     $array2=array('Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez');
+  //   }
+  //   return str_replace($array1, $array2, $retorno);
+
+  //           // https://docs.microsoft.com/pt-br/dotnet/standard/base-types/standard-date-and-time-format-strings
+  //           // $date = new \DateTime($data);
+  //           // $idioma = new \CultureInfo("pt-BR");
+  //           // $retorno=$date.ToString($for, $idioma);
+  //               // return $retorno;
+  // },
+
 }
