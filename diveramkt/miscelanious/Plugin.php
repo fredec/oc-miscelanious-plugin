@@ -215,13 +215,21 @@ class Plugin extends PluginBase
                 return strpos("[".$string."]", "$procura");
             },
             'data_formato' => function($data, $for='%A, %d de %B de %Y'){
+                $replace1=[]; $replace2=[];
                 if($this->isTranslate()) $translator=\RainLab\Translate\Classes\Translator::instance();
-                if(!isset($translator) || ($tranlsator->getLocale() == 'pb' || $translator->getLocale() == 'pt-br')) setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
+                if(!isset($translator) || ($tranlsator->getLocale() == 'pb' || $translator->getLocale() == 'pt-br')){
+                    setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                 // date_default_timezone_set('America/Sao_Paulo');
+
+                    $replace1=array_merge($replace1, ['January','February','March','April','May','June','July','August','September','October','November','December']);
+                    $replace2=array_merge($replace2, ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']);
+                }
 
                 if(!$data) $data='today';
                 else $data=date($data);
-                return utf8_encode(strftime($for, strtotime($data)));
+                $return=utf8_encode(strftime($for, strtotime($data)));
+
+                return str_replace($replace1, $replace2, $return);
             },
 
             'get_translate' => function($translate=false, $parent=false, $get=false){
@@ -371,7 +379,6 @@ class Plugin extends PluginBase
         ){
 
             $red=$settings['redirect_www'];
-
 
         $pos = strpos($config['base_url'], 'www');
         if ($pos === false) {
@@ -524,11 +531,11 @@ public function validacoes(){
              $res = checkdate($m,$d,$y);
              return $res;
              if ($res == 1){
-               echo "data ok!";
-           } else {
-               echo "data inválida!";
-           }
-       });
+                 echo "data ok!";
+             } else {
+                 echo "data inválida!";
+             }
+         });
 
 
     Validator::extend('phone', function($attribute, $value, $parameters) {
