@@ -96,84 +96,12 @@ class Plugin extends PluginBase
                 return Functions::target($link);
             },
             'video_embed' => function($url, $autoplay=0, $controls=1) {
-                if(strpos("[".$url."]", "youtu.be/") || strpos("[".$url."]", "youtube")){
-                    if(strpos("[".$url."]", "&feature")){
-                        preg_match_all("#&feature(.*?)&#s", $url, $result);
-                        if(isset($result[0][0])) $url=str_replace($result[0][0], '&', $url);
-                        else{
-                            $url=explode('&feature', $url);
-                            $url=$url[0];
-                        }
-                    }
-                    $retorno='';
-
-                    if(strpos("[".$url."]", "&")){
-                        $exp=explode('&', $url);
-                        foreach ($exp as $key => $value) {
-                            if($key > 0) $url=str_replace('&'.$value,'', $url);
-                        }
-                    }
-
-                    if(strpos("[".$url."]", "watch?v=")) $retorno=str_replace('/watch?v=', '/embed/', str_replace('&feature=youtu.be','',$url));
-                    elseif(strpos("[".$url."]", "youtu.be/")){
-                        $exp=explode('youtu.be/', $url);
-                        if(isset($exp[1])){
-                            $retorno='https://www.youtube.com/embed/'.$exp[1];
-                        }else $retorno=$url;
-                    }else $retorno=$url;
-
-                    
-                    return $retorno.'?rel=0&controls='.$controls.'&amp;start=1&amp;autoplay='.$autoplay.'&amp;loop=1&amp;background=1';
-                }elseif(strpos("[".$url."]", "vimeo.com")){
-                    $par=explode('/', $url);
-                    return 'https://player.vimeo.com/video/'.end($par).'?autoplay='.$autoplay.'&loop=1&background=1';
-                }
-                return $url;
+                return Functions::video_embed($url, $autoplay, $controls);
             },
             'youtube_thumb' => function($url, $tamanho=1) {
-                $numero = 0;
-                if(strpos("[".$url."]", "embed")){
-                    $exp=explode('/', $url);
-                    $exp=explode('?',end($exp));
-                    $url=array();
-                    $url[0]='v='.$exp[0];
-                }elseif(strpos("[".$url."]", "youtu.be/")){
-                    // https://youtu.be/ftFSKcSubKQ
-                    $url_=explode('/', $url);
-                    $url_=end($url_);
-
-                    $url=array();
-                    $url[0]='v='.$url_;
-                }else{
-                    $url = str_replace('&', '&amp;', $url);
-                    $url = explode('&amp;', $url);
-                }
-                if(isset($url[0])){
-                    if($tamanho == 1){
-                        return 'https://i1.ytimg.com/vi/' . substr(stristr($url[0], 'v='), 2) . '/' . $numero . '.jpg';
-                    }elseif($tamanho == 2){
-                        return 'https://i1.ytimg.com/vi/' . substr(stristr($url[0], 'v='), 2) . '/hqdefault.jpg';
-                    }elseif($tamanho == 3){
-                        return 'https://img.youtube.com/vi/' . substr(stristr($url[0], 'v='), 2) . '/mqdefault.jpg';
-                    }elseif($tamanho == 4){
-                        return 'https://img.youtube.com/vi/' . substr(stristr($url[0], 'v='), 2) . '/maxresdefault.jpg';
-                    }
-                }
-                return false;
+                return Functions::youtube_thumb($url, $tamanho);
             },
             'create_slug' => function($string) {
-                // $table = array(
-                //     'Š'=>'S', 'š'=>'s', 'Đ'=>'Dj', 'đ'=>'dj', 'Ž'=>'Z', 'ž'=>'z', 'Č'=>'C', 'č'=>'c', 'Ć'=>'C', 'ć'=>'c',
-                //     'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A', 'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E',
-                //     'Ê'=>'E', 'Ë'=>'E', 'Ì'=>'I', 'Í'=>'I', 'Î'=>'I', 'Ï'=>'I', 'Ñ'=>'N', 'Ò'=>'O', 'Ó'=>'O', 'Ô'=>'O',
-                //     'Õ'=>'O', 'Ö'=>'O', 'Ø'=>'O', 'Ù'=>'U', 'Ú'=>'U', 'Û'=>'U', 'Ü'=>'U', 'Ý'=>'Y', 'Þ'=>'B', 'ß'=>'Ss',
-                //     'à'=>'a', 'á'=>'a', 'â'=>'a', 'ã'=>'a', 'ä'=>'a', 'å'=>'a', 'æ'=>'a', 'ç'=>'c', 'è'=>'e', 'é'=>'e',
-                //     'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i', 'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ò'=>'o', 'ó'=>'o',
-                //     'ô'=>'o', 'õ'=>'o', 'ö'=>'o', 'ø'=>'o', 'ù'=>'u', 'ú'=>'u', 'û'=>'u', 'ý'=>'y', 'ý'=>'y', 'þ'=>'b',
-                //     'ÿ'=>'y', 'Ŕ'=>'R', 'ŕ'=>'r', '/' => '-', ' ' => '-', ',' => '', ':' => '-'
-                // );
-                // $stripped = preg_replace(array('/\s{2,}/', '/[\t\n]/'), ' ', $string);
-                // return strtolower(strtr($string, $table));
                 return Str::slug(strip_tags($string));
             },
             'file_exists_media' => function($string){
@@ -552,6 +480,69 @@ public function validacoes(){
         return false;
     }
 });
+}
+
+function HTMLToRGB($htmlCode)
+{
+    if($htmlCode[0] == '#')
+        $htmlCode = substr($htmlCode, 1);
+
+    if (strlen($htmlCode) == 3)
+    {
+        $htmlCode = $htmlCode[0] . $htmlCode[0] . $htmlCode[1] . $htmlCode[1] . $htmlCode[2] . $htmlCode[2];
+    }
+
+    $r = hexdec($htmlCode[0] . $htmlCode[1]);
+    $g = hexdec($htmlCode[2] . $htmlCode[3]);
+    $b = hexdec($htmlCode[4] . $htmlCode[5]);
+
+    return $b + ($g << 0x8) + ($r << 0x10);
+}
+
+function RGBToHSL($RGB) {
+    $r = 0xFF & ($RGB >> 0x10);
+    $g = 0xFF & ($RGB >> 0x8);
+    $b = 0xFF & $RGB;
+
+    $r = ((float)$r) / 255.0;
+    $g = ((float)$g) / 255.0;
+    $b = ((float)$b) / 255.0;
+
+    $maxC = max($r, $g, $b);
+    $minC = min($r, $g, $b);
+
+    $l = ($maxC + $minC) / 2.0;
+
+    if($maxC == $minC)
+    {
+        $s = 0;
+        $h = 0;
+    }
+    else
+    {
+        if($l < .5)
+        {
+            $s = ($maxC - $minC) / ($maxC + $minC);
+        }
+        else
+        {
+            $s = ($maxC - $minC) / (2.0 - $maxC - $minC);
+        }
+        if($r == $maxC)
+            $h = ($g - $b) / ($maxC - $minC);
+        if($g == $maxC)
+            $h = 2.0 + ($b - $r) / ($maxC - $minC);
+        if($b == $maxC)
+            $h = 4.0 + ($r - $g) / ($maxC - $minC);
+
+        $h = $h / 6.0; 
+    }
+
+    $h = (int)round(255.0 * $h);
+    $s = (int)round(255.0 * $s);
+    $l = (int)round(255.0 * $l);
+
+    return (object) Array('hue' => $h, 'saturation' => $s, 'lightness' => $l);
 }
 
 

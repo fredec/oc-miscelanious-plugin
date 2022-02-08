@@ -69,3 +69,6 @@
 1.0.24:
     - 'Updated table diveramkt_miscelanious_companies'
     - builder_table_update_diveramkt_miscelanious_companies_9.php
+1.0.25:
+    - 'Updated table diveramkt_miscelanious_testmonials'
+    - builder_table_update_diveramkt_miscelanious_testmonials_4.php

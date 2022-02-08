@@ -75,6 +75,74 @@ class Functions
     return number_format($number, 2, ',', '.');
   }
 
+  public static function video_embed($url, $autoplay=0, $controls=1){
+    if(strpos("[".$url."]", "youtu.be/") || strpos("[".$url."]", "youtube")){
+      if(strpos("[".$url."]", "&feature")){
+        preg_match_all("#&feature(.*?)&#s", $url, $result);
+        if(isset($result[0][0])) $url=str_replace($result[0][0], '&', $url);
+        else{
+          $url=explode('&feature', $url);
+          $url=$url[0];
+        }
+      }
+      $retorno='';
+
+      if(strpos("[".$url."]", "&")){
+        $exp=explode('&', $url);
+        foreach ($exp as $key => $value) {
+          if($key > 0) $url=str_replace('&'.$value,'', $url);
+        }
+      }
+
+      if(strpos("[".$url."]", "watch?v=")) $retorno=str_replace('/watch?v=', '/embed/', str_replace('&feature=youtu.be','',$url));
+      elseif(strpos("[".$url."]", "youtu.be/")){
+        $exp=explode('youtu.be/', $url);
+        if(isset($exp[1])){
+          $retorno='https://www.youtube.com/embed/'.$exp[1];
+        }else $retorno=$url;
+      }else $retorno=$url;
+
+      
+      return $retorno.'?rel=0&controls='.$controls.'&amp;start=1&amp;autoplay='.$autoplay.'&amp;loop=1&amp;background=1';
+    }elseif(strpos("[".$url."]", "vimeo.com")){
+      $par=explode('/', $url);
+      return 'https://player.vimeo.com/video/'.end($par).'?autoplay='.$autoplay.'&loop=1&background=1';
+    }
+    return $url;
+  }
+
+  public static function youtube_thumb($url, $tamanho=1){
+    $numero = 0;
+    if(strpos("[".$url."]", "embed")){
+      $exp=explode('/', $url);
+      $exp=explode('?',end($exp));
+      $url=array();
+      $url[0]='v='.$exp[0];
+    }elseif(strpos("[".$url."]", "youtu.be/")){
+                    // https://youtu.be/ftFSKcSubKQ
+      $url_=explode('/', $url);
+      $url_=end($url_);
+
+      $url=array();
+      $url[0]='v='.$url_;
+    }else{
+      $url = str_replace('&', '&amp;', $url);
+      $url = explode('&amp;', $url);
+    }
+    if(isset($url[0])){
+      if($tamanho == 1){
+        return 'https://i1.ytimg.com/vi/' . substr(stristr($url[0], 'v='), 2) . '/' . $numero . '.jpg';
+      }elseif($tamanho == 2){
+        return 'https://i1.ytimg.com/vi/' . substr(stristr($url[0], 'v='), 2) . '/hqdefault.jpg';
+      }elseif($tamanho == 3){
+        return 'https://img.youtube.com/vi/' . substr(stristr($url[0], 'v='), 2) . '/mqdefault.jpg';
+      }elseif($tamanho == 4){
+        return 'https://img.youtube.com/vi/' . substr(stristr($url[0], 'v='), 2) . '/maxresdefault.jpg';
+      }
+    }
+    return false;
+  }
+
   // 'data_formato' => function($data, $for='%A, %d de %B de %Y'){
 
   //   if($this->isTranslate()) $translator=\RainLab\Translate\Classes\Translator::instance();
