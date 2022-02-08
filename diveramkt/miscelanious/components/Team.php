@@ -54,11 +54,23 @@ class Team extends ComponentBase
 
 	protected function getAllMembers(){
 		if ($this->property('team') == "") {
-			return Equipecategorias::first()->members;
+			$cat = Equipecategorias::enabled();
+			if (@$cat->first())
+				return $cat->first()->members;
+			else
+				return false;
 		}else{
-			return Equipecategorias::where('id',$this->property('team'))->first()->members;
+			$cat = Equipecategorias::where('id',$this->property('team'))->enabled();
+			if (@$cat->first())
+				return $cat->first()->members;
+			else
+				return false;
 		}
 
+	}
+
+	public function scopeEnabled($query) {
+		return $query->where('enabled', true);
 	}
 
 	public $team, $teams, $records;
