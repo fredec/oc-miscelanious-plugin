@@ -21,7 +21,8 @@ class Plugin extends PluginBase
             'Diveramkt\Miscelanious\Components\SocialProfiles' => 'SocialProfiles',
             'Diveramkt\Miscelanious\Components\Testimonials' => 'Testimonials',
             'Diveramkt\Miscelanious\Components\Parceiros' => 'Parceiros',
-            'Diveramkt\Miscelanious\Components\Equipe' => 'Equipe',
+            'Diveramkt\Miscelanious\Components\Team' => 'Team',
+            'Diveramkt\Miscelanious\Components\Teams' => 'Teams',
         ];
     }
     public function registerPageSnippets()
