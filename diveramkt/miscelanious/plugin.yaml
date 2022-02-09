@@ -29,6 +29,9 @@ permissions:
     manage_miscelanious_config:
         tab: 'diveramkt.miscelanious::lang.plugin.name'
         label: 'diveramkt.miscelanious::lang.config.manage'
+    manage_downloads:
+        tab: 'diveramkt.miscelanious::lang.plugin.name'
+        label: 'diveramkt.miscelanious::lang.downloads.manage'
 navigation:
     miscelanious:
         label: 'diveramkt.miscelanious::lang.config.miscelanious'
@@ -77,3 +80,9 @@ navigation:
                 label: 'diveramkt.miscelanious::lang.equipe.name'
                 url: diveramkt/miscelanious/equipecategorias
                 icon: icon-users
+            menu-downloads:
+                label: 'diveramkt.miscelanious::lang.downloads.name'
+                url: diveramkt/miscelanious/downloads
+                icon: icon-file-pdf-o
+                permissions:
+                    - manage_downloads

@@ -1,0 +1,32 @@
+fields:
+    enabled:
+        label: Habilitado
+        span: auto
+        default: 1
+        type: switch
+    title:
+        label: Título
+        span: left
+        required: 1
+        type: text
+    description:
+        label: Descrição
+        size: small
+        span: auto
+        type: richeditor
+    url_externa:
+        label: 'Link do arquivo'
+        span: auto
+        type: text
+        comment: 'Coloque o link aqui ou faça o upload no campo abaixo'
+    cover_img:
+        label: 'Capa do arquivo'
+        mode: image
+        span: auto
+        type: mediafinder
+    file:
+        label: 'Upload de arquivo'
+        mode: file
+        span: auto
+        type: mediafinder
+        comment: 'O campo link é ignorado caso faça upload de algum arquivo'

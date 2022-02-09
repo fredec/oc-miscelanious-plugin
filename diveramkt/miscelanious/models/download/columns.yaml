@@ -1,0 +1,9 @@
+columns:
+    title:
+        label: Título
+        type: text
+        searchable: true
+        sortable: true
+    enabled:
+        label: Habilitado
+        type: switch

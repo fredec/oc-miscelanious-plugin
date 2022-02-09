@@ -1,0 +1,16 @@
+<section class="downloads-area">
+    <div class="container">
+        <div class="row">
+
+            {% for file in Downloads.files %}
+            <div class="col-lg-6 col-md-12">
+                <a href="{{ file.link }}" title="{{ file.title }}" target="_blank">
+                    <h4><i class="fa fa-download"></i>&nbsp;&nbsp;{{ file.title }}</h4>
+                    {{ file.description|raw }}
+                </a>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</section>

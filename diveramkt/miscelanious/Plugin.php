@@ -23,6 +23,7 @@ class Plugin extends PluginBase
             'Diveramkt\Miscelanious\Components\Parceiros' => 'Parceiros',
             'Diveramkt\Miscelanious\Components\Team' => 'Team',
             'Diveramkt\Miscelanious\Components\Teams' => 'Teams',
+            'Diveramkt\Miscelanious\Components\Downloads' => 'Downloads',
         ];
     }
     public function registerPageSnippets()
