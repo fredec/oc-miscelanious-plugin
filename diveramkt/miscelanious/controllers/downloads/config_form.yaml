@@ -1,0 +1,10 @@
+name: Downloads
+form: $/diveramkt/miscelanious/models/download/fields.yaml
+modelClass: Diveramkt\Miscelanious\Models\Download
+defaultRedirect: diveramkt/miscelanious/downloads
+create:
+    redirect: 'diveramkt/miscelanious/downloads/update/:id'
+    redirectClose: diveramkt/miscelanious/downloads
+update:
+    redirect: diveramkt/miscelanious/downloads
+    redirectClose: diveramkt/miscelanious/downloads

@@ -70,5 +70,29 @@
     - 'Updated table diveramkt_miscelanious_companies'
     - builder_table_update_diveramkt_miscelanious_companies_9.php
 1.0.25:
+    - 'Created table diveramkt_miscelanious_downloads'
+    - builder_table_create_diveramkt_miscelanious_downloads.php
+1.0.26:
+    - 'Updated table diveramkt_miscelanious_downloads'
+    - builder_table_update_diveramkt_miscelanious_downloads.php
+1.0.27:
+    - 'Updated table diveramkt_miscelanious_downloads'
+    - builder_table_update_diveramkt_miscelanious_downloads_2.php
+1.0.28:
+    - 'Updated table diveramkt_miscelanious_downloads'
+    - builder_table_update_diveramkt_miscelanious_downloads_3.php
+1.0.29:
+    - 'Updated table diveramkt_miscelanious_downloads'
+    - builder_table_update_diveramkt_miscelanious_downloads_4.php
+1.0.30:
+    - 'Updated table diveramkt_miscelanious_phones'
+    - builder_table_update_diveramkt_miscelanious_phones_3.php
+1.0.31:
+    - 'Updated table diveramkt_miscelanious_downloads'
+    - builder_table_update_diveramkt_miscelanious_downloads_5.php
+1.0.32:
     - 'Updated table diveramkt_miscelanious_testmonials'
     - builder_table_update_diveramkt_miscelanious_testmonials_4.php
+1.0.33:
+    - 'Updated table diveramkt_miscelanious_testmonials'
+    - builder_table_update_diveramkt_miscelanious_testmonials_5.php

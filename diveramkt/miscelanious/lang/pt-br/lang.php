@@ -47,15 +47,13 @@
         'manage' => 'Gerenciar configurações do diversos',
         'miscelanious' => 'Diversos',
         'description' => 'Cadastro de informações em geral',
-
         'enabled_http2' => 'Habilitar http2',
         'redirect_www' => 'Redirect no_www para www',
         'prefix_subdominio' => 'Prefixos dos Sub domínios',
         'redirects' => 'Redirecionamentos',
-
         'disabled' => 'Desabilitado',
-        '301' => '301 - Permanente',
-        '302' => '302 - Temporário',
+        301 => '301 - Permanente',
+        302 => '302 - Temporário',
     ],
     'testmonial' => [
         'name' => 'Nome',
@@ -96,5 +94,9 @@
     'equipe' => [
         'name' => 'Equipe',
         'manage' => 'Gerenciar Equipe',
+    ],
+    'downloads' => [
+        'name' => 'Downloads',
+        'manage' => 'Gerenciar Downloads',
     ],
 ];
