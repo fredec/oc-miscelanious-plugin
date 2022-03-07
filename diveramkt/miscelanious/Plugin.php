@@ -8,6 +8,8 @@ use System\Models\PluginVersion;
 use Event;
 use RainLab\Translate\Classes\Translator;
 use Diveramkt\Miscelanious\Classes\Functions;
+use Diveramkt\Miscelanious\Models\ExtendBackendUsers;
+use Db;
 
 class Plugin extends PluginBase
 {
@@ -359,169 +361,252 @@ class Plugin extends PluginBase
         $class=get_declared_classes();
 
         $settings = \Diveramkt\Miscelanious\Models\Settings::instance();
-        $config=[];
-        // $config['base_url'] = str_replace('\/','/','http' . ( Request::server('HTTPS') == 'on' ? 's' : '') . '://' . Request::server('HTTP_HOST') . str_replace('//', '/', dirname(Request::server('SCRIPT_NAME')) . '/'));
-        $config['base_url']=url('/');
+        Functions::redirectPlugin($settings);
 
-        if(Request::server('HTTPS') == 'on' || $settings['redirect_https']){
-            $pos = strpos($config['base_url'], 'https:');
-            if ($pos === false) {
-                header("HTTP/1.1 302 Moved Temporary");
-                header("Location:".str_replace('http:','https:',Request::url()));
-                exit();
+// ///////////////////EXTEND BACKEND USERS
+        Event::listen('backend.form.extendFields', function($widget) {
+            if (
+                $widget->model instanceof \Backend\Models\User
+                and $widget->isNested === false
+            ) {
+
+            // $model=$widget->model;
+            // if(isset($model->jsonable)) $model->jsonable[]='social_profiles';
+            // else $model->addDynamicProperty('jsonable', ['social_profiles']);
+
+                $widget->addTabFields([
+                    'text' => [
+                        'label'   => 'Texto sobre',
+                        'span' => 'full',
+                        'size' => 'large',
+                        'type' => 'richeditor',
+                        'tab' => 'Texto',
+                    ],
+                    'social_profiles' => [
+                        'label'   => 'Redes Sociais',
+                        'span' => 'full',
+                        'prompt' => "Adicionar novo link",
+                        'type' => 'repeater',
+                        'form' => [
+                            'fields' => [
+                                'type' => [
+                                    'label' => 'Tipo',
+                                    'span' => 'auto',
+                                    'type' => 'dropdown',
+                                    'options' => [
+                                        '' => 'Selecionar',
+                                        'facebook' => "Facebook",
+                                        'twitter' => 'Twitter',
+                                        'instagram' => 'Instagram',
+                                        'linkedin' => 'Linkedin',
+                                        'pinterest' => 'Pinterest',
+                                        'tiktok' => 'Tiktok',
+                                        'youtube' => 'Youtube',
+                                        'whatsapp' => 'WhatsApp',
+                                        'phone' => 'Telefone',
+                                        'skype' => 'Skype',
+                                        'flickr' => 'Flickr',
+                                        'spotify' => 'Spotify',
+                                        'email' => 'Email',
+                                    ],
+                                ],
+                                'link' => [
+                                    'label' => 'Link',
+                                    'span' => 'auto',
+                                    'type' => 'text',
+                                ],
+                            ],
+                        ],
+                        'tab' => 'Redes Sociais',
+                    ],
+                ]);
             }
-        }
-        
-        $veri='';
-        if(Request::server('DOCUMENT_ROOT')) $veri.=' '.Request::server('DOCUMENT_ROOT').' ';
-        if(Request::server('CONTEXT_DOCUMENT_ROOT')) $veri.=' '.Request::server('CONTEXT_DOCUMENT_ROOT').' ';
+        });
 
-        if(isset($settings['redirect_www']) && $settings['redirect_www']
-            && (!strpos("[".$veri."]", "C:/") || !strpos("[".$veri."]", "xampp/") || !strpos("[".$veri."]", ".october") || !strpos("[".$veri."]", "public_html"))
-        ){
+        \Backend\Models\User::extend(function($model) {
+            $model->hasOne=[
+                'getExtendInfos' => [
+                    'Diveramkt\Miscelanious\Models\ExtendBackendUsers',
+                    'key' => 'user_id',
+                ],
+            ];
+            $model->addJsonable('social_profiles');
 
-            $red=$settings['redirect_www'];
+            $model->bindEvent('model.beforeSave', function () use ($model) {
+                $infos=$model->infos;
+                $table='backend_users';
 
-        $pos = strpos($config['base_url'], 'www');
-        if ($pos === false) {
+                foreach ($model->attributes as $key => $value) {
+                    if(!\Schema::hasColumn($table, $key)){
 
-            $redirecionar=true;
-            if(str_replace(' ','',$settings['sub_dominios']) != ''){
+                        if($key == 'social_profiles'){
+                            $value=json_decode($value);
+                            if(count($value)){
+                                foreach ($value as $key2 => $vet) {
+                                    if(!$vet->link || !$vet->type){
+                                        unset($value[$key2]);
+                                        continue;
+                                    }
+                                    if($vet->type == 'email'){
+                                        $value[$key2]->url='mailto:'.$vet->link;
+                                        $value[$key2]->target='';
+                                    }else{
+                                        $value[$key2]->url=Functions::prep_url($vet->link);
+                                        $value[$key2]->target=Functions::target($value[$key2]->url);
+                                    }
+                                }
+                            }
+                            $value=array_filter($value);
+                            $value=json_encode($value);
+                        }
 
-                $subs = preg_replace('/[\n|\r|\n\r|\r\n]{2,}/',',', $settings['sub_dominios']);
-                $subs = preg_replace("/\r?\n/",',', $subs);
-                $subs=explode(',', str_replace(';', ',', $subs));
-
-                if(count($subs) > 0){
-                    foreach ($subs as $key => $sub) {
-                        if(strpos("[".$config['base_url']."]", "http://".$sub) || strpos("[".$config['base_url']."]", "https://".$sub)) $redirecionar=false; 
+                        $infos[$key]=$value;
+                        unset($model->$key);
                     }
                 }
 
-            }
+                $get_infos=ExtendBackendUsers::where('user_id',$model->id)->first();
+                if(!isset($get_infos->id)){
+                    $set_infos=new ExtendBackendUsers();
+                    $set_infos->user_id=$model->id;
+                    $set_infos->text=$infos['text'];
+                    $set_infos->infos=$infos;
+                    $set_infos->save();
+                }else{
+                    $get_infos->text=$infos['text'];
+                    $get_infos->infos=$infos;
+                    $get_infos->save();
+                }
+            });
+            $model->bindEvent('model.afterFetch', function () use ($model) {
+                if(!isset($model->id)) return;
+                $get_infos=$model->getExtendInfos;
+                if(!isset($get_infos->id)) return;
+                $attributes=$model->attributes;
+                if(isset($get_infos->infos) && count($get_infos->infos)){
+                    foreach ($get_infos->infos as $key => $value) {
+                        if(is_array($value)) $attributes[$key]=json_encode($value);
+                        else $attributes[$key]=$value;
+                    }
+                }
+                if(isset($get_infos->text)) $attributes['text']=$get_infos->text;
+                $model->attributes=$attributes;
+            });
+        });
 
-            if($redirecionar){
-                // $url=(@Request::server('HTTPS') == 'on' ? 'https://' : 'http://').'www.'.Request::server('SERVER_NAME').Request::server('REQUEST_URI');
-                $url='http://www.'.Request::server('SERVER_NAME').Request::server('REQUEST_URI');
+    // \Backend\Models\User::extend(function($model) {
+        // if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+        // $model->translatable = ['name','description','position'];
+    // });
+    // ///////////////////EXTEND BACKEND USERS
 
-                header("HTTP/1.1 ".$red." Moved Permanently");
-                header("Location:".$url);
-                exit();
-            }
+        if(in_array('RainLab\Translate\Plugin', $class) || in_array('RainLab\Translate\Classes\Translator', $class)){
+
+            \Diveramkt\Miscelanious\Models\Equipe::extend(function($model) {
+                if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+                $model->translatable = ['name','description','position'];
+            });
+
+            \Diveramkt\Miscelanious\Models\Equipecategorias::extend(function($model) {
+                if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+                $model->translatable = ['title','description'];
+            });
+
+            \Diveramkt\Miscelanious\Models\Company::extend(function($model) {
+                if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+                $model->translatable = ['name','city','neighborhood','street','addon','number','state','opening_hours','mobiles','phones'];
+            });
+
+            \Diveramkt\Miscelanious\Models\Testmonial::extend(function($model) {
+                if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+                $model->translatable = ['name','position','testmonial','image'];
+            });
+
+            \Diveramkt\Miscelanious\Models\Contact::extend(function($model) {
+                if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+                $model->translatable = ['description','value'];
+            });
+
+            \Diveramkt\Miscelanious\Models\Phone::extend(function($model) {
+                if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+                $model->translatable = ['area_code','description','info'];
+            });
+
+            \Diveramkt\Miscelanious\Models\Social::extend(function($model) {
+                if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+                $model->translatable = ['description'];
+            });
 
         }
     }
 
 
+    public function validacoes(){
 
-
-    if(in_array('RainLab\Translate\Plugin', $class) || in_array('RainLab\Translate\Classes\Translator', $class)){
-
-        \Diveramkt\Miscelanious\Models\Equipe::extend(function($model) {
-            if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
-            $model->translatable = ['name','description','position'];
-        });
-
-        \Diveramkt\Miscelanious\Models\Equipecategorias::extend(function($model) {
-            if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
-            $model->translatable = ['title','description'];
-        });
-
-        \Diveramkt\Miscelanious\Models\Company::extend(function($model) {
-            if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
-            $model->translatable = ['name','city','neighborhood','street','addon','number','state','opening_hours','mobiles','phones'];
-        });
-
-        \Diveramkt\Miscelanious\Models\Testmonial::extend(function($model) {
-            if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
-            $model->translatable = ['name','position','testmonial','image'];
-        });
-
-        \Diveramkt\Miscelanious\Models\Contact::extend(function($model) {
-            if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
-            $model->translatable = ['description','value'];
-        });
-
-        \Diveramkt\Miscelanious\Models\Phone::extend(function($model) {
-            if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
-            $model->translatable = ['area_code','description','info'];
-        });
-
-        \Diveramkt\Miscelanious\Models\Social::extend(function($model) {
-            if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
-            $model->translatable = ['description'];
-        });
-
-    }
-}
-
-
-public function validacoes(){
-
-    Validator::extend('cnpj', function($attribute, $value, $parameters) {
-        $cnpj = preg_replace('/[^0-9]/', '', (string) $value);
+        Validator::extend('cnpj', function($attribute, $value, $parameters) {
+            $cnpj = preg_replace('/[^0-9]/', '', (string) $value);
 
     // Valida tamanho
-        if (strlen($cnpj) != 14)
-            return false;
+            if (strlen($cnpj) != 14)
+                return false;
 
     // Verifica se todos os digitos são iguais
-        if (preg_match('/(\d)\1{13}/', $cnpj))
-            return false;   
+            if (preg_match('/(\d)\1{13}/', $cnpj))
+                return false;   
 
     // Valida primeiro dígito verificador
-        for ($i = 0, $j = 5, $soma = 0; $i < 12; $i++)
-        {
-            $soma += $cnpj[$i] * $j;
-            $j = ($j == 2) ? 9 : $j - 1;
-        }
+            for ($i = 0, $j = 5, $soma = 0; $i < 12; $i++)
+            {
+                $soma += $cnpj[$i] * $j;
+                $j = ($j == 2) ? 9 : $j - 1;
+            }
 
-        $resto = $soma % 11;
+            $resto = $soma % 11;
 
-        if ($cnpj[12] != ($resto < 2 ? 0 : 11 - $resto))
-            return false;
+            if ($cnpj[12] != ($resto < 2 ? 0 : 11 - $resto))
+                return false;
 
     // Valida segundo dígito verificador
-        for ($i = 0, $j = 6, $soma = 0; $i < 13; $i++)
-        {
-            $soma += $cnpj[$i] * $j;
-            $j = ($j == 2) ? 9 : $j - 1;
-        }
+            for ($i = 0, $j = 6, $soma = 0; $i < 13; $i++)
+            {
+                $soma += $cnpj[$i] * $j;
+                $j = ($j == 2) ? 9 : $j - 1;
+            }
 
-        $resto = $soma % 11;
+            $resto = $soma % 11;
 
-        return $cnpj[13] == ($resto < 2 ? 0 : 11 - $resto);
-    });
+            return $cnpj[13] == ($resto < 2 ? 0 : 11 - $resto);
+        });
 
-    Validator::extend('cpf', function($attribute, $value, $parameters) {
+        Validator::extend('cpf', function($attribute, $value, $parameters) {
              // Extrai somente os números
-        $cpf = preg_replace( '/[^0-9]/is', '', $value );
+            $cpf = preg_replace( '/[^0-9]/is', '', $value );
 
     // Verifica se foi informado todos os digitos corretamente
-        if (strlen($cpf) != 11) {
-            return false;
-        }
-
-    // Verifica se foi informada uma sequência de digitos repetidos. Ex: 111.111.111-11
-        if (preg_match('/(\d)\1{10}/', $cpf)) {
-            return false;
-        }
-
-    // Faz o calculo para validar o CPF
-        for ($t = 9; $t < 11; $t++) {
-            for ($d = 0, $c = 0; $c < $t; $c++) {
-                $d += $cpf[$c] * (($t + 1) - $c);
-            }
-            $d = ((10 * $d) % 11) % 10;
-            if ($cpf[$c] != $d) {
+            if (strlen($cpf) != 11) {
                 return false;
             }
-        }
-        return true;
-    });
+
+    // Verifica se foi informada uma sequência de digitos repetidos. Ex: 111.111.111-11
+            if (preg_match('/(\d)\1{10}/', $cpf)) {
+                return false;
+            }
+
+    // Faz o calculo para validar o CPF
+            for ($t = 9; $t < 11; $t++) {
+                for ($d = 0, $c = 0; $c < $t; $c++) {
+                    $d += $cpf[$c] * (($t + 1) - $c);
+                }
+                $d = ((10 * $d) % 11) % 10;
+                if ($cpf[$c] != $d) {
+                    return false;
+                }
+            }
+            return true;
+        });
 
 
-    Validator::extend('data', function($attribute, $value, $parameters) {
+        Validator::extend('data', function($attribute, $value, $parameters) {
              $data = explode("/","$value"); // fatia a string $dat em pedados, usando / como referência
              $d = $data[0];
              $m = $data[1];
@@ -540,11 +625,11 @@ public function validacoes(){
          });
 
 
-    Validator::extend('phone', function($attribute, $value, $parameters) {
-        $telefone= trim(str_replace('/', '', str_replace(' ', '', str_replace('-', '', str_replace(')', '', str_replace('(', '', $value))))));
+        Validator::extend('phone', function($attribute, $value, $parameters) {
+            $telefone= trim(str_replace('/', '', str_replace(' ', '', str_replace('-', '', str_replace(')', '', str_replace('(', '', $value))))));
 
         // $regexTelefone = "^[0-9]{11}$";
-        $regexTelefone = "/[0-9]{11}/";
+            $regexTelefone = "/[0-9]{11}/";
 
     $regexCel = '/[0-9]{2}[6789][0-9]{3,4}[0-9]{4}/'; // Regex para validar somente celular
     if (preg_match($regexTelefone, $telefone) or preg_match($regexCel, $telefone)) {
@@ -553,7 +638,7 @@ public function validacoes(){
         return false;
     }
 });
-}
+    }
 
 
 }

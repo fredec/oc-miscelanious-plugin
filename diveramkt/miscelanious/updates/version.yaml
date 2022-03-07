@@ -96,3 +96,6 @@
 1.0.33:
     - 'Updated table diveramkt_miscelanious_testmonials'
     - builder_table_update_diveramkt_miscelanious_testmonials_5.php
+1.0.34:
+    - 'Created table diveramkt_miscelanious_extend_backend_users'
+    - builder_table_create_diveramkt_miscelanious_extend_backend_users.php

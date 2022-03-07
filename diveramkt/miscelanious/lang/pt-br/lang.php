@@ -49,6 +49,7 @@
         'description' => 'Cadastro de informações em geral',
         'enabled_http2' => 'Habilitar http2',
         'redirect_www' => 'Redirect no_www para www',
+        'redirect_type' => 'Redirect Type',
         'prefix_subdominio' => 'Prefixos dos Sub domínios',
         'redirects' => 'Redirecionamentos',
         'disabled' => 'Desabilitado',
