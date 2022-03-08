@@ -10,6 +10,7 @@ use RainLab\Translate\Classes\Translator;
 use Diveramkt\Miscelanious\Classes\Functions;
 use Diveramkt\Miscelanious\Models\ExtendBackendUsers;
 use Db;
+use Schema;
 
 class Plugin extends PluginBase
 {
@@ -365,6 +366,7 @@ class Plugin extends PluginBase
 
 // ///////////////////EXTEND BACKEND USERS
         Event::listen('backend.form.extendFields', function($widget) {
+            if (!Schema::hasTable('diveramkt_miscelanious_extend_backend_users')) return;
             if (
                 $widget->model instanceof \Backend\Models\User
                 and $widget->isNested === false
@@ -424,6 +426,7 @@ class Plugin extends PluginBase
         });
 
         \Backend\Models\User::extend(function($model) {
+            if (!Schema::hasTable('diveramkt_miscelanious_extend_backend_users')) return;
             $model->hasOne=[
                 'getExtendInfos' => [
                     'Diveramkt\Miscelanious\Models\ExtendBackendUsers',

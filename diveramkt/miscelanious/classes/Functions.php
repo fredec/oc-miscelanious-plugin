@@ -5,24 +5,43 @@ use Request;
 class Functions
 {
 
+  public static function getBaseurl(){
+    $base=Request::server('SERVER_NAME');
+    if(!$base) $base=str_replace(['https://','http://','www.','/'], ['','','',''], url(''));
+    return $base;
+  }
   public static function redirectPlugin($settings=false){
     if(!$settings) $settings = \Diveramkt\Miscelanious\Models\Settings::instance();
     if(!isset($settings['redirect_type']) || !$settings['redirect_type']) $settings['redirect_type']=0;
-    if(!isset($settings['redirect_www']) || !is_numeric($settings['redirect_www'])) $settings['redirect_www']=0;
     if(!$settings['redirect_type']) return;
+    if(!isset($settings['redirect_www']) || !is_numeric($settings['redirect_www'])) $settings['redirect_www']=0;
 
     // !Request::is('https://')
+    // echo Request::secure();
+    // Request::server('HTTPS') == 'on' && 
     $url=Request::url();
-    if(Request::server('HTTPS') == 'on' && $settings['redirect_https'] && !strpos($url, 'https://')){
+    if($settings['redirect_https'] && !strpos($url, 'https://')){
       $url=str_replace('http://', 'https://', $url);
     }
-    // echo Request::secure();
 
     if($settings['redirect_www'] && !strpos($url, 'www.')){
       $url=str_replace(['http://','https://'], ['http://www.','https://www.'], $url);
     }
 
     if($url != Request::url()){
+      if(!isset($settings['redirect_base_saved'])){
+        $settings['redirect_base_saved']=Self::getBaseurl();
+        $settings->save();
+        $settings['redirect_base_saved']=Self::getBaseurl();
+      }
+
+      if(isset($settings['redirect_base_saved']) && !strpos("[".$url."/]", $settings['redirect_base_saved'])){
+        $settings['redirect_base_saved']=Self::getBaseurl();
+        $settings['redirect_type']=0;
+        $settings->save();
+        return;
+      }
+
       header("HTTP/1.1 ".$settings['redirect_type']." Moved Temporary");
       header("Location:".$url);
       exit();

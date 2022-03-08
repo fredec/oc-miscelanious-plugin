@@ -21,8 +21,8 @@ tabs:
             showSearch: true
             type: switch
             tab: 'diveramkt.miscelanious::lang.config.redirects'
-        sub_dominios:
-            label: 'diveramkt.miscelanious::lang.config.prefix_subdominio'
-            span: full
-            type: textarea
-            tab: 'diveramkt.miscelanious::lang.config.redirects'
+        # sub_dominios:
+        #     label: 'diveramkt.miscelanious::lang.config.prefix_subdominio'
+        #     span: full
+        #     type: textarea
+        #     tab: 'diveramkt.miscelanious::lang.config.redirects'
