@@ -27,6 +27,7 @@ class Plugin extends PluginBase
             'Diveramkt\Miscelanious\Components\Team' => 'Team',
             'Diveramkt\Miscelanious\Components\Teams' => 'Teams',
             'Diveramkt\Miscelanious\Components\Downloads' => 'Downloads',
+            'Diveramkt\Miscelanious\Components\Usersbackend' => 'Usersbackend',
         ];
     }
     public function registerPageSnippets()
@@ -314,7 +315,22 @@ class Plugin extends PluginBase
                 list($r, $g, $b) = sscanf($hex, "#%02x%02x%02x");
                 $rgba = 'rgba('.$r.', '.$g.', '.$g.', '.$opacity.')';
                 return $rgba;
-            }
+            },
+
+            'add_tag_image' => function($text, $tag_search='loading="lazy"') {
+                $tags=explode(' ', $tag_search);
+                preg_match_all("#<img (.*?)>#s", $text, $result);
+                if(isset($result[0][0])){
+                    foreach ($result[0] as $key => $value) {
+                        foreach ($tags as $key => $tag) {
+                            if(!strpos("[".$value."]", trim($tag))){
+                                $text=str_replace($result[1][$key], $result[1][$key].' '.$tag, $text);
+                            }
+                        }
+                    }
+                }
+                return $text;
+            },
 
         ];
     }
@@ -377,6 +393,13 @@ class Plugin extends PluginBase
             // else $model->addDynamicProperty('jsonable', ['social_profiles']);
 
                 $widget->addTabFields([
+                    'description' => [
+                        'label'   => 'Pequena descrição',
+                        'span' => 'full',
+                        'size' => 'small',
+                        'type' => 'textarea',
+                        'tab' => 'Texto',
+                    ],
                     'text' => [
                         'label'   => 'Texto sobre',
                         'span' => 'full',
@@ -433,6 +456,14 @@ class Plugin extends PluginBase
                     'key' => 'user_id',
                 ],
             ];
+            // $model->hasMany=[
+            //     'postagens' => [
+            //         'RainLab\Blog\Models\Post',
+            //         // 'limit' => 1,
+            //         // 'conditions' => ' limit = "1" ',
+            //         'scope' => 'IsPublished',
+            //     ],
+            // ];
             $model->addJsonable('social_profiles');
 
             $model->bindEvent('model.beforeSave', function () use ($model) {
