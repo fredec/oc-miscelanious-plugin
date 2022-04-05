@@ -91,8 +91,8 @@ class Usersbackend extends ComponentBase
 		$limite_post=5; if(is_numeric($this->property('posts_limit'))) $limit_posts=$this->property('posts_limit');
 		if($this->property('id_user')){
 			$this->user=User::where('id',$this->property('id_user'))->first();
-			if($this->property('posts_enabled')){
-				$this->user->postagens=Post::IsPublished()->where('user_id',$user->id)->take($limite_post)->orderBy('published_at','desc')->get();
+			if($this->property('posts_enabled') && isset($this->user->id)){
+				$this->user->postagens=Post::IsPublished()->where('user_id',$this->user->id)->take($limite_post)->orderBy('published_at','desc')->get();
 			}
 		}else{
 
