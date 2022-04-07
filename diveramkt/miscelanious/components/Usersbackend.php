@@ -5,6 +5,7 @@ use Cms\Classes\ComponentBase;
 use Backend\Models\User;
 use Backend\Models\UserRole;
 use RainLab\Blog\Models\Post;
+use Cms\Classes\Page;
 
 class Usersbackend extends ComponentBase
 {
@@ -59,7 +60,31 @@ class Usersbackend extends ComponentBase
 				"default" => 5,
 				"group" => 'Postagens'
 			],
+			'postPage' => [
+				'title'       => 'rainlab.blog::lang.settings.posts_post',
+				'description' => 'rainlab.blog::lang.settings.posts_post_description',
+				'type'        => 'dropdown',
+				'default'     => 'blog/post',
+				'group'       => 'Postagens',
+			],
+			'categoryPage' => [
+				'title'       => 'rainlab.blog::lang.settings.posts_category',
+				'description' => 'rainlab.blog::lang.settings.posts_category_description',
+				'type'        => 'dropdown',
+				'default'     => 'blog/category',
+				'group'       => 'Postagens',
+			],
 		];
+	}
+
+	public function getCategoryPageOptions()
+	{
+		return Page::sortBy('baseFileName')->lists('baseFileName', 'baseFileName');
+	}
+
+	public function getPostPageOptions()
+	{
+		return Page::sortBy('baseFileName')->lists('baseFileName', 'baseFileName');
 	}
 
 	public function getUserrolesOptions() {
@@ -85,37 +110,68 @@ class Usersbackend extends ComponentBase
 	// 	];
 	// }
 
-	public $users=[], $user=[];
-	public function onRun(){
+	public $posts_enabled=0, $postPage, $categoryPage;
+	protected function prepareVars()
+	{
+        /*
+         * Page links
+         */
+        $this->posts_enabled=$this->property('posts_enabled');
+        if($this->posts_enabled){
+        	$this->postPage = $this->property('postPage');
+        	$this->categoryPage = $this->property('categoryPage');
+        }
+    }
 
-		$limite_post=5; if(is_numeric($this->property('posts_limit'))) $limit_posts=$this->property('posts_limit');
-		if($this->property('id_user')){
-			$this->user=User::where('id',$this->property('id_user'))->first();
-			if($this->property('posts_enabled') && isset($this->user->id)){
-				$this->user->postagens=Post::IsPublished()->where('user_id',$this->user->id)->take($limite_post)->orderBy('published_at','desc')->get();
-			}
-		}else{
+    public $users=[], $user=[];
+    public function onRun(){
+    	$this->prepareVars();
 
-			$users=User::where('role_id','>',0);
-			if($this->property('limit') && is_numeric($this->property('limit'))) $users=$users->take($this->property('limit'));
-			$roles=$this->property('userroles');
-			if(is_array($roles) && count($roles)){
-				$users->where(function ($query) use ($roles) {
-					foreach ($roles as $key => $value) {
-						if(!$key) $query->where('role_id','=',$value);
-						else $query->orWhere('role_id','=',$value);
-					}
-				});
-			}
-			$this->users=$users->get();
+    	$limite_post=5; if(is_numeric($this->property('posts_limit'))) $limit_posts=$this->property('posts_limit');
+    	if($this->property('id_user')){
+    		$this->user=User::where('id',$this->property('id_user'))->first();
+    		if($this->posts_enabled && isset($this->user->id)){
+    			$posts=Post::IsPublished()->where('user_id',$this->user->id)->take($limite_post)->orderBy('published_at','desc')->get();
+    			$this->user->postagens=$this->urlPost($posts);
+    		}
+    	}else{
 
-			if($this->property('posts_enabled')){
-				foreach ($this->users as $key => $value) {
-					$this->users[$key]->postagens=Post::IsPublished()->where('user_id',$value->id)->take($limite_post)->orderBy('published_at','desc')->get();
-				}
-			}
+    		$users=User::where('role_id','>',0);
+    		if($this->property('limit') && is_numeric($this->property('limit'))) $users=$users->take($this->property('limit'));
+    		$roles=$this->property('userroles');
+    		if(is_array($roles) && count($roles)){
+    			$users->where(function ($query) use ($roles) {
+    				foreach ($roles as $key => $value) {
+    					if(!$key) $query->where('role_id','=',$value);
+    					else $query->orWhere('role_id','=',$value);
+    				}
+    			});
+    		}
+    		$this->users=$users->get();
 
-		}
-	}
+    		if($this->posts_enabled){
+    			foreach ($this->users as $key => $value) {
+    				$posts=Post::IsPublished()->where('user_id',$value->id)->take($limite_post)->orderBy('published_at','desc')->get();
+    				$this->users[$key]->postagens=$this->urlPost($posts);
+
+    			}
+    		}
+
+    	}
+    }
+
+    public function urlPost($posts){
+    	if($this->postPage || $this->categoryPage){
+    		$posts->each(function($post) {
+    			if($this->postPage) $post->setUrl($this->postPage, $this->controller);
+    			if($this->categoryPage){
+    				$post->categories->each(function($category) {
+    					$category->setUrl($this->categoryPage, $this->controller);
+    				});
+    			}
+    		});
+    	}
+    	return $posts;
+    }
 
 }

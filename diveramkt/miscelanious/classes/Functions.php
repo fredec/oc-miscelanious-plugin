@@ -49,20 +49,18 @@ class Functions
   }
 
   public static function prep_url($url) {
-    if(!strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")){
-      $veri=Request::server('HTTP_HOST'). str_replace('//', '/', dirname(Request::server('SCRIPT_NAME')));
-      if(!strpos("[".$url."]", ".") && !strpos("[".$veri."]", "https://")){
-                        // $url='http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://www.'.str_replace(array('//','\/'),array('/','/'),$veri.'/'.$url);
-        $url='http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://'.str_replace(array('//','\/'),array('/','/'),$veri.'/'.$url);
+    if(!strpos("[".$url."]", "http://")){
+      if(!strpos("[".$url."]", ".") && !strpos("[".$url."]", "https://")){
+        $url=url($url);
       }else $url='http://'.$url;
     }
     return $url;
   }
 
   public static function target($link){
-    $url = 'http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://' . Request::server('HTTP_HOST');
-    $link=str_replace('//www.','//',$link); $url=str_replace('//www.','//',$url);
-    if(!strpos("[".$link."]", $url)) return 'target="_blank"';
+    // $url = 'http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://' . Request::server('HTTP_HOST');
+    $link=str_replace('//www.','//',$link); $url=str_replace('//www.','//',url('/'));
+    if(!strpos("[".$link."/]", $url)) return 'target="_blank"';
     else return 'target="_parent"';
   }
 
