@@ -392,6 +392,15 @@ class Plugin extends PluginBase
             // if(isset($model->jsonable)) $model->jsonable[]='social_profiles';
             // else $model->addDynamicProperty('jsonable', ['social_profiles']);
 
+                $widget->addFields([
+                    'enabled' => [
+                        'label'   => 'Habilitado',
+                        'span' => 'full',
+                        'type' => 'switch',
+                        'default' => 1,
+                    ],
+                ]);
+
                 $widget->addTabFields([
                     'description' => [
                         'label'   => 'Pequena descrição',

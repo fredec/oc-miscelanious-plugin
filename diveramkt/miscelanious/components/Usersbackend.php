@@ -6,6 +6,7 @@ use Backend\Models\User;
 use Backend\Models\UserRole;
 use RainLab\Blog\Models\Post;
 use Cms\Classes\Page;
+use Diveramkt\Miscelanious\Models\ExtendBackendUsers;
 
 class Usersbackend extends ComponentBase
 {
@@ -128,15 +129,20 @@ class Usersbackend extends ComponentBase
     	$this->prepareVars();
 
     	$limite_post=5; if(is_numeric($this->property('posts_limit'))) $limit_posts=$this->property('posts_limit');
+    	$table_user='backend_users';
+		$table_join=new ExtendBackendUsers(); $table_join=$table_join->table;
     	if($this->property('id_user')){
-    		$this->user=User::where('id',$this->property('id_user'))->first();
+    		$this->user=User::where('id',$this->property('id_user'))
+    		->select($table_user.'.*')->join($table_join->table.' as join','join.user_id','=',$table_user.'.id')->where('join.infos','like','%"enabled":"1"%')
+    		->first();
     		if($this->posts_enabled && isset($this->user->id)){
     			$posts=Post::IsPublished()->where('user_id',$this->user->id)->take($limite_post)->orderBy('published_at','desc')->get();
     			$this->user->postagens=$this->urlPost($posts);
     		}
     	}else{
 
-    		$users=User::where('role_id','>',0);
+    		$users=User::where('role_id','>',0)
+    		->select($table_user.'.*')->join($table_join.' as join','join.user_id','=',$table_user.'.id')->where('join.infos','like','%"enabled":"1"%');
     		if($this->property('limit') && is_numeric($this->property('limit'))) $users=$users->take($this->property('limit'));
     		$roles=$this->property('userroles');
     		if(is_array($roles) && count($roles)){
