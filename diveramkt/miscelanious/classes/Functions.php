@@ -1,6 +1,7 @@
 <?php namespace Diveramkt\Miscelanious\Classes;
 
 use Request;
+use Diveramkt\Miscelanious\Classes\BackendHelpers;
 
 class Functions
 {
@@ -49,9 +50,11 @@ class Functions
   }
 
   public static function prep_url($url) {
-    if(!strpos("[".$url."]", "http://")){
-      if(!strpos("[".$url."]", ".") && !strpos("[".$url."]", "https://")){
-        $url=url($url);
+    if(!strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")){
+      $veri=Request::server('HTTP_HOST'). str_replace('//', '/', dirname(Request::server('SCRIPT_NAME')));
+      if(!strpos("[".$url."]", ".") && !strpos("[".$veri."]", "https://")){
+                        // $url='http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://www.'.str_replace(array('//','\/'),array('/','/'),$veri.'/'.$url);
+        $url='http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://'.str_replace(array('//','\/'),array('/','/'),$veri.'/'.$url);
       }else $url='http://'.$url;
     }
     return $url;
@@ -114,6 +117,24 @@ class Functions
     $number=preg_replace("/[^0-9.,]/", "", $number);
     $number=floatval(str_replace(',', '.', $number));
     return number_format($number, 2, ',', '.');
+  }
+
+  public static function data_formato($data, $for='%A, %d de %B de %Y'){
+    $replace1=[]; $replace2=[];
+    if(BackendHelpers::isTranslate()) $translator=\RainLab\Translate\Classes\Translator::instance();
+    if(!isset($translator) || ($tranlsator->getLocale() == 'pb' || $translator->getLocale() == 'pt-br')){
+      setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
+                // date_default_timezone_set('America/Sao_Paulo');
+
+      $replace1=array_merge($replace1, ['January','February','March','April','May','June','July','August','September','October','November','December']);
+      $replace2=array_merge($replace2, ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']);
+    }
+
+    if(!$data) $data='today';
+    else $data=date($data);
+    $return=utf8_encode(strftime($for, strtotime($data)));
+
+    return str_replace($replace1, $replace2, $return);
   }
 
   // 'data_formato' => function($data, $for='%A, %d de %B de %Y'){

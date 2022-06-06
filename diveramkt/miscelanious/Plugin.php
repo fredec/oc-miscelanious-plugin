@@ -8,6 +8,7 @@ use System\Models\PluginVersion;
 use Event;
 use RainLab\Translate\Classes\Translator;
 use Diveramkt\Miscelanious\Classes\Functions;
+use Diveramkt\Miscelanious\Classes\BackendHelpers;
 use Diveramkt\Miscelanious\Models\ExtendBackendUsers;
 use Db;
 use Schema;
@@ -89,7 +90,7 @@ class Plugin extends PluginBase
             },
             'canonical_url' => function($url=''){
                 // $url=Request::url('/');
-                if($this->isTranslate()){
+                if(BackendHelpers::isTranslate()){
                     $translator=\RainLab\Translate\Classes\Translator::instance();
                     $lang=$translator->getLocale();
                     if((strstr($url.' ', '/'.$lang.' '))) $url=str_replace('/'.$lang.' ', '', $url.' ');
@@ -221,25 +222,11 @@ class Plugin extends PluginBase
                 return strpos("[".$string."]", "$procura");
             },
             'data_formato' => function($data, $for='%A, %d de %B de %Y'){
-                $replace1=[]; $replace2=[];
-                if($this->isTranslate()) $translator=\RainLab\Translate\Classes\Translator::instance();
-                if(!isset($translator) || ($tranlsator->getLocale() == 'pb' || $translator->getLocale() == 'pt-br')){
-                    setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
-                // date_default_timezone_set('America/Sao_Paulo');
-
-                    $replace1=array_merge($replace1, ['January','February','March','April','May','June','July','August','September','October','November','December']);
-                    $replace2=array_merge($replace2, ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']);
-                }
-
-                if(!$data) $data='today';
-                else $data=date($data);
-                $return=utf8_encode(strftime($for, strtotime($data)));
-
-                return str_replace($replace1, $replace2, $return);
+                return Functions::data_formato($data, $for);
             },
 
             'get_translate' => function($translate=false, $parent=false, $get=false){
-                if(!$this->isTranslate()) return $translate;
+                if(!BackendHelpers::isTranslate()) return $translate;
                 if(!$this->translator){
                     $this->translator = Translator::instance();
                     $this->activeLocale = $this->translator->getLocale();
@@ -335,11 +322,6 @@ class Plugin extends PluginBase
         ];
     }
 
-    public function isTranslate(){
-        $plugins=new PluginVersion();
-        return class_exists('\RainLab\Translate\Classes\Translator') && class_exists('\RainLab\Translate\Models\Message') && $plugins->where('code','RainLab.Translate')->ApplyEnabled()->count();
-    }
-
     /**
      * Add Twig extensions.
      *
@@ -362,17 +344,19 @@ class Plugin extends PluginBase
     }
 
     public function boot(){
-        if($this->isTranslate()){
+        if(BackendHelpers::isTranslate()){
             Event::listen('cms.page.beforeDisplay', function($controller, $url, $page) {
                 $translator=\RainLab\Translate\Classes\Translator::instance();
                 $controller->vars['code_lang']=$translator->getLocale();
             });
             
-            \Arcane\Seo\Models\Settings::extend(function($model) {
-                $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
-                if (!$model->propertyExists('translatable')) $model->addDynamicProperty('translatable', []);
-                $model->translatable = ['og_locale'];
-            });
+            if(BackendHelpers::isArcaneSeo()){
+                \Arcane\Seo\Models\Settings::extend(function($model) {
+                    $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+                    if (!$model->propertyExists('translatable')) $model->addDynamicProperty('translatable', []);
+                    if(isset($model->translatable)) $model->translatable = ['og_locale'];
+                });
+            }
         }
         $this->validacoes();
         $class=get_declared_classes();
@@ -661,11 +645,11 @@ class Plugin extends PluginBase
              $res = checkdate($m,$d,$y);
              return $res;
              if ($res == 1){
-                 echo "data ok!";
-             } else {
-                 echo "data inválida!";
-             }
-         });
+               echo "data ok!";
+           } else {
+               echo "data inválida!";
+           }
+       });
 
 
         Validator::extend('phone', function($attribute, $value, $parameters) {
