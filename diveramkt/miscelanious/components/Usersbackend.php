@@ -7,6 +7,7 @@ use Backend\Models\UserRole;
 use RainLab\Blog\Models\Post;
 use Cms\Classes\Page;
 use Diveramkt\Miscelanious\Models\ExtendBackendUsers;
+use Diveramkt\Miscelanious\Classes\Functions;
 
 class Usersbackend extends ComponentBase
 {
@@ -43,7 +44,7 @@ class Usersbackend extends ComponentBase
 				'title' => 'Id do usuário',
 				'description' => 'Consultar usuário pelo id',
 				'type'              => 'string',
-				'validationPattern' => '^[0-9]+$',
+				// 'validationPattern' => '^[0-9]+$',
 			],
 
 			'posts_enabled' => [
@@ -130,18 +131,20 @@ class Usersbackend extends ComponentBase
 
     	$limite_post=5; if(is_numeric($this->property('posts_limit'))) $limit_posts=$this->property('posts_limit');
     	$table_user='backend_users';
-		$table_join=new ExtendBackendUsers(); $table_join=$table_join->table;
+    	$table_join=new ExtendBackendUsers(); $table_join=$table_join->table;
     	if($this->property('id_user')){
-    		$this->user=User::where('id',$this->property('id_user'))
-    		->select($table_user.'.*')->join($table_join->table.' as join','join.user_id','=',$table_user.'.id')->where('join.infos','like','%"enabled":"1"%')
+    		$user=User::where($table_user.'.id',$this->property('id_user'))
+    		->select($table_user.'.*')->join($table_join.' as join','join.user_id','=',$table_user.'.id')->where('join.infos','like','%"enabled":"1"%')
     		->first();
-    		if($this->posts_enabled && isset($this->user->id)){
-    			$posts=Post::IsPublished()->where('user_id',$this->user->id)->take($limite_post)->orderBy('published_at','desc')->get();
-    			$this->user->postagens=$this->urlPost($posts);
+    		if($this->posts_enabled && isset($user->id)){
+    			$posts=Post::IsPublished()->where('user_id',$user->id)->take($limite_post)->orderBy('published_at','desc')->get();
+    			$user->postagens=$this->urlPost($posts);
+    			$user=$this->preparSocial($user);
+    			$this->user=$user;
     		}
     	}else{
 
-    		$users=User::where('role_id','>',0)
+    		$users=User::where($table_user.'.role_id','>',0)
     		->select($table_user.'.*')->join($table_join.' as join','join.user_id','=',$table_user.'.id')->where('join.infos','like','%"enabled":"1"%');
     		if($this->property('limit') && is_numeric($this->property('limit'))) $users=$users->take($this->property('limit'));
     		$roles=$this->property('userroles');
@@ -153,17 +156,34 @@ class Usersbackend extends ComponentBase
     				}
     			});
     		}
-    		$this->users=$users->get();
+    		$users=$users->get();
 
     		if($this->posts_enabled){
-    			foreach ($this->users as $key => $value) {
+    			foreach ($users as $key => $value) {
     				$posts=Post::IsPublished()->where('user_id',$value->id)->take($limite_post)->orderBy('published_at','desc')->get();
-    				$this->users[$key]->postagens=$this->urlPost($posts);
-
+    				$value->postagens=$this->urlPost($posts);
+    				$users[$key]=$this->preparSocial($value);
     			}
     		}
+    		$this->users=$users;
 
     	}
+    }
+
+    public function preparSocial($user=false){
+    	if(isset($user->id)){
+    		if(isset($user->social_profiles[0]['type'])){
+    			$social_profiles=$user->social_profiles;
+    			foreach ($social_profiles as $key => $value) {
+    				$icon=$value['type'];
+    				if($icon == 'email') $icon='envelope';
+    				$value['icon_class']=Functions::getIconClass($icon);
+    				$social_profiles[$key]=$value;
+    			}
+    			$user->social_profiles=$social_profiles;
+    		}
+    	}
+    	return $user;
     }
 
     public function urlPost($posts){

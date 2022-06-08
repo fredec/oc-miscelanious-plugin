@@ -2,9 +2,16 @@
 
 use Request;
 use Diveramkt\Miscelanious\Classes\BackendHelpers;
+use Diveramkt\Miscelanious\Models\Settings;
 
 class Functions
 {
+
+  public static $getSettingsCache=null;
+  public static function getSettings(){
+    if(!Self::$getSettingsCache) Self::$getSettingsCache=Settings::instance();
+    return Self::$getSettingsCache;
+  }
 
   public static function getBaseurl(){
     $base=Request::server('SERVER_NAME');
@@ -12,7 +19,7 @@ class Functions
     return $base;
   }
   public static function redirectPlugin($settings=false){
-    if(!$settings) $settings = \Diveramkt\Miscelanious\Models\Settings::instance();
+    if(!$settings) $settings = Self::getSettings();
     if(!isset($settings['redirect_type']) || !$settings['redirect_type']) $settings['redirect_type']=0;
     if(!$settings['redirect_type']) return;
     if(!isset($settings['redirect_www']) || !is_numeric($settings['redirect_www'])) $settings['redirect_www']=0;
@@ -63,8 +70,8 @@ class Functions
   public static function target($link){
     // $url = 'http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://' . Request::server('HTTP_HOST');
     $link=str_replace('//www.','//',$link); $url=str_replace('//www.','//',url('/'));
-    if(!strpos("[".$link."/]", $url)) return 'target="_blank"';
-    else return 'target="_parent"';
+    if(!strpos("[".$link."/]", $url)) return 'target=_blank';
+    else return 'target=_parent';
   }
 
   public static function whats_link($tel, $msg=false){
@@ -185,5 +192,19 @@ class Functions
   //           // $retorno=$date.ToString($for, $idioma);
   //               // return $retorno;
   // },
+
+  public static function getIconClass($icon=false){
+    $settings = Self::getSettings();
+    if(!$icon) return;
+    // if(!$settings['version_icons'] || $settings['version_icons'] == '4_7') return 'fa fa-'.$icon;
+    if($settings['version_icons'] == '5'){
+      if($icon == 'phone' || $icon == 'envelope' || $icon == 'link'){
+        return 'fa fa-'.$icon;
+      }
+      return 'fab fa-'.$icon;
+    }
+
+    return 'fa fa-'.$icon;
+  }
 
 }

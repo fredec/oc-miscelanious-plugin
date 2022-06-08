@@ -1,5 +1,18 @@
 tabs:
     fields:
+        version_icons:
+            label: 'diveramkt.miscelanious::lang.config.version_icons'
+            span: full
+            options:
+                4_7: 'diveramkt.miscelanious::lang.config.awesome_4_7'
+                5: 'diveramkt.miscelanious::lang.config.awesome_5'
+            type: dropdown
+            tab: 'diveramkt.miscelanious::lang.config.configurations'
+        indikatornews_newletter:
+            label: 'diveramkt.miscelanious::lang.config.indikatornews_newletter'
+            type: switch
+            # default: 1
+            tab: 'diveramkt.miscelanious::lang.config.configurations'
         redirect_type:
             label: 'diveramkt.miscelanious::lang.config.redirect_type'
             span: full

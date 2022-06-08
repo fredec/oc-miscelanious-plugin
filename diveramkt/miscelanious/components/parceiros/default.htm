@@ -1,0 +1,12 @@
+{% set parceiros=__SELF__.parceiros %}
+{% if parceiros.count %}
+<div class="row align-items-center text-center">
+	{% for item in parceiros %}
+	<div class="col-6 col-xs-6 col-sm-4 col-md-3 col-lg-2 col-xl-2">
+		{% if item.url %} <a href="{{item.url}}" {{item.target}} {{item.title}}> {% endif %}
+			<img src="{{item.logo.path}}" class="img-fluid" alt="{{item.title}}" loading="lazy" />
+		{% if item.url %} </a> {% endif %}
+	</div>
+	{% endfor %}
+</div>
+{% endif %}

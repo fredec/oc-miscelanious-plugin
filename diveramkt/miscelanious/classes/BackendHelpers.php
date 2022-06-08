@@ -28,6 +28,15 @@ class BackendHelpers {
         return Self::$getIsArcaneSeo;
     }
 
+    public static $getIsIndikatorNews=null;
+    public static function isIndikatorNews() :bool {
+        if(!Self::$getIsIndikatorNews){
+            $plugins=new PluginVersion();
+            Self::$getIsIndikatorNews=class_exists('\Indikator\News\Plugin') && $plugins->where('code','indikator.News')->ApplyEnabled()->count();
+        }
+        return Self::$getIsIndikatorNews;
+    }
+
 }
 
 ?>

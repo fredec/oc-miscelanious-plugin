@@ -344,6 +344,35 @@ class Plugin extends PluginBase
     }
 
     public function boot(){
+
+        \Event::listen('backend.menu.extendItems', function($navigationManager) {
+            $settings=Functions::getSettings();
+            if(BackendHelpers::isIndikatorNews() && isset($settings->indikatornews_newletter) && $settings->indikatornews_newletter){
+                $navigationManager->removeMainMenuItem('Indikator.News', 'news');
+                $menu_custom=[
+                    'news' => [
+                        'label'       => 'diveramkt.miscelanious::lang.menu.newsletter',
+                        'url'         => \Backend::url('indikator/news/subscribers'),
+                        'icon'        => 'icon-newspaper-o',
+                        'iconSvg'     => 'plugins/indikator/news/assets/images/news-icon.svg',
+                        'permissions' => ['indikator.news.subscribers'],
+                        'order'       => 320,
+
+                        'sideMenu' => [
+                            'subscribers' => [
+                                'label'       => 'indikator.news::lang.menu.subscribers',
+                                'url'         => \Backend::url('indikator/news/subscribers'),
+                                'icon'        => 'icon-user',
+                                'permissions' => ['indikator.news.subscribers'],
+                                'order'       => 300
+                            ],
+                        ]
+                    ]
+                ];
+                $navigationManager->addMainMenuItems('Indikator.News',$menu_custom);
+            }
+        });
+
         if(BackendHelpers::isTranslate()){
             Event::listen('cms.page.beforeDisplay', function($controller, $url, $page) {
                 $translator=\RainLab\Translate\Classes\Translator::instance();

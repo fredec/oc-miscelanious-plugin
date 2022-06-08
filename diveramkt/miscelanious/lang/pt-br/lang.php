@@ -4,6 +4,9 @@
         'description' => '',
         'add_new' => 'Acrescentar novo',
     ],
+    'menu' => [
+        'newsletter' => 'Newsletter',
+    ],
     'tab' => [
         'company' => 'Empresa',
         'address' => 'Endereço',
@@ -44,6 +47,7 @@
         'icon_comment' => 'Opcional quando o layout utiliza Font-Awesome.',
     ],
     'config' => [
+        'configurations' => 'Configurações',
         'manage' => 'Gerenciar configurações do diversos',
         'miscelanious' => 'Diversos',
         'description' => 'Cadastro de informações em geral',
@@ -55,6 +59,10 @@
         'disabled' => 'Desabilitado',
         301 => '301 - Permanente',
         302 => '302 - Temporário',
+        'version_icons' => 'Versão dos ícons',
+        'awesome_4_7' => 'Awesome - Menor ou igual a versão 4.7',
+        'awesome_5' => 'Awesome - Maior ou igual a versão 5',
+        'indikatornews_newletter' => 'Caso o plugin Indikator.News esteja instalado, habilitar apenas o menu de newsletter.',
     ],
     'testmonial' => [
         'name' => 'Nome',

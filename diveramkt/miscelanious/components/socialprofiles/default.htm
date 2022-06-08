@@ -4,9 +4,9 @@
 <ul class="social">
 	{% for profile in profiles %}
 	<li class="{{ profile.name }}">
-		<a href="{{ profile.url }}" title="{{ profile.description}}" target="_blank">
+		<a href="{{ profile.url }}" {{ profile.target }} title="{{profile.description?profile.description:profile.name|ucfirst}}">
 			<!-- {{profile.name == 'facebook'?'-f':''}} -->
-			<i class="fa fa-{{ profile.name }}"></i>
+			<i class="{{ profile.icon_class }}"></i>
 		</a>
 	</li>
 	{% endfor %}

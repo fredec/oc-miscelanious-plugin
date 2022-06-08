@@ -12,5 +12,4 @@ class Settings extends Model
 
     // Reference to field configuration
 	public $settingsFields = 'fields.yaml';
-
 }
