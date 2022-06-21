@@ -387,6 +387,37 @@ class Plugin extends PluginBase
                 });
             }
         }
+        
+        if(BackendHelpers::isArcaneSeo()){
+            \Arcane\Seo\Models\Settings::extend(function($model) {
+                $array=[
+                    'logo' => 'System\Models\File',
+                    'logo_white' => 'System\Models\File',
+                ];
+                if(isset($model->attachOne)) $model->attachOne=$array;
+                else $model->addDynamicProperty('attachOne', $array);
+            });
+            Event::listen('backend.form.extendFields', function($widget) {
+                if (
+                    $widget->model instanceof \Arcane\Seo\Models\Settings
+                    and $widget->isNested === false
+                ) {
+                    $widget->addFields([
+                        'logo' => [
+                            'label'   => 'Logo do site',
+                            'span' => 'auto',
+                            'type' => 'fileupload',
+                        ],
+                        'logo_white' => [
+                            'label'   => 'Logo do site - Branca',
+                            'span' => 'auto',
+                            'type' => 'fileupload',
+                        ],
+                    ]);
+                }
+            });
+        }
+
         $this->validacoes();
         $class=get_declared_classes();
 
