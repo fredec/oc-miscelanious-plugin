@@ -63,6 +63,7 @@
         'awesome_4_7' => 'Awesome - Menor ou igual a versão 4.7',
         'awesome_5' => 'Awesome - Maior ou igual a versão 5',
         'indikatornews_newletter' => 'Caso o plugin Indikator.News esteja instalado, habilitar apenas o menu de newsletter.',
+        'others' => 'Outros',
     ],
     'testmonial' => [
         'name' => 'Nome',
