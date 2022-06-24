@@ -88,6 +88,9 @@ class Plugin extends PluginBase
             'prep_url' => function($url) {
                 return Functions::prep_url($url);
             },
+            'icon_settings' => function($icon) {
+                return Functions::getIconClass($icon);
+            },
             'canonical_url' => function($url=''){
                 // $url=Request::url('/');
                 if(BackendHelpers::isTranslate()){
@@ -705,11 +708,11 @@ class Plugin extends PluginBase
              $res = checkdate($m,$d,$y);
              return $res;
              if ($res == 1){
-               echo "data ok!";
-           } else {
-               echo "data inválida!";
-           }
-       });
+                 echo "data ok!";
+             } else {
+                 echo "data inválida!";
+             }
+         });
 
 
         Validator::extend('phone', function($attribute, $value, $parameters) {

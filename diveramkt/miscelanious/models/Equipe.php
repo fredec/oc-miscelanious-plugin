@@ -1,6 +1,7 @@
 <?php namespace Diveramkt\Miscelanious\Models;
 
 use Model;
+use Diveramkt\Miscelanious\Classes\Functions;
 
 /**
  * Model
@@ -40,4 +41,25 @@ class Equipe extends Model
     public $rules = [
         'name' => 'required',
     ];
+
+    public function afterFetch(){
+        if(isset($this->links[0])){
+            $links=$this->links;
+            foreach ($links as $key => $value) {
+
+                if($links[$key]['type'] == 'email') $links[$key]['url']='mailto:'.$links[$key]['link'];
+                elseif($links[$key]['type'] == 'phone') $links[$key]['url']=Functions::phone_link($links[$key]['link']);
+                elseif($links[$key]['type'] == 'whatsapp') $links[$key]['url']=Functions::whats_link($links[$key]['link']);
+                else{
+                    $links[$key]['url']=Functions::prep_url($links[$key]['link']);
+                    $links[$key]['target']=Functions::target($links[$key]['url']);
+                }
+
+                if($links[$key]['type'] == 'email') $links[$key]['icon']=Functions::getIconClass('envelope');
+                else $links[$key]['icon']=Functions::getIconClass($links[$key]['type']);
+            }
+            $this->links=$links;
+        }
+    }
+
 }
