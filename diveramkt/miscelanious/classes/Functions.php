@@ -81,12 +81,24 @@ class Functions
   //   return $url;
   // }
 
-  public static function prep_url($url) {
-    if(!strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")){
-     if(!strpos("[".$url."]", ".") && !strpos("[".url('/')."]", "https://")){
-      $url=url($url);
-      if(Request::server('HTTPS') == 'on') $url=str_replace('http://', 'https://', $url);
-    }else $url='http://'.$url;
+//   public static function prep_url($url) {
+//     if(!strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")){
+//      if(!strpos("[".$url."]", ".") && !strpos("[".url('/')."]", "https://")){
+//       $url=url($url);
+//       if(Request::server('HTTPS') == 'on') $url=str_replace('http://', 'https://', $url);
+//     }else $url='http://'.$url;
+//   }
+//   return $url;
+// }
+
+public static function prep_url($url) {
+  if(!strpos("[".$url."]", ".") && !strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")) $url=url($url);
+  if(!strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")){
+    // if(Request::server('HTTPS') == 'on'){
+    //   $url='https://'.$url;
+    // }else{
+    $url='http://'.$url;
+    // }
   }
   return $url;
 }
