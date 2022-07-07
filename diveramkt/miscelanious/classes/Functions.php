@@ -151,8 +151,9 @@ public static function whats_share($text){
 public static function phone_link($string, $cod=''){
   $link='';
   $link.=$cod.preg_replace("/[^0-9]/", "", $string);
-  if(!strpos("[".$string."]", "+")) $link='+55'.$link;
-  else $link='+'.$link;
+  if(!strpos("[".$string."]", "+") && strncmp($string, "0800", 4) !== 0){
+    $link='+55'.$link;
+  }
   return 'tel:'.$link;
 }
 
