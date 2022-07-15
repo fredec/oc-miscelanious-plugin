@@ -251,4 +251,19 @@ public static function getIconClass($icon=false){
   return 'fa fa-'.$icon;
 }
 
+// //////////////////PARA SALVAR UM VALOR COLUNA DOUBLE
+public static function savePriceDouble($val){
+  $conter='0-9.,'; $val=preg_replace("/[^".$conter."]/", "", $val);
+  $val=str_replace(',', '.', $val); $val=explode('.',$val);
+  if(count($val) > 1){
+      $cents = array_pop($val);
+      return implode('',$val).'.'.$cents;
+  }else return $val[0];
+}
+public static function getPriceDouble($val){
+  $conter='0-9.'; $val=preg_replace("/[^".$conter."]/", "", $val);
+  return number_format($val, 2, ',', '.');
+}
+// //////////////////PARA SALVAR UM VALOR COLUNA DOUBLE
+
 }
