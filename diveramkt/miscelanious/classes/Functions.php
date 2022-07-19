@@ -232,7 +232,8 @@ public static function data_formato($data, $for='%A, %d de %B de %Y'){
 
 public static function getIconClass($icon=false){
   $settings = Self::getSettings();
-  if(!$icon || !isset($settings['version_icons'])) return;
+  if(!$icon) return;
+  if(!isset($settings['version_icons'])) return 'fa fa-'.$icon;
   if(isset($settings['replace_icons'][$icon])) $icon=$settings['replace_icons'][$icon];
 
   if($settings['version_icons'] == 'others'){

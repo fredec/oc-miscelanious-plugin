@@ -384,9 +384,17 @@ class Plugin extends PluginBase
             
             if(BackendHelpers::isArcaneSeo()){
                 \Arcane\Seo\Models\Settings::extend(function($model) {
+                    if (!$model->propertyExists('jsonable')) $model->addDynamicProperty('jsonable', []);
+                    if (!$model->propertyExists('implement')) $model->addDynamicProperty('implement', []);
+                    // if (!$model->propertyExists('translatable')) $model->addDynamicProperty('translatable', []);
+
                     $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
-                    if (!$model->propertyExists('translatable')) $model->addDynamicProperty('translatable', []);
-                    if(isset($model->translatable)) $model->translatable = ['og_locale'];
+
+                    // $jsonable=$model->jsonable;
+                    // $jsonable[]='translatable';
+                    // $model->jsonable=$jsonable;
+
+                    // if(isset($model->translatable)) $model->translatable = ['og_locale'];
                 });
             }
         }

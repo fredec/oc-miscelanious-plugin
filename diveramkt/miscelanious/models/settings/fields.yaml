@@ -8,8 +8,8 @@ tabs:
         version_icons:
             label: 'diveramkt.miscelanious::lang.config.version_icons'
             options:
-                5: 'diveramkt.miscelanious::lang.config.awesome_5'
                 47: 'diveramkt.miscelanious::lang.config.awesome_4_7'
+                5: 'diveramkt.miscelanious::lang.config.awesome_5'
                 others: 'diveramkt.miscelanious::lang.config.others'
             showSearch: true
             span: full
