@@ -348,6 +348,8 @@ class Plugin extends PluginBase
 
     public function boot(){
 
+        \Diveramkt\Miscelanious\Classes\Sitemapload::load();
+
         \Event::listen('backend.menu.extendItems', function($navigationManager) {
             $settings=Functions::getSettings();
             if(BackendHelpers::isIndikatorNews() && isset($settings->indikatornews_newletter) && $settings->indikatornews_newletter){

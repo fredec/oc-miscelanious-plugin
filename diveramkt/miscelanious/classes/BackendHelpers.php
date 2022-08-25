@@ -19,6 +19,15 @@ class BackendHelpers {
         return Self::$getIsTranslate;
     }
 
+    public static $getIsSitemapRainlab=null;
+    public static function isSitemapRainlab() :bool {
+        if(!Self::$getIsSitemapRainlab){
+            $plugins=new PluginVersion();
+            Self::$getIsSitemapRainlab=class_exists('\Rainlab\Sitemap\Plugin') && class_exists('\Rainlab\Sitemap\Models\Definition') && $plugins->where('code','Rainlab.Sitemap')->ApplyEnabled()->count();
+        }
+        return Self::$getIsSitemapRainlab;
+    }
+    
     public static $getIsArcaneSeo=null;
     public static function isArcaneSeo() :bool {
         if(!Self::$getIsArcaneSeo){

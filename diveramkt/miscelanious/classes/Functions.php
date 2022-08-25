@@ -57,12 +57,12 @@ class Functions
         $settings['redirect_base_saved']=Self::getBaseurl();
       }
 
-      if(isset($settings['redirect_base_saved']) && !strpos("[".$url."/]", $settings['redirect_base_saved'])){
-        $settings['redirect_base_saved']=Self::getBaseurl();
-        $settings['redirect_type']=0;
-        $settings->save();
-        return;
-      }
+      // if(isset($settings['redirect_base_saved']) && !strpos("[".$url."/]", $settings['redirect_base_saved'])){
+      //   $settings['redirect_base_saved']=Self::getBaseurl();
+      //   $settings['redirect_type']=0;
+      //   $settings->save();
+      //   return;
+      // }
 
       header("HTTP/1.1 ".$settings['redirect_type']." Moved Temporary");
       header("Location:".$url);
