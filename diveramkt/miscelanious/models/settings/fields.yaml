@@ -76,3 +76,20 @@ tabs:
             showSearch: true
             type: switch
             tab: 'diveramkt.miscelanious::lang.config.redirects'
+        section_subdomais:
+            label: 'diveramkt.miscelanious::lang.config.subdomains'
+            type: 'section'
+            tab: 'diveramkt.miscelanious::lang.config.redirects'
+        redirect_subdomains_ssl:
+            label: 'SSL'
+            span: full
+            type: switch
+            default: true
+            tab: 'diveramkt.miscelanious::lang.config.redirects'
+        redirect_subdomains:
+            label: 'diveramkt.miscelanious::lang.config.disable_subdomains'
+            comment: 'diveramkt.miscelanious::lang.config.subdomains_comment'
+            span: full
+            type: textarea
+            tab: 'diveramkt.miscelanious::lang.config.redirects'
+

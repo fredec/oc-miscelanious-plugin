@@ -35,18 +35,30 @@ class Functions
   public static function redirectPlugin($settings=false){
     if(!$settings) $settings = Self::getSettings();
     if(!isset($settings['redirect_type']) || !$settings['redirect_type']) $settings['redirect_type']=0;
+    if(!isset($settings['redirect_subdomains_ssl'])) $settings['redirect_subdomains_ssl']=1;
     if(!$settings['redirect_type']) return;
     if(!isset($settings['redirect_www']) || !is_numeric($settings['redirect_www'])) $settings['redirect_www']=0;
+
+    $url=Request::url();
+    $sub_active=false;
+    if(isset($settings['redirect_subdomains'])){
+      $subs = array_filter(explode("\n", trim($settings['redirect_subdomains'])));
+      if(isset($subs[0])){
+        foreach ($subs as $key => $sub) {
+          $sub=str_replace('\n', '', trim($sub));
+          if(strpos("[".$url."]", 'https://'.$sub.'.') || strpos("[".$url."]", 'http://'.$sub.'.')) $sub_active=true;
+        }
+      }
+    }
 
     // !Request::is('https://')
     // echo Request::secure();
     // Request::server('HTTPS') == 'on' && 
-    $url=Request::url();
-    if($settings['redirect_https'] && !strpos($url, 'https://')){
+    if($settings['redirect_https'] && !strpos($url, 'https://') && ($settings['redirect_subdomains_ssl'] || !$sub_active)){
       $url=str_replace('http://', 'https://', $url);
     }
 
-    if($settings['redirect_www'] && !strpos($url, 'www.')){
+    if($settings['redirect_www'] && !strpos($url, 'www.') && !$sub_active){
       $url=str_replace(['http://','https://'], ['http://www.','https://www.'], $url);
     }
 
@@ -91,95 +103,95 @@ class Functions
 //   return $url;
 // }
 
-public static function prep_url($url) {
-  if(!strpos("[".$url."]", ".") && !strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")) $url=url($url);
-  if(!strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")){
+  public static function prep_url($url) {
+    if(!strpos("[".$url."]", ".") && !strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")) $url=url($url);
+    if(!strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")){
     // if(Request::server('HTTPS') == 'on'){
     //   $url='https://'.$url;
     // }else{
-    $url='http://'.$url;
+      $url='http://'.$url;
     // }
+    }
+    return $url;
   }
-  return $url;
-}
 
-public static function target($link){
+  public static function target($link){
     // $url = 'http' . ((Request::server('HTTPS') == 'on') ? 's' : '') . '://' . Request::server('HTTP_HOST');
-  $link=str_replace('//www.','//',$link); $url=str_replace('//www.','//',url('/'));
-  if(!strpos("[".$link."/]", $url)) return 'target=_blank';
-  else return 'target=_parent';
-}
-
-public static function whats_link($tel, $msg=false){
-  if(isset($_SERVER['HTTP_USER_AGENT'])){
-    $iphone = strpos($_SERVER['HTTP_USER_AGENT'],"iPhone");
-    $android = strpos($_SERVER['HTTP_USER_AGENT'],"Android");
-    $palmpre = strpos($_SERVER['HTTP_USER_AGENT'],"webOS");
-    $berry = strpos($_SERVER['HTTP_USER_AGENT'],"BlackBerry");
-    $ipod = strpos($_SERVER['HTTP_USER_AGENT'],"iPod");
-
-    $extra=''; if(!strpos("[".$tel."]", "+")) $extra='55';
-
-    if ($iphone || $android || $palmpre || $ipod || $berry == true) {
-      $link='https://api.whatsapp.com/send?phone='.$extra;
-    } else {
-      $link='https://web.whatsapp.com/send?phone='.$extra;
-    }
-    $link=$link.preg_replace("/[^0-9]/", "", $tel);
-    if($msg) $link.='&text='.$msg;
-    return $link;
-  }else return $tel;
-}
-
-public static function whats_share($text){
-  if(isset($_SERVER['HTTP_USER_AGENT'])){
-    $iphone = strpos($_SERVER['HTTP_USER_AGENT'],"iPhone");
-    $android = strpos($_SERVER['HTTP_USER_AGENT'],"Android");
-    $palmpre = strpos($_SERVER['HTTP_USER_AGENT'],"webOS");
-    $berry = strpos($_SERVER['HTTP_USER_AGENT'],"BlackBerry");
-    $ipod = strpos($_SERVER['HTTP_USER_AGENT'],"iPod");
-    if ($iphone || $android || $palmpre || $ipod || $berry == true) {
-      $link='https://api.whatsapp.com/send';
-    } else {
-      $link='https://web.whatsapp.com/send';
-    }
-
-    return $link.'/?text='.$text;
-  }else return $text;
-}
-
-public static function phone_link($string, $cod=''){
-  $link='';
-  $link.=$cod.preg_replace("/[^0-9]/", "", $string);
-  if(!strpos("[".$string."]", "+") && strncmp($string, "0800", 4) !== 0){
-    $link='+55'.$link;
+    $link=str_replace('//www.','//',$link); $url=str_replace('//www.','//',url('/'));
+    if(!strpos("[".$link."/]", $url)) return 'target=_blank';
+    else return 'target=_parent';
   }
-  return 'tel:'.$link;
-}
 
-public static function formatValue($number=false){
-  $number=preg_replace("/[^0-9.,]/", "", $number);
-  $number=floatval(str_replace(',', '.', $number));
-  return number_format($number, 2, ',', '.');
-}
+  public static function whats_link($tel, $msg=false){
+    if(isset($_SERVER['HTTP_USER_AGENT'])){
+      $iphone = strpos($_SERVER['HTTP_USER_AGENT'],"iPhone");
+      $android = strpos($_SERVER['HTTP_USER_AGENT'],"Android");
+      $palmpre = strpos($_SERVER['HTTP_USER_AGENT'],"webOS");
+      $berry = strpos($_SERVER['HTTP_USER_AGENT'],"BlackBerry");
+      $ipod = strpos($_SERVER['HTTP_USER_AGENT'],"iPod");
 
-public static function data_formato($data, $for='%A, %d de %B de %Y'){
-  $replace1=[]; $replace2=[];
-  if(BackendHelpers::isTranslate()) $translator=\RainLab\Translate\Classes\Translator::instance();
-  if(!isset($translator) || ($tranlsator->getLocale() == 'pb' || $translator->getLocale() == 'pt-br')){
-    setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
+      $extra=''; if(!strpos("[".$tel."]", "+")) $extra='55';
+
+      if ($iphone || $android || $palmpre || $ipod || $berry == true) {
+        $link='https://api.whatsapp.com/send?phone='.$extra;
+      } else {
+        $link='https://web.whatsapp.com/send?phone='.$extra;
+      }
+      $link=$link.preg_replace("/[^0-9]/", "", $tel);
+      if($msg) $link.='&text='.$msg;
+      return $link;
+    }else return $tel;
+  }
+
+  public static function whats_share($text){
+    if(isset($_SERVER['HTTP_USER_AGENT'])){
+      $iphone = strpos($_SERVER['HTTP_USER_AGENT'],"iPhone");
+      $android = strpos($_SERVER['HTTP_USER_AGENT'],"Android");
+      $palmpre = strpos($_SERVER['HTTP_USER_AGENT'],"webOS");
+      $berry = strpos($_SERVER['HTTP_USER_AGENT'],"BlackBerry");
+      $ipod = strpos($_SERVER['HTTP_USER_AGENT'],"iPod");
+      if ($iphone || $android || $palmpre || $ipod || $berry == true) {
+        $link='https://api.whatsapp.com/send';
+      } else {
+        $link='https://web.whatsapp.com/send';
+      }
+
+      return $link.'/?text='.$text;
+    }else return $text;
+  }
+
+  public static function phone_link($string, $cod=''){
+    $link='';
+    $link.=$cod.preg_replace("/[^0-9]/", "", $string);
+    if(!strpos("[".$string."]", "+") && strncmp($string, "0800", 4) !== 0){
+      $link='+55'.$link;
+    }
+    return 'tel:'.$link;
+  }
+
+  public static function formatValue($number=false){
+    $number=preg_replace("/[^0-9.,]/", "", $number);
+    $number=floatval(str_replace(',', '.', $number));
+    return number_format($number, 2, ',', '.');
+  }
+
+  public static function data_formato($data, $for='%A, %d de %B de %Y'){
+    $replace1=[]; $replace2=[];
+    if(BackendHelpers::isTranslate()) $translator=\RainLab\Translate\Classes\Translator::instance();
+    if(!isset($translator) || ($tranlsator->getLocale() == 'pb' || $translator->getLocale() == 'pt-br')){
+      setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                 // date_default_timezone_set('America/Sao_Paulo');
 
-    $replace1=array_merge($replace1, ['January','February','March','April','May','June','July','August','September','October','November','December']);
-    $replace2=array_merge($replace2, ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']);
+      $replace1=array_merge($replace1, ['January','February','March','April','May','June','July','August','September','October','November','December']);
+      $replace2=array_merge($replace2, ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']);
+    }
+
+    if(!$data) $data='today';
+    else $data=date($data);
+    $return=utf8_encode(strftime($for, strtotime($data)));
+
+    return str_replace($replace1, $replace2, $return);
   }
-
-  if(!$data) $data='today';
-  else $data=date($data);
-  $return=utf8_encode(strftime($for, strtotime($data)));
-
-  return str_replace($replace1, $replace2, $return);
-}
 
   // 'data_formato' => function($data, $for='%A, %d de %B de %Y'){
 
@@ -230,41 +242,41 @@ public static function data_formato($data, $for='%A, %d de %B de %Y'){
   //               // return $retorno;
   // },
 
-public static function getIconClass($icon=false){
-  $settings = Self::getSettings();
-  if(!$icon) return;
-  if(!isset($settings['version_icons'])) return 'fa fa-'.$icon;
-  if(isset($settings['replace_icons'][$icon])) $icon=$settings['replace_icons'][$icon];
+  public static function getIconClass($icon=false){
+    $settings = Self::getSettings();
+    if(!$icon) return;
+    if(!isset($settings['version_icons'])) return 'fa fa-'.$icon;
+    if(isset($settings['replace_icons'][$icon])) $icon=$settings['replace_icons'][$icon];
 
-  if($settings['version_icons'] == 'others'){
-    $sub=$settings['others_icons'];
-    if(empty($sub)) $sub='fa fa-';
-    return $sub.$icon;
-  }
-
-  if($settings['version_icons'] == '5'){
-    if($icon == 'phone' || $icon == 'envelope' || $icon == 'link'){
-      return 'fa fa-'.$icon;
+    if($settings['version_icons'] == 'others'){
+      $sub=$settings['others_icons'];
+      if(empty($sub)) $sub='fa fa-';
+      return $sub.$icon;
     }
-    return 'fab fa-'.$icon;
-  }
 
-  return 'fa fa-'.$icon;
-}
+    if($settings['version_icons'] == '5'){
+      if($icon == 'phone' || $icon == 'envelope' || $icon == 'link'){
+        return 'fa fa-'.$icon;
+      }
+      return 'fab fa-'.$icon;
+    }
+
+    return 'fa fa-'.$icon;
+  }
 
 // //////////////////PARA SALVAR UM VALOR COLUNA DOUBLE
-public static function savePriceDouble($val){
-  $conter='0-9.,'; $val=preg_replace("/[^".$conter."]/", "", $val);
-  $val=str_replace(',', '.', $val); $val=explode('.',$val);
-  if(count($val) > 1){
+  public static function savePriceDouble($val){
+    $conter='0-9.,'; $val=preg_replace("/[^".$conter."]/", "", $val);
+    $val=str_replace(',', '.', $val); $val=explode('.',$val);
+    if(count($val) > 1){
       $cents = array_pop($val);
       return implode('',$val).'.'.$cents;
-  }else return $val[0];
-}
-public static function getPriceDouble($val){
-  $conter='0-9.'; $val=preg_replace("/[^".$conter."]/", "", $val);
-  return number_format($val, 2, ',', '.');
-}
+    }else return $val[0];
+  }
+  public static function getPriceDouble($val){
+    $conter='0-9.'; $val=preg_replace("/[^".$conter."]/", "", $val);
+    return number_format($val, 2, ',', '.');
+  }
 // //////////////////PARA SALVAR UM VALOR COLUNA DOUBLE
 
 }
