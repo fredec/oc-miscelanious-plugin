@@ -322,6 +322,27 @@ class Plugin extends PluginBase
                 return $text;
             },
 
+            'getHeightimage' => function($image=false, $width=false){
+                if(!$image) return;
+                $image=trim(str_replace(' /', '', ' '.$image));
+                $image=str_replace('%20', ' ', $image);
+                $image=getimagesize($image);
+                $height=$image[1];
+                if(!isset($image[0]) || !isset($image[1])) return;
+                if($width) $height=($width*$image[1])/$image[0];
+                return floor($height);
+            },
+            'getWidthimage' => function($image=false, $height=false){
+                if(!$image) return;
+                $image=trim(str_replace(' /', '', ' '.$image));
+                $image=str_replace('%20', ' ', $image);
+                $image=getimagesize($image);
+                if(!isset($image[0]) || !isset($image[1])) return;
+                $width=$image[0];
+                if($height) $width=($height*$image[0])/$image[1];
+                return floor($width);
+            },
+
         ];
     }
 
