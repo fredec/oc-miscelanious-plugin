@@ -342,6 +342,14 @@ class Plugin extends PluginBase
                 if($height) $width=($height*$image[0])/$image[1];
                 return floor($width);
             },
+            'webspeed' => function(){
+                if(isset($_SERVER['HTTP_USER_AGENT']) && (strpos("[".$_SERVER['HTTP_USER_AGENT']."]", 'GTmetrix') || strpos("[".$_SERVER['HTTP_USER_AGENT']."]", 'Chrome-Lighthouse') || strpos("[".$_SERVER['HTTP_USER_AGENT']."]", 'Speed Insights'))){
+                    return true;
+                }else return false;
+                // if (!isset($_SERVER['HTTP_USER_AGENT']) || stripos($_SERVER['HTTP_USER_AGENT'], 'Speed Insights') === false){
+                //     return false;
+                // }else return true;
+            },
 
         ];
     }
@@ -739,11 +747,11 @@ class Plugin extends PluginBase
              $res = checkdate($m,$d,$y);
              return $res;
              if ($res == 1){
-                 echo "data ok!";
-             } else {
-                 echo "data inválida!";
-             }
-         });
+               echo "data ok!";
+           } else {
+               echo "data inválida!";
+           }
+       });
 
 
         Validator::extend('phone', function($attribute, $value, $parameters) {

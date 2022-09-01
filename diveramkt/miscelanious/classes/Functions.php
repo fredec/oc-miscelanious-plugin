@@ -104,7 +104,9 @@ class Functions
 // }
 
   public static function prep_url($url) {
-    if(!strpos("[".$url."]", ".") && !strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")) $url=url($url);
+    $url=trim($url);
+    if(strpos("[".$url."]", "#") && !strpos("[".$url."]", "/#")) $url=str_replace('#', '/#', $url);
+    if(!strpos("[".$url."]", ".") && (!strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://"))) $url=url($url);
     if(!strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")){
     // if(Request::server('HTTPS') == 'on'){
     //   $url='https://'.$url;
