@@ -67,6 +67,7 @@
         'awesome_5' => 'Awesome - Maior ou igual a versão 5',
         'indikatornews_newletter' => 'Caso o plugin Indikator.News esteja instalado, habilitar apenas o menu de newsletter.',
         'others' => 'Outros',
+        'disabled_trash_backend' => 'Desabilitar lixeiras dentro do backend para excluir cadastros.',
     ],
     'testmonial' => [
         'name' => 'Nome',

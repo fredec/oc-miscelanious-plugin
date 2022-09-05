@@ -378,6 +378,13 @@ class Plugin extends PluginBase
     public function boot(){
 
         \Diveramkt\Miscelanious\Classes\Sitemapload::load();
+        \Event::listen('backend.page.beforeDisplay', function($controller, $action, $params) {
+            $settings=Functions::getSettings();
+            if(isset($settings->disabled_trash_backend) && $settings->disabled_trash_backend){
+            // plugins_path()
+                $controller->addCss(url('plugins/diveramkt/miscelanious/assets/css/styles_custom.css'));
+            }
+        });
 
         \Event::listen('backend.menu.extendItems', function($navigationManager) {
             $settings=Functions::getSettings();
@@ -747,11 +754,11 @@ class Plugin extends PluginBase
              $res = checkdate($m,$d,$y);
              return $res;
              if ($res == 1){
-               echo "data ok!";
-           } else {
-               echo "data inválida!";
-           }
-       });
+                 echo "data ok!";
+             } else {
+                 echo "data inválida!";
+             }
+         });
 
 
         Validator::extend('phone', function($attribute, $value, $parameters) {
