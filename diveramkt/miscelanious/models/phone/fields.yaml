@@ -42,3 +42,10 @@ fields:
                     label: Número
                     span: auto
                     type: text
+                type:
+                    label: Tipo
+                    span: auto
+                    type: dropdown
+                    options:
+                        0: Telefone
+                        1: Whatsapp

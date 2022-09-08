@@ -69,7 +69,7 @@ tabs:
             size: giant
             span: auto
             type: richeditor
-            toolbarButtons: bold|italic|color
+            toolbarButtons: bold|italic|color|formatUL|insertLink|insertImage|html
             tab: 'diveramkt.miscelanious::lang.tab.company'
         phones:
             label: 'diveramkt.miscelanious::lang.phone.phones'

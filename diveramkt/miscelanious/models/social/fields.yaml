@@ -25,6 +25,7 @@ fields:
             skype: Skype
             flickr: Flickr
             spotify: Spotify
+            soundcloud: Soundcloud
             email: Email
         span: auto
         required: 1
