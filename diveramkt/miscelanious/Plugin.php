@@ -382,7 +382,7 @@ class Plugin extends PluginBase
             $settings=Functions::getSettings();
             if(isset($settings->disabled_trash_backend) && $settings->disabled_trash_backend){
             // plugins_path()
-                $controller->addCss(url('plugins/diveramkt/miscelanious/assets/css/styles_custom.css'));
+                $controller->addCss(url('plugins/diveramkt/miscelanious/assets/css/styles_custom.css?v=0.0.1'));
             }
         });
 
