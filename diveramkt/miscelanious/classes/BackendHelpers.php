@@ -19,6 +19,15 @@ class BackendHelpers {
         return Self::$getIsTranslate;
     }
 
+    public static $getIsPolloZenVisits=null;
+    public static function IsPolloZenVisits() :bool {
+        if(!Self::$getIsPolloZenVisits){
+            $plugins=new PluginVersion();
+            Self::$getIsPolloZenVisits=class_exists('\PolloZen\MostVisited\Plugin') && $plugins->where('code','PolloZen.MostVisited')->ApplyEnabled()->count();
+        }
+        return Self::$getIsPolloZenVisits;
+    }
+
     public static $getIsSitemapRainlab=null;
     public static function isSitemapRainlab() :bool {
         if(!Self::$getIsSitemapRainlab){

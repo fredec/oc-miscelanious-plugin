@@ -351,6 +351,13 @@ class Plugin extends PluginBase
                 // }else return true;
             },
 
+            'logo_site' => function(){
+                if(BackendHelpers::isArcaneSeo()){
+                    $arcane=\Arcane\Seo\Models\Settings::instance();
+                    if(isset($arcane->logo->path)) return $arcane->logo->path;
+                }
+            },
+
         ];
     }
 
@@ -550,6 +557,18 @@ class Plugin extends PluginBase
             }
         });
 
+        if(BackendHelpers::IsPolloZenVisits()){
+            \RainLab\Blog\Models\Post::extend(function($model) {
+                $model->addDynamicMethod('getVisitsTotalAttribute', function($query) use ($model) {
+                    $visits=\PolloZen\MostVisited\Models\Visits::
+                    select( \Db::raw('SUM(visits) as total_visits'))
+                    ->distinct()->where('post_id',$model->id)->first();
+                    if($visits->total_visits) return $visits->total_visits;
+                    else return 0;
+                });
+            });
+        }
+
         \Backend\Models\User::extend(function($model) {
             if (!Schema::hasTable('diveramkt_miscelanious_extend_backend_users')) return;
             $model->hasOne=[
@@ -568,13 +587,36 @@ class Plugin extends PluginBase
             // ];
             $model->addJsonable('social_profiles');
 
+            $model->addDynamicMethod('getTextAttribute', function($query) use ($model) {
+                $infos=$model->getExtendInfos;
+                if(isset($infos->infos['text'])) return $infos->infos['text'];
+            });
+            $model->addDynamicMethod('getDescriptionAttribute', function($query) use ($model) {
+                $infos=$model->getExtendInfos;
+                if(isset($infos->infos['description'])) return $infos->infos['description'];
+            });
+            $model->addDynamicMethod('getSocialProfilesAttribute', function($query) use ($model) {
+                $infos=$model->getExtendInfos;
+                if(isset($infos->infos['social_profiles'])){
+                    if(strpos("[".Request::url('/')."]", '/backend/users')) return $infos->infos['social_profiles'];
+                    else{
+                        $social_profiles=json_decode($infos->infos['social_profiles']);
+                        foreach ($social_profiles as $key => $value) {
+                            $type=$social_profiles[$key]->type;
+                            if($type == 'email') $type='envelope';
+                            $social_profiles[$key]->icon=Functions::getIconClass($type);
+                        }
+                        return json_encode($social_profiles);
+                    }
+                }
+            });
+
             $model->bindEvent('model.beforeSave', function () use ($model) {
                 $infos=$model->infos;
                 $table='backend_users';
 
                 foreach ($model->attributes as $key => $value) {
                     if(!\Schema::hasColumn($table, $key)){
-
                         if($key == 'social_profiles'){
                             $value=json_decode($value);
                             if(count($value)){
@@ -614,20 +656,21 @@ class Plugin extends PluginBase
                     $get_infos->save();
                 }
             });
-            $model->bindEvent('model.afterFetch', function () use ($model) {
-                if(!isset($model->id)) return;
-                $get_infos=$model->getExtendInfos;
-                if(!isset($get_infos->id)) return;
-                $attributes=$model->attributes;
-                if(isset($get_infos->infos) && count($get_infos->infos)){
-                    foreach ($get_infos->infos as $key => $value) {
-                        if(is_array($value)) $attributes[$key]=json_encode($value);
-                        else $attributes[$key]=$value;
-                    }
-                }
-                if(isset($get_infos->text)) $attributes['text']=$get_infos->text;
-                $model->attributes=$attributes;
-            });
+            // $model->bindEvent('model.afterFetch', function () use ($model) {
+            //     if(!isset($model->id)) return;
+            //     $get_infos=$model->getExtendInfos;
+            //     if(!isset($get_infos->id)) return;
+            //     $attributes=$model->attributes;
+            //     if(isset($get_infos->infos) && count($get_infos->infos)){
+            //         foreach ($get_infos->infos as $key => $value) {
+            //             if($key == 'description') continue;
+            //             if(is_array($value)) $attributes[$key]=json_encode($value);
+            //             else $attributes[$key]=$value;
+            //         }
+            //     }
+            //     if(isset($get_infos->text)) $attributes['text']=$get_infos->text;
+            //     $model->attributes=$attributes;
+            // });
         });
 
     // \Backend\Models\User::extend(function($model) {
@@ -636,113 +679,113 @@ class Plugin extends PluginBase
     // });
     // ///////////////////EXTEND BACKEND USERS
 
-        if(in_array('RainLab\Translate\Plugin', $class) || in_array('RainLab\Translate\Classes\Translator', $class)){
+if(in_array('RainLab\Translate\Plugin', $class) || in_array('RainLab\Translate\Classes\Translator', $class)){
 
-            \Diveramkt\Miscelanious\Models\Equipe::extend(function($model) {
-                if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
-                $model->translatable = ['name','description','position'];
-            });
+    \Diveramkt\Miscelanious\Models\Equipe::extend(function($model) {
+        if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+        $model->translatable = ['name','description','position'];
+    });
 
-            \Diveramkt\Miscelanious\Models\Equipecategorias::extend(function($model) {
-                if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
-                $model->translatable = ['title','description'];
-            });
+    \Diveramkt\Miscelanious\Models\Equipecategorias::extend(function($model) {
+        if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+        $model->translatable = ['title','description'];
+    });
 
-            \Diveramkt\Miscelanious\Models\Company::extend(function($model) {
-                if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
-                $model->translatable = ['name','city','neighborhood','street','addon','number','state','opening_hours','mobiles','phones'];
-            });
+    \Diveramkt\Miscelanious\Models\Company::extend(function($model) {
+        if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+        $model->translatable = ['name','city','neighborhood','street','addon','number','state','opening_hours','mobiles','phones'];
+    });
 
-            \Diveramkt\Miscelanious\Models\Testmonial::extend(function($model) {
-                if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
-                $model->translatable = ['name','position','testmonial','image'];
-            });
+    \Diveramkt\Miscelanious\Models\Testmonial::extend(function($model) {
+        if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+        $model->translatable = ['name','position','testmonial','image'];
+    });
 
-            \Diveramkt\Miscelanious\Models\Contact::extend(function($model) {
-                if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
-                $model->translatable = ['description','value'];
-            });
+    \Diveramkt\Miscelanious\Models\Contact::extend(function($model) {
+        if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+        $model->translatable = ['description','value'];
+    });
 
-            \Diveramkt\Miscelanious\Models\Phone::extend(function($model) {
-                if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
-                $model->translatable = ['area_code','description','info'];
-            });
+    \Diveramkt\Miscelanious\Models\Phone::extend(function($model) {
+        if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+        $model->translatable = ['area_code','description','info'];
+    });
 
-            \Diveramkt\Miscelanious\Models\Social::extend(function($model) {
-                if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
-                $model->translatable = ['description'];
-            });
+    \Diveramkt\Miscelanious\Models\Social::extend(function($model) {
+        if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
+        $model->translatable = ['description'];
+    });
 
-        }
-    }
+}
+}
 
 
-    public function validacoes(){
+public function validacoes(){
 
-        Validator::extend('cnpj', function($attribute, $value, $parameters) {
-            $cnpj = preg_replace('/[^0-9]/', '', (string) $value);
+    Validator::extend('cnpj', function($attribute, $value, $parameters) {
+        $cnpj = preg_replace('/[^0-9]/', '', (string) $value);
 
     // Valida tamanho
-            if (strlen($cnpj) != 14)
-                return false;
+        if (strlen($cnpj) != 14)
+            return false;
 
     // Verifica se todos os digitos são iguais
-            if (preg_match('/(\d)\1{13}/', $cnpj))
-                return false;   
+        if (preg_match('/(\d)\1{13}/', $cnpj))
+            return false;   
 
     // Valida primeiro dígito verificador
-            for ($i = 0, $j = 5, $soma = 0; $i < 12; $i++)
-            {
-                $soma += $cnpj[$i] * $j;
-                $j = ($j == 2) ? 9 : $j - 1;
-            }
+        for ($i = 0, $j = 5, $soma = 0; $i < 12; $i++)
+        {
+            $soma += $cnpj[$i] * $j;
+            $j = ($j == 2) ? 9 : $j - 1;
+        }
 
-            $resto = $soma % 11;
+        $resto = $soma % 11;
 
-            if ($cnpj[12] != ($resto < 2 ? 0 : 11 - $resto))
-                return false;
+        if ($cnpj[12] != ($resto < 2 ? 0 : 11 - $resto))
+            return false;
 
     // Valida segundo dígito verificador
-            for ($i = 0, $j = 6, $soma = 0; $i < 13; $i++)
-            {
-                $soma += $cnpj[$i] * $j;
-                $j = ($j == 2) ? 9 : $j - 1;
-            }
+        for ($i = 0, $j = 6, $soma = 0; $i < 13; $i++)
+        {
+            $soma += $cnpj[$i] * $j;
+            $j = ($j == 2) ? 9 : $j - 1;
+        }
 
-            $resto = $soma % 11;
+        $resto = $soma % 11;
 
-            return $cnpj[13] == ($resto < 2 ? 0 : 11 - $resto);
-        });
+        return $cnpj[13] == ($resto < 2 ? 0 : 11 - $resto);
+    });
 
-        Validator::extend('cpf', function($attribute, $value, $parameters) {
+    Validator::extend('cpf', function($attribute, $value, $parameters) {
              // Extrai somente os números
-            $cpf = preg_replace( '/[^0-9]/is', '', $value );
+        $cpf = preg_replace( '/[^0-9]/is', '', $value );
 
     // Verifica se foi informado todos os digitos corretamente
-            if (strlen($cpf) != 11) {
-                return false;
-            }
+        if (strlen($cpf) != 11) {
+            return false;
+        }
 
     // Verifica se foi informada uma sequência de digitos repetidos. Ex: 111.111.111-11
-            if (preg_match('/(\d)\1{10}/', $cpf)) {
-                return false;
-            }
+        if (preg_match('/(\d)\1{10}/', $cpf)) {
+            return false;
+        }
 
     // Faz o calculo para validar o CPF
-            for ($t = 9; $t < 11; $t++) {
-                for ($d = 0, $c = 0; $c < $t; $c++) {
-                    $d += $cpf[$c] * (($t + 1) - $c);
-                }
-                $d = ((10 * $d) % 11) % 10;
-                if ($cpf[$c] != $d) {
-                    return false;
-                }
+        for ($t = 9; $t < 11; $t++) {
+            for ($d = 0, $c = 0; $c < $t; $c++) {
+                $d += $cpf[$c] * (($t + 1) - $c);
             }
-            return true;
-        });
+            $d = ((10 * $d) % 11) % 10;
+            if ($cpf[$c] != $d) {
+                return false;
+            }
+        }
+        return true;
+    });
 
 
-        Validator::extend('data', function($attribute, $value, $parameters) {
+    Validator::extend('data', function($attribute, $value, $parameters) {
              $data = explode("/","$value"); // fatia a string $dat em pedados, usando / como referência
              $d = $data[0];
              $m = $data[1];
@@ -761,11 +804,11 @@ class Plugin extends PluginBase
          });
 
 
-        Validator::extend('phone', function($attribute, $value, $parameters) {
-            $telefone= trim(str_replace('/', '', str_replace(' ', '', str_replace('-', '', str_replace(')', '', str_replace('(', '', $value))))));
+    Validator::extend('phone', function($attribute, $value, $parameters) {
+        $telefone= trim(str_replace('/', '', str_replace(' ', '', str_replace('-', '', str_replace(')', '', str_replace('(', '', $value))))));
 
         // $regexTelefone = "^[0-9]{11}$";
-            $regexTelefone = "/[0-9]{11}/";
+        $regexTelefone = "/[0-9]{11}/";
 
     $regexCel = '/[0-9]{2}[6789][0-9]{3,4}[0-9]{4}/'; // Regex para validar somente celular
     if (preg_match($regexTelefone, $telefone) or preg_match($regexCel, $telefone)) {
@@ -774,7 +817,7 @@ class Plugin extends PluginBase
         return false;
     }
 });
-    }
+}
 
 
 }
