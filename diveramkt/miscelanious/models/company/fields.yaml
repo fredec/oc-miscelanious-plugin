@@ -148,3 +148,8 @@ tabs:
             type: textarea
             comment: 'diveramkt.miscelanious::lang.company.maps_link_comment'
             tab: 'diveramkt.miscelanious::lang.tab.address'
+        images:
+            label: 'diveramkt.miscelanious::lang.company.images'
+            span: full
+            type: fileupload
+            tab: 'diveramkt.miscelanious::lang.tab.images'

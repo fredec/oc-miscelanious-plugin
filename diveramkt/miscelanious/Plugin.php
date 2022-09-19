@@ -453,10 +453,13 @@ class Plugin extends PluginBase
                 if(isset($model->attachOne)) $model->attachOne=$array;
                 else $model->addDynamicProperty('attachOne', $array);
             });
-            Event::listen('backend.form.extendFields', function($widget) {
+        }
+
+        Event::listen('backend.form.extendFields', function($widget) {
+            if($widget->isNested === false){
                 if (
                     $widget->model instanceof \Arcane\Seo\Models\Settings
-                    and $widget->isNested === false
+                    && BackendHelpers::isArcaneSeo()
                 ) {
                     $widget->addFields([
                         'logo' => [
@@ -470,9 +473,12 @@ class Plugin extends PluginBase
                             'type' => 'fileupload',
                         ],
                     ]);
+                }elseif($widget->model instanceof \Diveramkt\Miscelanious\Models\Company) {
+                    $settings=Functions::getSettings();
+                    if(!$settings->enabled_images_companies) $widget->removeField('images');
                 }
-            });
-        }
+            }
+        });
 
         $this->validacoes();
         $class=get_declared_classes();
@@ -722,69 +728,17 @@ if(in_array('RainLab\Translate\Plugin', $class) || in_array('RainLab\Translate\C
 
 public function validacoes(){
 
+    Validator::extend('cpf_cnpj', function($attribute, $value, $parameters) {
+        if(Functions::validCnpj($value)) return true;
+        elseif(Functions::validCpf($value)) return true;
+        else return false;
+    });
     Validator::extend('cnpj', function($attribute, $value, $parameters) {
-        $cnpj = preg_replace('/[^0-9]/', '', (string) $value);
-
-    // Valida tamanho
-        if (strlen($cnpj) != 14)
-            return false;
-
-    // Verifica se todos os digitos são iguais
-        if (preg_match('/(\d)\1{13}/', $cnpj))
-            return false;   
-
-    // Valida primeiro dígito verificador
-        for ($i = 0, $j = 5, $soma = 0; $i < 12; $i++)
-        {
-            $soma += $cnpj[$i] * $j;
-            $j = ($j == 2) ? 9 : $j - 1;
-        }
-
-        $resto = $soma % 11;
-
-        if ($cnpj[12] != ($resto < 2 ? 0 : 11 - $resto))
-            return false;
-
-    // Valida segundo dígito verificador
-        for ($i = 0, $j = 6, $soma = 0; $i < 13; $i++)
-        {
-            $soma += $cnpj[$i] * $j;
-            $j = ($j == 2) ? 9 : $j - 1;
-        }
-
-        $resto = $soma % 11;
-
-        return $cnpj[13] == ($resto < 2 ? 0 : 11 - $resto);
+        return Functions::validCnpj($value);
     });
-
     Validator::extend('cpf', function($attribute, $value, $parameters) {
-             // Extrai somente os números
-        $cpf = preg_replace( '/[^0-9]/is', '', $value );
-
-    // Verifica se foi informado todos os digitos corretamente
-        if (strlen($cpf) != 11) {
-            return false;
-        }
-
-    // Verifica se foi informada uma sequência de digitos repetidos. Ex: 111.111.111-11
-        if (preg_match('/(\d)\1{10}/', $cpf)) {
-            return false;
-        }
-
-    // Faz o calculo para validar o CPF
-        for ($t = 9; $t < 11; $t++) {
-            for ($d = 0, $c = 0; $c < $t; $c++) {
-                $d += $cpf[$c] * (($t + 1) - $c);
-            }
-            $d = ((10 * $d) % 11) % 10;
-            if ($cpf[$c] != $d) {
-                return false;
-            }
-        }
-        return true;
+        return Functions::validCpf($value);
     });
-
-
     Validator::extend('data', function($attribute, $value, $parameters) {
              $data = explode("/","$value"); // fatia a string $dat em pedados, usando / como referência
              $d = $data[0];
@@ -797,26 +751,15 @@ public function validacoes(){
              $res = checkdate($m,$d,$y);
              return $res;
              if ($res == 1){
-                 echo "data ok!";
-             } else {
-                 echo "data inválida!";
-             }
-         });
-
-
+               echo "data ok!";
+           } else {
+               echo "data inválida!";
+           }
+       });
     Validator::extend('phone', function($attribute, $value, $parameters) {
-        $telefone= trim(str_replace('/', '', str_replace(' ', '', str_replace('-', '', str_replace(')', '', str_replace('(', '', $value))))));
+        return Functions::validPhone($value);
+    });
 
-        // $regexTelefone = "^[0-9]{11}$";
-        $regexTelefone = "/[0-9]{11}/";
-
-    $regexCel = '/[0-9]{2}[6789][0-9]{3,4}[0-9]{4}/'; // Regex para validar somente celular
-    if (preg_match($regexTelefone, $telefone) or preg_match($regexCel, $telefone)) {
-        return true;
-    }else{
-        return false;
-    }
-});
 }
 
 

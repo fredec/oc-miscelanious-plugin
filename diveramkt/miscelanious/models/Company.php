@@ -28,6 +28,10 @@ class Company extends Model
 
     public $jsonable = ['mobiles','phones'];
 
+    public $attachMany = [
+        'images' => 'System\Models\File',
+    ];
+
     /**
      * @var string The database table used by the model.
      */

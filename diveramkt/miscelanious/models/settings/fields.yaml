@@ -59,6 +59,10 @@ tabs:
             label: 'diveramkt.miscelanious::lang.config.disabled_trash_backend'
             type: switch
             tab: 'diveramkt.miscelanious::lang.config.configurations'
+        enabled_images_companies:
+            label: 'diveramkt.miscelanious::lang.config.enabled_images_companies'
+            type: switch
+            tab: 'diveramkt.miscelanious::lang.config.configurations'
         redirect_type:
             label: 'diveramkt.miscelanious::lang.config.redirect_type'
             span: full

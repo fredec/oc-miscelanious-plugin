@@ -10,6 +10,7 @@
     'tab' => [
         'company' => 'Empresa',
         'address' => 'Endereço',
+        'images' => 'Imagens',
     ],
     'company' => [
         'name' => 'Nome Fantasia',
@@ -37,6 +38,7 @@
         'main' => 'Principal',
         'first_number' => 'O primeiro será o principal',
         'order' => 'Ordem',
+        'images' => 'Imagens',
     ],
     'social' => [
         'social_name' => 'Rede Social',
@@ -68,6 +70,7 @@
         'indikatornews_newletter' => 'Caso o plugin Indikator.News esteja instalado, habilitar apenas o menu de newsletter.',
         'others' => 'Outros',
         'disabled_trash_backend' => 'Desabilitar lixeiras dentro do backend para excluir cadastros.',
+        'enabled_images_companies' => 'Habilitar imagens nas empresas',
     ],
     'testmonial' => [
         'name' => 'Nome',
