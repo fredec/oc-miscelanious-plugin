@@ -358,6 +358,13 @@ class Plugin extends PluginBase
                 }
             },
 
+            'name_site' => function(){
+                if(BackendHelpers::isArcaneSeo()){
+                    $arcane=\Arcane\Seo\Models\Settings::instance();
+                    if(isset($arcane->site_name)) return $arcane->site_name;
+                }
+            },
+
         ];
     }
 
@@ -751,11 +758,11 @@ public function validacoes(){
              $res = checkdate($m,$d,$y);
              return $res;
              if ($res == 1){
-               echo "data ok!";
-           } else {
-               echo "data inválida!";
-           }
-       });
+                 echo "data ok!";
+             } else {
+                 echo "data inválida!";
+             }
+         });
     Validator::extend('phone', function($attribute, $value, $parameters) {
         return Functions::validPhone($value);
     });
