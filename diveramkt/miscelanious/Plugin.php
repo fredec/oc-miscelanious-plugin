@@ -570,7 +570,7 @@ class Plugin extends PluginBase
             }
         });
 
-        if(BackendHelpers::IsPolloZenVisits()){
+        if(BackendHelpers::IsPolloZenVisits() && BackendHelpers::isBlogRainlab()){
             \RainLab\Blog\Models\Post::extend(function($model) {
                 $model->addDynamicMethod('getVisitsTotalAttribute', function($query) use ($model) {
                     $visits=\PolloZen\MostVisited\Models\Visits::
@@ -581,6 +581,28 @@ class Plugin extends PluginBase
                 });
             });
         }
+
+        // //////////////////////CHECK SLUG POST ÚNICOS AUTOMÁTICO
+        if(BackendHelpers::isBlogRainlab()){
+            \RainLab\Blog\Models\Post::extend(function($model){
+                $model->bindEvent('model.beforeValidate', function() use ($model) {
+                    if(!$model->slug || empty($model->slug)){
+                        $model->slug=\Str::slug($model->title);
+                    }
+                    $stop=1;
+                    for ($i=0; $i < $stop; $i++) { 
+                        $slug=$model->slug;
+                        if($i) $slug.='-'.$i;
+                        $veri=\RainLab\Blog\Models\Post::where('slug',$slug);
+                        if(isset($model->id)) $veri=$veri->where('id','!=',$model->id);
+                        $veri=$veri->first();
+                        if(isset($veri->id)) $stop++;
+                    }
+                    $model->slug=$slug;
+                });
+            });
+        }
+        // //////////////////////CHECK SLUG POST ÚNICOS AUTOMÁTICO
 
         \Backend\Models\User::extend(function($model) {
             if (!Schema::hasTable('diveramkt_miscelanious_extend_backend_users')) return;

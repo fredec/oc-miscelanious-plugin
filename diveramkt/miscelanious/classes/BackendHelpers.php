@@ -55,6 +55,15 @@ class BackendHelpers {
         return Self::$getIsIndikatorNews;
     }
 
+    public static $getIsBlogRainlab=null;
+    public static function isBlogRainlab() :bool {
+        if(!Self::$getIsBlogRainlab){
+            $plugins=new PluginVersion();
+            Self::$getIsBlogRainlab=class_exists('\RainLab\Blog\Plugin') && $plugins->where('code','rainlab.Blog')->ApplyEnabled()->count();
+        }
+        return Self::$getIsBlogRainlab;
+    }
+
 }
 
 ?>
