@@ -12,6 +12,7 @@ class Testmonial extends Model
 
     public $implement = array();
     public $translatable = array();
+    public $jsonable = ['infos'];
 
     // \Diveramkt\Miscelanious\Models\Testmonial::extend(function($model) {
     //     $model->implement = ['RainLab.Translate.Behaviors.TranslatableModel'];

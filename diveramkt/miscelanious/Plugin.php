@@ -358,6 +358,13 @@ class Plugin extends PluginBase
                 }
             },
 
+            'logo_site_white' => function(){
+                if(BackendHelpers::isArcaneSeo()){
+                    $arcane=\Arcane\Seo\Models\Settings::instance();
+                    if(isset($arcane->logo_white->path)) return $arcane->logo_white->path;
+                }
+            },
+
             'name_site' => function(){
                 if(BackendHelpers::isArcaneSeo()){
                     $arcane=\Arcane\Seo\Models\Settings::instance();
