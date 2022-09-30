@@ -689,11 +689,11 @@ class Plugin extends PluginBase
                 if(!isset($get_infos->id)){
                     $set_infos=new ExtendBackendUsers();
                     $set_infos->user_id=$model->id;
-                    $set_infos->text=$infos['text'];
+                    if(isset($infos['text'])) $set_infos->text=$infos['text'];
                     $set_infos->infos=$infos;
                     $set_infos->save();
                 }else{
-                    $get_infos->text=$infos['text'];
+                    if(isset($infos['text'])) $get_infos->text=$infos['text'];
                     $get_infos->infos=$infos;
                     $get_infos->save();
                 }
