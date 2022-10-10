@@ -352,16 +352,22 @@ class Plugin extends PluginBase
             },
 
             'logo_site' => function(){
-                if(BackendHelpers::isArcaneSeo()){
-                    $arcane=\Arcane\Seo\Models\Settings::instance();
-                    if(isset($arcane->logo->path)) return $arcane->logo->path;
+                if(BackendHelpers::isArcaneSeo()) $arcane=\Arcane\Seo\Models\Settings::instance();
+                if(isset($arcane->logo->path)) return $arcane->logo->path;
+                else{
+                    $thema=new \Cms\Classes\Theme();
+                    $thema=$thema->getActiveTheme();
+                    if(isset($thema->site_logo->path)) return $thema->site_logo->path;
                 }
             },
 
             'logo_site_white' => function(){
-                if(BackendHelpers::isArcaneSeo()){
-                    $arcane=\Arcane\Seo\Models\Settings::instance();
-                    if(isset($arcane->logo_white->path)) return $arcane->logo_white->path;
+                if(BackendHelpers::isArcaneSeo()) $arcane=\Arcane\Seo\Models\Settings::instance();
+                if(isset($arcane->logo_white->path)) return $arcane->logo_white->path;
+                else{
+                    $thema=new \Cms\Classes\Theme();
+                    $thema=$thema->getActiveTheme();
+                    if(isset($thema->site_logo_white->path)) return $thema->site_logo_white->path;
                 }
             },
 
