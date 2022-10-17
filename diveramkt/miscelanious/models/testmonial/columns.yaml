@@ -4,11 +4,11 @@ columns:
         type: text
         searchable: true
         sortable: true
-    business:
-        label: 'diveramkt.miscelanious::lang.testmonial.business'
-        type: text
-        searchable: true
-        sortable: true
+    # business:
+    #     label: 'diveramkt.miscelanious::lang.testmonial.business'
+    #     type: text
+    #     searchable: true
+    #     sortable: true
     position:
         label: 'diveramkt.miscelanious::lang.testmonial.position'
         type: text

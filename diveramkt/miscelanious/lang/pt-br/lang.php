@@ -71,6 +71,7 @@
         'others' => 'Outros',
         'disabled_trash_backend' => 'Desabilitar lixeiras dentro do backend para excluir cadastros.',
         'enabled_images_companies' => 'Habilitar imagens nas empresas',
+        'enabled_video_testimonials' => 'Habilitar vídeo nos depoimentos',
     ],
     'testmonial' => [
         'name' => 'Nome',

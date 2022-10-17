@@ -43,10 +43,32 @@ fields:
         span: full
         hidden: 1
         type: text
+    type:
+        label: Tipo
+        options:
+            text: Texto
+            video: Vídeo
+        showSearch: true
+        span: full
+        type: dropdown
     testmonial:
         label: 'diveramkt.miscelanious::lang.testmonial.testmonial'
         size: large
-        oc.commentPosition: ''
         span: full
         required: 1
+        trigger:
+            action: hide
+            field: type
+            condition: 'value[video]'
         type: textarea
+    video:
+        label: Vídeo
+        size: tiny
+        span: full
+        required: 1
+        trigger:
+            action: show
+            field: type
+            condition: 'value[video]'
+        type: textarea
+        commentAbove: 'Link do youtube'

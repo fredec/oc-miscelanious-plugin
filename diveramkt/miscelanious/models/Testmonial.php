@@ -24,7 +24,8 @@ class Testmonial extends Model
      */
     public $rules = [
         'name' => 'required',
-        'testmonial' => 'required',
+        'testmonial' => 'required_if:type,text|required_without:type',
+        'video' => 'required_if:type,video',
     ];
 
     public $attachOne = [
@@ -39,5 +40,21 @@ class Testmonial extends Model
     public function scopeActive($query)
     {
         return $query->where('enabled', true);
+    }
+
+    public function beforeSave($model=false){
+        $infos=$this->infos;
+        if(!is_array($infos)) $infos=[];
+        foreach ($this->attributes as $key => $value) {
+            if(!\Schema::hasColumn($this->table, $key)){
+                $infos[$key]=$value;
+                unset($this->$key);
+            }
+        }
+        $this->infos=$infos;
+    }
+
+    public function getTypeAttribute(){
+        if(isset($this->infos['type'])) return $this->infos['type'];
     }
 }

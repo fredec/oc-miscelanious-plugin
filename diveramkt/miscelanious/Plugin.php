@@ -496,9 +496,15 @@ class Plugin extends PluginBase
                 }elseif($widget->model instanceof \Diveramkt\Miscelanious\Models\Company) {
                     $settings=Functions::getSettings();
                     if(!$settings->enabled_images_companies) $widget->removeField('images');
-                }
-            }
-        });
+                }elseif($widget->model instanceof \Diveramkt\Miscelanious\Models\Testmonial) {
+                    $settings=Functions::getSettings();
+                    if(!$settings->enabled_video_testimonials){
+                       $widget->removeField('video');
+                       $widget->removeField('type');
+                   }
+               }
+           }
+       });
 
         $this->validacoes();
         $class=get_declared_classes();
@@ -793,11 +799,11 @@ public function validacoes(){
              $res = checkdate($m,$d,$y);
              return $res;
              if ($res == 1){
-                 echo "data ok!";
-             } else {
-                 echo "data inválida!";
-             }
-         });
+               echo "data ok!";
+           } else {
+               echo "data inválida!";
+           }
+       });
     Validator::extend('phone', function($attribute, $value, $parameters) {
         return Functions::validPhone($value);
     });
