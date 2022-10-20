@@ -9,6 +9,7 @@ class Functions
 
   public static $getSettingsCache=null;
   public static function getSettings(){
+    if(strpos("[".Request::url('/')."]",'diveramkt/miscelanious/settings')) return;
     if(!Self::$getSettingsCache){
       Self::$getSettingsCache=Settings::instance();
 
