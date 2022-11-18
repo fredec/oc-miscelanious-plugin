@@ -344,10 +344,13 @@ class Functions
     return true;
   }
   public static function validPhone($value){
-   $telefone= trim(str_replace('/', '', str_replace(' ', '', str_replace('-', '', str_replace(')', '', str_replace('(', '', $value))))));
+  //  $telefone= trim(str_replace('/', '', str_replace(' ', '', str_replace('-', '', str_replace(')', '', str_replace('(', '', $value))))));
+  $conter='0-9';
+  $telefone=preg_replace("/[^".$conter."]/", "", $value);
 
         // $regexTelefone = "^[0-9]{11}$";
-   $regexTelefone = "/[0-9]{11}/";
+  //  $regexTelefone = "/[0-9]{11}/";
+   $regexTelefone = "/[0-9]{10}/";
 
     $regexCel = '/[0-9]{2}[6789][0-9]{3,4}[0-9]{4}/'; // Regex para validar somente celular
     if (preg_match($regexTelefone, $telefone) or preg_match($regexCel, $telefone)) {
