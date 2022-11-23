@@ -106,6 +106,10 @@ tabs:
                         label: Descrição
                         span: right
                         type: text
+                    text_share:
+                        label: 'Texto ao abrir o chat do whatsapp'
+                        span: full
+                        type: text
         zipcode:
             label: 'diveramkt.miscelanious::lang.company.zipcode'
             span: full
