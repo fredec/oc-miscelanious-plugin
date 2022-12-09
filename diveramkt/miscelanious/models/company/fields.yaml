@@ -60,10 +60,22 @@ tabs:
             type: text
             tab: 'diveramkt.miscelanious::lang.tab.company'
         email:
-            label: Email
+            label: 'diveramkt.miscelanious::lang.company.primary_email'
             span: right
             type: text
             tab: 'diveramkt.miscelanious::lang.tab.company'
+        emails:
+            label: 'Emails'
+            label: 'diveramkt.miscelanious::lang.company.other_emails'
+            span: right
+            type: repeater
+            tab: 'diveramkt.miscelanious::lang.tab.company'
+            form:
+                fields:
+                    email:
+                        label: 'Email'
+                        span: full
+                        type: text
         text_about:
             label: 'Texto sobre'
             size: giant

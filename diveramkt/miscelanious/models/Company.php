@@ -26,7 +26,7 @@ class Company extends Model
         'name' => 'required',
     ];
 
-    public $jsonable = ['mobiles','phones'];
+    public $jsonable = ['mobiles','phones','emails'];
 
     public $attachMany = [
         'images' => 'System\Models\File',

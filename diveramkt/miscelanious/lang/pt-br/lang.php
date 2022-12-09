@@ -39,6 +39,8 @@
         'first_number' => 'O primeiro será o principal',
         'order' => 'Ordem',
         'images' => 'Imagens',
+        'primary_email' => 'Email principal',
+        'other_emails' => 'Outros emails',
     ],
     'social' => [
         'social_name' => 'Rede Social',
