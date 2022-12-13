@@ -12,6 +12,7 @@ use Diveramkt\Miscelanious\Classes\BackendHelpers;
 use Diveramkt\Miscelanious\Models\ExtendBackendUsers;
 use Db;
 use Schema;
+use Indikator\News\Models\Subscribers;
 
 class Plugin extends PluginBase
 {
@@ -402,6 +403,13 @@ class Plugin extends PluginBase
         ];
     }
 
+    public function registerMailTemplates()
+    {
+        return [
+            'diveramkt.miscelanious::mail.message_default',
+        ];
+    }
+
     public function boot(){
 
         \Diveramkt\Miscelanious\Classes\Sitemapload::load();
@@ -411,6 +419,33 @@ class Plugin extends PluginBase
             // plugins_path()
                 $controller->addCss(url('plugins/diveramkt/miscelanious/assets/css/styles_custom.css?v=0.0.1'));
             }
+        });
+
+        Subscribers::extend(function($model) {
+            $model->bindEvent('model.afterCreate', function() use ($model) {
+                if(!post('email') || strpos("[".Request::url('/')."]",'indikator/news/subscribers')) return;
+
+                $settings=\Diveramkt\Miscelanious\Models\Settings::instance();
+                $emails=$settings->indikatornews_newletter_notifications;
+                $emails=str_replace(['\r\n','\r','\n',';',' '],[',',',',',',',',''],$emails);
+                $emails=array_filter(explode(',', $emails));
+
+                if(count($emails)){
+                    $template='diveramkt.miscelanious::mail.message_default';
+                    $data=[
+                        'infos' => [],
+                    ];
+                    $data['infos'][0]=[ 'text' => $settings->indikatornews_newletter_notifications_message];
+                    foreach (post() as $key => $value) {
+                        if($key == 'name') $key='Nome';
+                        $data['infos'][0]['data'][ucfirst($key)]=$value;
+                    }
+                    \Mail::sendTo($emails, $template, $data, function ($message) {
+                        $message->subject('Novo cadastro na newsletter');
+                    });
+                }
+
+            });
         });
 
         \Event::listen('backend.menu.extendItems', function($navigationManager) {

@@ -1,0 +1,35 @@
+subject = ""
+description = "Aviso com uma mensagem padrão"
+==
+
+{% for info in infos %}
+
+{{info.text|raw}}
+
+{% partial 'panel' body %}
+{% if info.data %}
+{% for key,dat in info.data %}
+- <b>{{key}}:</b> `{{ dat|raw }}`
+{% endfor %}
+{% endif %}
+{% endpartial %}
+
+{% if info.promotion.code %}
+
+{{info.promotion.description|raw}}
+
+{% partial 'promotion' body %}
+{{ info.promotion.code|raw }}
+{% endpartial %}
+{% endif %}
+
+{% if info.button.link %}
+
+{{info.button.description|raw}}
+
+{% partial 'button' url=info.button.link type='positive' body %}
+{{info.button.label?info.button.label:'Acessar'}}
+{% endpartial %}
+{% endif %}
+
+{% endfor %}

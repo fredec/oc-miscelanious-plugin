@@ -51,10 +51,6 @@ tabs:
             span: full
             type: section
             tab: 'diveramkt.miscelanious::lang.config.configurations'
-        indikatornews_newletter:
-            label: 'diveramkt.miscelanious::lang.config.indikatornews_newletter'
-            type: switch
-            tab: 'diveramkt.miscelanious::lang.config.configurations'
         disabled_trash_backend:
             label: 'diveramkt.miscelanious::lang.config.disabled_trash_backend'
             type: switch
@@ -104,4 +100,21 @@ tabs:
             span: full
             type: textarea
             tab: 'diveramkt.miscelanious::lang.config.redirects'
-
+        indikatornews_newletter:
+            label: 'diveramkt.miscelanious::lang.config.indikatornews_newletter'
+            type: switch
+            tab: 'diveramkt.miscelanious::lang.config.newsletter'
+        indikatornews_newletter_notifications:
+            label: 'diveramkt.miscelanious::lang.config.emails'
+            type: textarea
+            size: small
+            comment: 'diveramkt.miscelanious::lang.config.newsletter_notifications_comment'
+            span: full
+            tab: 'diveramkt.miscelanious::lang.config.newsletter'
+        indikatornews_newletter_notifications_message:
+            label: 'diveramkt.miscelanious::lang.config.message'
+            type: textarea
+            size: small
+            default: 'Novo email cadastro no sistema de newsletter'
+            span: full
+            tab: 'diveramkt.miscelanious::lang.config.newsletter'
