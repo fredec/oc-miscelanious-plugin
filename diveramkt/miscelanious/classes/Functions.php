@@ -269,13 +269,17 @@ class Functions
 
 // //////////////////PARA SALVAR UM VALOR COLUNA DOUBLE
   public static function savePriceDouble($val){
-    if(empty($val) || (!is_float($val) && !is_numeric($val))) return 0;
+    // if(empty($val) || (!is_float($val) && !is_numeric($val))) return 0;
+    if(empty($val)) return 0;
     $conter='0-9.,'; $val=preg_replace("/[^".$conter."]/", "", $val);
     $val=str_replace(',', '.', $val); $val=explode('.',$val);
     if(count($val) > 1){
       $cents = array_pop($val);
       return implode('',$val).'.'.$cents;
-    }else return $val[0];
+    }else{
+      if(empty($val[0])) return 0;
+      else return $val[0];
+    }
   }
   public static function getPriceDouble($val){
     $conter='0-9.'; $val=preg_replace("/[^".$conter."]/", "", $val);
