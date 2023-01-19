@@ -1,33 +1,33 @@
 fields:
-    area_code:
-        label: 'diveramkt.miscelanious::lang.phone.area_code'
-        span: auto
-        hidden: 1
-        required: 0
-        type: text
-    number:
-        label: 'diveramkt.miscelanious::lang.phone.number'
-        span: auto
-        hidden: 1
-        required: 1
-        type: text
     description:
         label: 'diveramkt.miscelanious::lang.phone.description'
         span: full
         type: text
         comment: 'diveramkt.miscelanious::lang.phone.description_comment'
+    area_code:
+        label: 'diveramkt.miscelanious::lang.phone.area_code'
+        span: auto
+        hidden: 0
+        required: 0
+        type: text
+    number:
+        label: 'diveramkt.miscelanious::lang.phone.number'
+        span: auto
+        hidden: 0
+        required: 1
+        type: text
     icon:
         label: 'diveramkt.miscelanious::lang.phone.icon'
         span: auto
         default: phone
-        hidden: 1
+        hidden: 0
         required: 0
         type: text
         comment: 'diveramkt.miscelanious::lang.phone.icon_comment'
     info:
         label: 'diveramkt.miscelanious::lang.phone.info'
         span: auto
-        hidden: 1
+        hidden: 0
         required: 0
         type: text
         comment: 'diveramkt.miscelanious::lang.phone.info_comment'

@@ -5,7 +5,6 @@ fields:
         mode: image
         span: right
         type: mediafinder
-        hidden: 1
     foto:
         label: 'diveramkt.miscelanious::lang.testmonial.image'
         mode: image
@@ -30,7 +29,7 @@ fields:
     business:
         label: 'diveramkt.miscelanious::lang.testmonial.business'
         span: left
-        hidden: 1
+        hidden: 0
         required: 0
         type: text
     position:
@@ -41,7 +40,7 @@ fields:
     link:
         label: Link
         span: full
-        hidden: 1
+        hidden: 0
         type: text
     type:
         label: Tipo

@@ -132,6 +132,12 @@ class Plugin extends PluginBase
                         }else $retorno=$url;
                     }else $retorno=$url;
 
+                    if(strpos("[".$url."]", "youtube.com/shorts/")){
+                        $exp=explode("youtube.com/shorts/", $retorno);
+                        $exp=end($exp);
+                        $exp=explode("?", $exp);
+                        $retorno='https://www.youtube.com/embed/'.$exp[0];
+                    }
                     
                     return $retorno.'?rel=0&controls='.$controls.'&amp;start=1&amp;autoplay='.$autoplay.'&amp;loop=1&amp;background=1';
                 }elseif(strpos("[".$url."]", "vimeo.com")){
@@ -531,15 +537,45 @@ class Plugin extends PluginBase
                 }elseif($widget->model instanceof \Diveramkt\Miscelanious\Models\Company) {
                     $settings=Functions::getSettings();
                     if(!$settings->enabled_images_companies) $widget->removeField('images');
+
+                    if(!$settings->enabled_companies_phone){
+                        $widget->removeField('phone'); $widget->removeField('area_code');
+                    }
+                    if(!$settings->enabled_companies_mobile){
+                        $widget->removeField('mobile'); $widget->removeField('area_code_mobile');
+                    }
+                    if(!$settings->enabled_companies_skype) $widget->removeField('skype');
+                    if(!$settings->enabled_companies_opening_hours) $widget->removeField('opening_hours');
+                    if(!$settings->enabled_companies_social) $widget->removeField('social');
+
+                    if(isset($settings->enabled_companies_cnpj) && !$settings->enabled_companies_cnpj) $widget->removeField('cnpj');
+                    if(isset($settings->enabled_companies_textabout) && !$settings->enabled_companies_textabout) $widget->removeField('text_about');
+                    if(isset($settings->enabled_companies_emails) && !$settings->enabled_companies_emails) $widget->removeField('emails');
+                    if(isset($settings->enabled_companies_telefones) && !$settings->enabled_companies_telefones) $widget->removeField('phones');
+                    if(isset($settings->enabled_companies_mobiles) && !$settings->enabled_companies_mobiles) $widget->removeField('mobiles');
+                }elseif($widget->model instanceof \Diveramkt\Miscelanious\Models\Phone) {
+                    $settings=Functions::getSettings();
+                    if(!$settings->enabled_phones_number){
+                        $widget->removeField('number');
+                        $widget->removeField('area_code');
+                    }
+                    if(!$settings->enabled_phones_icon) $widget->removeField('icon');
+                    if(!$settings->enabled_phones_infos) $widget->removeField('info');
+                    if(isset($settings->enabled_phones_numbers) && !$settings->enabled_phones_numbers) $widget->removeField('numbers');
                 }elseif($widget->model instanceof \Diveramkt\Miscelanious\Models\Testmonial) {
                     $settings=Functions::getSettings();
                     if(!$settings->enabled_video_testimonials){
-                       $widget->removeField('video');
-                       $widget->removeField('type');
-                   }
-               }
-           }
-       });
+                     $widget->removeField('video');
+                     $widget->removeField('type');
+                 }
+                 if(!$settings->enabled_testimonials_business) $widget->removeField('business');
+                 if(!$settings->enabled_testimonials_position) $widget->removeField('position');
+                 if(!$settings->enabled_testimonials_link) $widget->removeField('link');
+                 if(!$settings->enabled_testimonials_imagemedia) $widget->removeField('image');
+                 else $widget->removeField('foto');
+             }
+         }
+     });
 
         $this->validacoes();
         $class=get_declared_classes();
@@ -834,11 +870,11 @@ public function validacoes(){
              $res = checkdate($m,$d,$y);
              return $res;
              if ($res == 1){
-               echo "data ok!";
-           } else {
-               echo "data inválida!";
-           }
-       });
+                 echo "data ok!";
+             } else {
+                 echo "data inválida!";
+             }
+         });
     Validator::extend('phone', function($attribute, $value, $parameters) {
         return Functions::validPhone($value);
     });

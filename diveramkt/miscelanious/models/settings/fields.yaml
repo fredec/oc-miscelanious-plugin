@@ -8,8 +8,8 @@ tabs:
         version_icons:
             label: 'diveramkt.miscelanious::lang.config.version_icons'
             options:
-                47: 'diveramkt.miscelanious::lang.config.awesome_4_7'
                 5: 'diveramkt.miscelanious::lang.config.awesome_5'
+                47: 'diveramkt.miscelanious::lang.config.awesome_4_7'
                 others: 'diveramkt.miscelanious::lang.config.others'
             showSearch: true
             span: full
@@ -55,14 +55,6 @@ tabs:
             label: 'diveramkt.miscelanious::lang.config.disabled_trash_backend'
             type: switch
             tab: 'diveramkt.miscelanious::lang.config.configurations'
-        enabled_images_companies:
-            label: 'diveramkt.miscelanious::lang.config.enabled_images_companies'
-            type: switch
-            tab: 'diveramkt.miscelanious::lang.config.configurations'
-        enabled_video_testimonials:
-            label: 'diveramkt.miscelanious::lang.config.enabled_video_testimonials'
-            type: switch
-            tab: 'diveramkt.miscelanious::lang.config.configurations'
         redirect_type:
             label: 'diveramkt.miscelanious::lang.config.redirect_type'
             span: full
@@ -86,10 +78,10 @@ tabs:
             tab: 'diveramkt.miscelanious::lang.config.redirects'
         section_subdomais:
             label: 'diveramkt.miscelanious::lang.config.subdomains'
-            type: 'section'
+            type: section
             tab: 'diveramkt.miscelanious::lang.config.redirects'
         redirect_subdomains_ssl:
-            label: 'SSL'
+            label: SSL
             span: full
             type: switch
             default: true
@@ -118,3 +110,108 @@ tabs:
             default: 'Novo email cadastro no sistema de newsletter'
             span: full
             tab: 'diveramkt.miscelanious::lang.config.newsletter'
+        enabled_testimonials_business:
+            label: 'Habilitar campo empresa'
+            span: auto
+            type: switch
+            tab: Depoimentos
+        enabled_testimonials_position:
+            label: 'Habilitar campo Função'
+            span: auto
+            type: switch
+            tab: Depoimentos
+        enabled_testimonials_link:
+            label: 'Habilitar campo Link'
+            span: auto
+            type: switch
+            tab: Depoimentos
+        enabled_testimonials_imagemedia:
+            label: 'Image cadastrada pelo media'
+            span: auto
+            type: switch
+            tab: Depoimentos
+        enabled_video_testimonials:
+            label: 'diveramkt.miscelanious::lang.config.enabled_video_testimonials'
+            type: switch
+            tab: Depoimentos
+        enabled_phones_number:
+            label: 'Habilitar número e código de área'
+            span: auto
+            type: switch
+            tab: Telefones
+        enabled_phones_icon:
+            label: 'Habilitar ícone'
+            span: auto
+            type: switch
+            tab: Telefones
+        enabled_phones_infos:
+            label: 'Habilitar informações extra'
+            span: auto
+            type: switch
+            tab: Telefones
+        enabled_phones_numbers:
+            label: 'Habilitar cadastro vários números'
+            span: auto
+            type: switch
+            default: 1
+            tab: Telefones
+        enabled_images_companies:
+            label: 'diveramkt.miscelanious::lang.config.enabled_images_companies'
+            span: auto
+            type: switch
+            tab: Empresas
+        enabled_companies_phone:
+            label: 'Habilitar Telefone'
+            span: auto
+            type: switch
+            tab: Empresas
+        enabled_companies_mobile:
+            label: 'Habilitar Celular'
+            span: auto
+            type: switch
+            tab: Empresas
+        enabled_companies_skype:
+            label: 'Habilitar Skype'
+            span: auto
+            type: switch
+            tab: Empresas
+        enabled_companies_opening_hours:
+            label: 'Habilitar Horário de funcionamento'
+            span: auto
+            type: switch
+            tab: Empresas
+        enabled_companies_social:
+            label: 'Habilitar Razão Social'
+            span: auto
+            type: switch
+            tab: Empresas
+        enabled_companies_cnpj:
+            label: 'Habilitar CNPJ'
+            span: auto
+            type: switch
+            default: 1
+            tab: Empresas
+        enabled_companies_textabout:
+            label: 'Habilitar Texto Sobre'
+            span: auto
+            type: switch
+            default: 1
+            tab: Empresas
+        enabled_companies_emails:
+            label: 'Habilitar E-mails'
+            span: auto
+            type: switch
+            default: 1
+            tab: Empresas
+        enabled_companies_telefones:
+            label: 'Habilitar Telefones'
+            span: auto
+            type: switch
+            default: 1
+            tab: Empresas
+        enabled_companies_mobiles:
+            label: 'Habilitar Celulares'
+            span: auto
+            type: switch
+            default: 1
+            tab: Empresas

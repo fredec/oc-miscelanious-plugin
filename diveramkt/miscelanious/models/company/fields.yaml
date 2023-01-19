@@ -7,7 +7,7 @@ tabs:
     fields:
         name:
             label: 'diveramkt.miscelanious::lang.company.name'
-            span: left
+            span: auto
             type: text
             tab: 'diveramkt.miscelanious::lang.tab.company'
         opening_hours:
@@ -27,18 +27,28 @@ tabs:
             span: auto
             type: text
             tab: 'diveramkt.miscelanious::lang.tab.company'
+        section_mobile:
+            label: 'Celular'
+            type: section
+            hidden: 1
+            tab: 'diveramkt.miscelanious::lang.tab.company'
+        area_code_mobile:
+            label: 'diveramkt.miscelanious::lang.company.area_code_mobile'
+            span: auto
+            hidden: 1
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.company'
         mobile:
             label: 'diveramkt.miscelanious::lang.company.mobile'
             span: auto
-            hidden: 1
+            hidden: 0
             type: text
             comment: 'diveramkt.miscelanious::lang.company.mobile_comment'
             tab: 'diveramkt.miscelanious::lang.tab.company'
-        phone:
-            label: 'diveramkt.miscelanious::lang.company.phone'
-            span: auto
+        section_phone:
+            label: 'Telefone'
+            type: section
             hidden: 1
-            type: text
             tab: 'diveramkt.miscelanious::lang.tab.company'
         area_code:
             label: 'diveramkt.miscelanious::lang.company.area_code'
@@ -47,16 +57,16 @@ tabs:
             type: text
             comment: 'diveramkt.miscelanious::lang.company.area_code_comment'
             tab: 'diveramkt.miscelanious::lang.tab.company'
-        area_code_mobile:
-            label: 'diveramkt.miscelanious::lang.company.area_code_mobile'
+        phone:
+            label: 'diveramkt.miscelanious::lang.company.phone'
             span: auto
-            hidden: 1
+            hidden: 0
             type: text
             tab: 'diveramkt.miscelanious::lang.tab.company'
         skype:
             label: 'diveramkt.miscelanious::lang.company.skype'
             span: auto
-            hidden: 1
+            hidden: 0
             type: text
             tab: 'diveramkt.miscelanious::lang.tab.company'
         email:
@@ -79,7 +89,7 @@ tabs:
         text_about:
             label: 'Texto sobre'
             size: giant
-            span: auto
+            span: left
             type: richeditor
             toolbarButtons: bold|italic|color|formatUL|insertLink|insertImage|html
             tab: 'diveramkt.miscelanious::lang.tab.company'

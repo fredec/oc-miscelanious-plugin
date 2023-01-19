@@ -1,6 +1,8 @@
 <?php namespace Diveramkt\Miscelanious\Models;
 
 use Model;
+use Diveramkt\Miscelanious\Classes\Functions;
+use System\Classes\MediaLibrary;
 
 /**
  * Model
@@ -57,4 +59,11 @@ class Testmonial extends Model
     public function getTypeAttribute(){
         if(isset($this->infos['type'])) return $this->infos['type'];
     }
+
+    public function getCoverAttribute(){
+        $settings=Functions::getSettings();
+        if(!$settings->enabled_testimonials_imagemedia and isset($this->foto->path)) return $this->foto->path;
+        elseif($this->image) return url(MediaLibrary::url($this->image));
+    }
+
 }
