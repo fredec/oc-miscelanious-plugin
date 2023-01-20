@@ -197,20 +197,25 @@ tabs:
             type: switch
             default: 1
             tab: Empresas
+        enabled_companies_email:
+            label: 'Habilitar E-mail principal'
+            span: auto
+            type: switch
+            tab: Empresas
         enabled_companies_emails:
-            label: 'Habilitar E-mails'
+            label: 'Habilitar lista de E-mails'
             span: auto
             type: switch
             default: 1
             tab: Empresas
         enabled_companies_telefones:
-            label: 'Habilitar Telefones'
+            label: 'Habilitar lista de Telefones'
             span: auto
             type: switch
             default: 1
             tab: Empresas
         enabled_companies_mobiles:
-            label: 'Habilitar Celulares'
+            label: 'Habilitar lista de Celulares'
             span: auto
             type: switch
             default: 1

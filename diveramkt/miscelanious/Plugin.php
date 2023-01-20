@@ -550,6 +550,7 @@ class Plugin extends PluginBase
 
                     if(isset($settings->enabled_companies_cnpj) && !$settings->enabled_companies_cnpj) $widget->removeField('cnpj');
                     if(isset($settings->enabled_companies_textabout) && !$settings->enabled_companies_textabout) $widget->removeField('text_about');
+                    if(!$settings->enabled_companies_email) $widget->removeField('email');
                     if(isset($settings->enabled_companies_emails) && !$settings->enabled_companies_emails) $widget->removeField('emails');
                     if(isset($settings->enabled_companies_telefones) && !$settings->enabled_companies_telefones) $widget->removeField('phones');
                     if(isset($settings->enabled_companies_mobiles) && !$settings->enabled_companies_mobiles) $widget->removeField('mobiles');
