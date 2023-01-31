@@ -1,0 +1,10 @@
+name: Contentblocks
+form: $/diveramkt/miscelanious/models/contentblocks/fields.yaml
+modelClass: Diveramkt\Miscelanious\Models\Contentblocks
+defaultRedirect: diveramkt/miscelanious/contentblocks
+create:
+    redirect: 'diveramkt/miscelanious/contentblocks/update/:id'
+    redirectClose: diveramkt/miscelanious/contentblocks
+update:
+    redirect: diveramkt/miscelanious/contentblocks
+    redirectClose: diveramkt/miscelanious/contentblocks

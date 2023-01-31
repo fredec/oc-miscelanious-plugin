@@ -418,6 +418,66 @@ class Plugin extends PluginBase
 
     public function boot(){
 
+        Event::listen('backend.page.beforeDisplay', function ($backendController,$action,$params) {
+            $backendController->addDynamicMethod('onGetBlocksContent', function($query) use ($backendController) {
+                $blocos=\Diveramkt\Miscelanious\Models\Contentblocks::get();
+                $return=[];
+                if(isset($blocos[0]->id)){
+                    foreach ($blocos as $key => $value) {
+                        $return[$value->slug]=$value->title;
+                    }
+                }
+                return [
+                    'blocks' => $return,
+                    'count' => count($blocos),
+                ];
+            });
+            $backendController->addJs('/plugins/diveramkt/miscelanious/assets/js/blocks_content.js', 'Diveramkt.Miscelanious');
+            $backendController->addCss('/plugins/diveramkt/miscelanious/assets/css/blocks_content.css', 'Diveramkt.Miscelanious');
+
+            if(!$backendController instanceof \Diveramkt\Miscelanious\Controllers\Contentblocks) {
+                \Backend\FormWidgets\RichEditor::extend(function($widget) {
+            // $widget->addCss('/plugins/diveramkt/lotofacil/assets/style_editor.css','0.0.0');
+                    $widget->addJs('/plugins/diveramkt/miscelanious/assets/js/addblockcontent.js','0.0.2');
+                });
+            }
+
+        });
+
+        Event::listen('cms.page.render', function ($controller,$pageContents) {
+            if(\Diveramkt\Miscelanious\Models\Contentblocks::count()){
+                // $blocks=\Diveramkt\Miscelanious\Models\Contentblocks::get();
+                $replace1=[]; $replace2=[];
+
+                foreach (\Diveramkt\Miscelanious\Models\Contentblocks::get() as $key => $value) {
+                    $blocks[$value->slug]=$value->content;
+                }
+
+                $inicio='<figure '; $fim='</figure>';
+                preg_match_all("#".$inicio."(.*?)".$fim."#s", $pageContents, $figures);
+
+                if(isset($figures[0][0])){
+                    foreach ($figures[0] as $key => $value) {
+                        if(!strpos("[".$figures[1][$key]."]",'data-block-content="true"')) continue;
+
+                        $inicio='data-snippet="'; $fim='"';
+                        preg_match_all("#".$inicio."(.*?)".$fim."#s", $value, $code);
+                        if(!isset($code[1][0])) continue;
+
+                        array_push($replace1, $value);
+                        if(isset($blocks[$code[1][0]])) array_push($replace2, $blocks[$code[1][0]]);
+                        else array_push($replace2, '');
+                    }
+                }
+
+                // foreach ($blocks as $key => $value) {
+                //     array_push($replace1, '{{'.$value->slug.'}}');
+                //     array_push($replace2, $value->content);
+                // }
+                return str_replace($replace1, $replace2, $pageContents);
+            }
+        });
+
         \Diveramkt\Miscelanious\Classes\Sitemapload::load();
         \Event::listen('backend.page.beforeDisplay', function($controller, $action, $params) {
             $settings=Functions::getSettings();
@@ -487,7 +547,7 @@ class Plugin extends PluginBase
                 $translator=\RainLab\Translate\Classes\Translator::instance();
                 $controller->vars['code_lang']=$translator->getLocale();
             });
-            
+
             if(BackendHelpers::isArcaneSeo()){
                 \Arcane\Seo\Models\Settings::extend(function($model) {
                     if (!$model->propertyExists('jsonable')) $model->addDynamicProperty('jsonable', []);
@@ -504,7 +564,7 @@ class Plugin extends PluginBase
                 });
             }
         }
-        
+
         if(BackendHelpers::isArcaneSeo()){
             \Arcane\Seo\Models\Settings::extend(function($model) {
                 $array=[
@@ -566,17 +626,17 @@ class Plugin extends PluginBase
                 }elseif($widget->model instanceof \Diveramkt\Miscelanious\Models\Testmonial) {
                     $settings=Functions::getSettings();
                     if(!$settings->enabled_video_testimonials){
-                     $widget->removeField('video');
-                     $widget->removeField('type');
-                 }
-                 if(!$settings->enabled_testimonials_business) $widget->removeField('business');
-                 if(!$settings->enabled_testimonials_position) $widget->removeField('position');
-                 if(!$settings->enabled_testimonials_link) $widget->removeField('link');
-                 if(!$settings->enabled_testimonials_imagemedia) $widget->removeField('image');
-                 else $widget->removeField('foto');
-             }
-         }
-     });
+                       $widget->removeField('video');
+                       $widget->removeField('type');
+                   }
+                   if(!$settings->enabled_testimonials_business) $widget->removeField('business');
+                   if(!$settings->enabled_testimonials_position) $widget->removeField('position');
+                   if(!$settings->enabled_testimonials_link) $widget->removeField('link');
+                   if(!$settings->enabled_testimonials_imagemedia) $widget->removeField('image');
+                   else $widget->removeField('foto');
+               }
+           }
+       });
 
         $this->validacoes();
         $class=get_declared_classes();
@@ -871,11 +931,11 @@ public function validacoes(){
              $res = checkdate($m,$d,$y);
              return $res;
              if ($res == 1){
-                 echo "data ok!";
-             } else {
-                 echo "data inválida!";
-             }
-         });
+               echo "data ok!";
+           } else {
+               echo "data inválida!";
+           }
+       });
     Validator::extend('phone', function($attribute, $value, $parameters) {
         return Functions::validPhone($value);
     });

@@ -1,0 +1,10 @@
+fields:
+    title:
+        label: Título
+        span: full
+        type: text
+    content:
+        label: Conteúdo
+        size: giant
+        span: full
+        type: richeditor

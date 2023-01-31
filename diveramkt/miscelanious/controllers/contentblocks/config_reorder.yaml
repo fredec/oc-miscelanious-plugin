@@ -1,0 +1,4 @@
+title: Contentblocks
+modelClass: Diveramkt\Miscelanious\Models\Contentblocks
+toolbar:
+    buttons: reorder_toolbar
