@@ -55,15 +55,17 @@ class Functions
     // !Request::is('https://')
     // echo Request::secure();
     // Request::server('HTTPS') == 'on' && 
+    $url_current=Request::url();
     if($settings['redirect_https'] && !strpos($url, 'https://') && ($settings['redirect_subdomains_ssl'] || !$sub_active)){
       $url=str_replace('http://', 'https://', $url);
+      $url_current=str_replace('http://', 'https://', $url_current);
     }
 
     if($settings['redirect_www'] && !strpos($url, 'www.') && !$sub_active){
       $url=str_replace(['http://','https://'], ['http://www.','https://www.'], $url);
     }
 
-    if($url != Request::url()){
+    if($url != $url_current){
       if(!isset($settings['redirect_base_saved'])){
         $settings['redirect_base_saved']=Self::getBaseurl();
         $settings->save();

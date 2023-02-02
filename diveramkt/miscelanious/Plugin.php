@@ -358,24 +358,34 @@ class Plugin extends PluginBase
                 // }else return true;
             },
 
-            'logo_site' => function(){
+            'logo_site' => function($width=false){
+                $image=false;
                 if(BackendHelpers::isArcaneSeo()) $arcane=\Arcane\Seo\Models\Settings::instance();
-                if(isset($arcane->logo->path)) return $arcane->logo->path;
+                if(isset($arcane->logo->path)) $image=$arcane->logo->path;
                 else{
                     $thema=new \Cms\Classes\Theme();
                     $thema=$thema->getActiveTheme();
-                    if(isset($thema->site_logo->path)) return $thema->site_logo->path;
+                    if(isset($thema->site_logo->path)) $image=$thema->site_logo->path;
                 }
+                if($width && BackendHelpers::isUpload()){
+                    $image_resize=new \Diveramkt\Uploads\Classes\Image($image);
+                    return $image_resize->resize($width, auto, []);
+                }else return $image;
             },
 
-            'logo_site_white' => function(){
+            'logo_site_white' => function($width=false){
+                $image=false;
                 if(BackendHelpers::isArcaneSeo()) $arcane=\Arcane\Seo\Models\Settings::instance();
-                if(isset($arcane->logo_white->path)) return $arcane->logo_white->path;
+                if(isset($arcane->logo_white->path)) $image=$arcane->logo_white->path;
                 else{
                     $thema=new \Cms\Classes\Theme();
                     $thema=$thema->getActiveTheme();
-                    if(isset($thema->site_logo_white->path)) return $thema->site_logo_white->path;
+                    if(isset($thema->site_logo_white->path)) $image=$thema->site_logo_white->path;
                 }
+                if($width && BackendHelpers::isUpload()){
+                    $image_resize=new \Diveramkt\Uploads\Classes\Image($image);
+                    return $image_resize->resize($width, auto, []);
+                }else return $image;
             },
 
             'name_site' => function(){

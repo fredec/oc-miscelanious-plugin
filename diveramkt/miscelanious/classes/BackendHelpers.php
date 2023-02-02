@@ -64,6 +64,15 @@ class BackendHelpers {
         return Self::$getIsBlogRainlab;
     }
 
+    public static $getIsUpload=null;
+    public static function isUpload() :bool {
+        if(!Self::$getIsUpload){
+            $plugins=new PluginVersion();
+            Self::$getIsUpload=class_exists('\Diveramkt\Uploads\Plugin') && $plugins->where('code','diveramkt.Uploads')->ApplyEnabled()->count();
+        }
+        return Self::$getIsUpload;
+    }
+
 }
 
 ?>
