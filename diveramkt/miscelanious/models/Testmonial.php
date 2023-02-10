@@ -45,6 +45,8 @@ class Testmonial extends Model
     }
 
     public function beforeSave($model=false){
+        if($this->type == 'text') $this->video=null;
+
         $infos=$this->infos;
         if(!is_array($infos)) $infos=[];
         foreach ($this->attributes as $key => $value) {
@@ -60,10 +62,14 @@ class Testmonial extends Model
         if(isset($this->infos['type'])) return $this->infos['type'];
     }
 
+    public function getNameNoHtmlAttribute(){
+        return strip_tags($this->name);
+    }
+
     public function getCoverAttribute(){
         $settings=Functions::getSettings();
         if(!$settings->enabled_testimonials_imagemedia and isset($this->foto->path)) return $this->foto->path;
-        elseif($this->image) return url(MediaLibrary::url($this->image));
+        elseif($settings->enabled_testimonials_imagemedia && $this->image) return url(MediaLibrary::url($this->image));
     }
 
 }

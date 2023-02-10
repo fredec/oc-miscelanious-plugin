@@ -30,6 +30,20 @@ class Testimonials extends ComponentBase
 				// 'default' => 'created_at desc'
 				'default' => 'desc'
 			],
+			'type' => [
+				'title' => 'Tipo',
+				'description' => 'Depoimentos com vídeo ou texto',
+				'type' => 'dropdown',
+				'default' => 0,
+			],
+		];
+	}
+
+	public function getTypeOptions() {
+		return [
+			0 => 'Todos',
+			1 => 'Com texto',
+			2 => 'Com vídeo',
 		];
 	}
 
@@ -63,8 +77,14 @@ class Testimonials extends ComponentBase
 	// }
 
 	protected function getAllTestimonials() {
+
 		$query = Testmonial::where('enabled', true);
 		$query = $query->orderBy('sort_order',$this->property('sortOrder'));
+
+		if($this->property('type')){
+			if($this->property('type') == 1) $query=$query->whereNull('video');
+			elseif($this->property('type') == 2) $query=$query->whereNotNull('video');
+		}
 
 		$this->total=$query->count();
 		if ($this->property('total') > 0) $query = $query->take($this->property('total'));

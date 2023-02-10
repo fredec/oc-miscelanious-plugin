@@ -1,5 +1,5 @@
 columns:
-    name:
+    name_no_html:
         label: 'diveramkt.miscelanious::lang.testmonial.name'
         type: text
         searchable: true

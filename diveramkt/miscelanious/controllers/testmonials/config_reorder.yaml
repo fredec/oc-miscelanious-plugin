@@ -1,5 +1,5 @@
 title: Testmonials
-nameFrom: name
+nameFrom: name_no_html
 modelClass: Diveramkt\Miscelanious\Models\Testmonial
 toolbar:
     buttons: reorder_toolbar

@@ -25,7 +25,9 @@ fields:
         oc.commentPosition: ''
         span: left
         required: 1
-        type: text
+        type: richeditor
+        size: small
+        toolbarButtons: 'bold|italic|color'
     business:
         label: 'diveramkt.miscelanious::lang.testmonial.business'
         span: left

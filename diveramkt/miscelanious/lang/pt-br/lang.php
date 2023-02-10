@@ -55,7 +55,7 @@
         'manage' => 'Gerenciar configurações do diversos',
         'miscelanious' => 'Diversos',
         'description' => 'Cadastro de informações em geral',
-        'enabled_http2' => 'Habilitar http2',
+        'enabled_https' => 'Habilitar https',
         'subdomains' => 'Sub domínios',
         'disable_subdomains' => 'Desabilitar Redirect www em subdominios',
         'subdomains_comment' => 'Sub Domínios que o redirect será desabilitado (colocar em cada linha), exemplo: media.site.com.br => media',
