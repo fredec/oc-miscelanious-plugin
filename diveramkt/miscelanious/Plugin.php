@@ -497,6 +497,7 @@ class Plugin extends PluginBase
             }
         });
 
+        if(BackendHelpers::isIndikatorNews()){
         Subscribers::extend(function($model) {
             $model->bindEvent('model.afterCreate', function() use ($model) {
                 if(!post('email') || strpos("[".Request::url('/')."]",'indikator/news/subscribers')) return;
@@ -523,6 +524,7 @@ class Plugin extends PluginBase
 
             });
         });
+    }
 
         \Event::listen('backend.menu.extendItems', function($navigationManager) {
             $settings=Functions::getSettings();
