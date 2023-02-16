@@ -30,6 +30,7 @@ class Plugin extends PluginBase
             'Diveramkt\Miscelanious\Components\Teams' => 'Teams',
             'Diveramkt\Miscelanious\Components\Downloads' => 'Downloads',
             'Diveramkt\Miscelanious\Components\Usersbackend' => 'Usersbackend',
+            'Diveramkt\Miscelanious\Components\Toposts'      => 'Toposts',
         ];
     }
     public function registerPageSnippets()
@@ -498,33 +499,33 @@ class Plugin extends PluginBase
         });
 
         if(BackendHelpers::isIndikatorNews()){
-        Subscribers::extend(function($model) {
-            $model->bindEvent('model.afterCreate', function() use ($model) {
-                if(!post('email') || strpos("[".Request::url('/')."]",'indikator/news/subscribers')) return;
+            Subscribers::extend(function($model) {
+                $model->bindEvent('model.afterCreate', function() use ($model) {
+                    if(!post('email') || strpos("[".Request::url('/')."]",'indikator/news/subscribers')) return;
 
-                $settings=\Diveramkt\Miscelanious\Models\Settings::instance();
-                $emails=$settings->indikatornews_newletter_notifications;
-                $emails=str_replace(['\r\n','\r','\n',';',' '],[',',',',',',',',''],$emails);
-                $emails=array_filter(explode(',', $emails));
+                    $settings=\Diveramkt\Miscelanious\Models\Settings::instance();
+                    $emails=$settings->indikatornews_newletter_notifications;
+                    $emails=str_replace(['\r\n','\r','\n',';',' '],[',',',',',',',',''],$emails);
+                    $emails=array_filter(explode(',', $emails));
 
-                if(count($emails)){
-                    $template='diveramkt.miscelanious::mail.message_default';
-                    $data=[
-                        'infos' => [],
-                    ];
-                    $data['infos'][0]=[ 'text' => $settings->indikatornews_newletter_notifications_message];
-                    foreach (post() as $key => $value) {
-                        if($key == 'name') $key='Nome';
-                        $data['infos'][0]['data'][ucfirst($key)]=$value;
+                    if(count($emails)){
+                        $template='diveramkt.miscelanious::mail.message_default';
+                        $data=[
+                            'infos' => [],
+                        ];
+                        $data['infos'][0]=[ 'text' => $settings->indikatornews_newletter_notifications_message];
+                        foreach (post() as $key => $value) {
+                            if($key == 'name') $key='Nome';
+                            $data['infos'][0]['data'][ucfirst($key)]=$value;
+                        }
+                        \Mail::sendTo($emails, $template, $data, function ($message) {
+                            $message->subject('Novo cadastro na newsletter');
+                        });
                     }
-                    \Mail::sendTo($emails, $template, $data, function ($message) {
-                        $message->subject('Novo cadastro na newsletter');
-                    });
-                }
 
+                });
             });
-        });
-    }
+        }
 
         \Event::listen('backend.menu.extendItems', function($navigationManager) {
             $settings=Functions::getSettings();
@@ -638,17 +639,17 @@ class Plugin extends PluginBase
                 }elseif($widget->model instanceof \Diveramkt\Miscelanious\Models\Testmonial) {
                     $settings=Functions::getSettings();
                     if(!$settings->enabled_video_testimonials){
-                       $widget->removeField('video');
-                       $widget->removeField('type');
-                   }
-                   if(!$settings->enabled_testimonials_business) $widget->removeField('business');
-                   if(!$settings->enabled_testimonials_position) $widget->removeField('position');
-                   if(!$settings->enabled_testimonials_link) $widget->removeField('link');
-                   if(!$settings->enabled_testimonials_imagemedia) $widget->removeField('image');
-                   else $widget->removeField('foto');
-               }
-           }
-       });
+                     $widget->removeField('video');
+                     $widget->removeField('type');
+                 }
+                 if(!$settings->enabled_testimonials_business) $widget->removeField('business');
+                 if(!$settings->enabled_testimonials_position) $widget->removeField('position');
+                 if(!$settings->enabled_testimonials_link) $widget->removeField('link');
+                 if(!$settings->enabled_testimonials_imagemedia) $widget->removeField('image');
+                 else $widget->removeField('foto');
+             }
+         }
+     });
 
         $this->validacoes();
         $class=get_declared_classes();
@@ -943,11 +944,11 @@ public function validacoes(){
              $res = checkdate($m,$d,$y);
              return $res;
              if ($res == 1){
-               echo "data ok!";
-           } else {
-               echo "data inválida!";
-           }
-       });
+                 echo "data ok!";
+             } else {
+                 echo "data inválida!";
+             }
+         });
     Validator::extend('phone', function($attribute, $value, $parameters) {
         return Functions::validPhone($value);
     });
