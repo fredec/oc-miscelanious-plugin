@@ -139,11 +139,12 @@ class Plugin extends PluginBase
                         $exp=explode("?", $exp);
                         $retorno='https://www.youtube.com/embed/'.$exp[0];
                     }
-                    
-                    return $retorno.'?rel=0&controls='.$controls.'&amp;start=1&amp;autoplay='.$autoplay.'&amp;loop=1&amp;background=1';
+                
+                    $muted=0; if($autoplay) $muted=1;
+                    return $retorno.'?rel=0&controls='.$controls.'&mute='.$muted.'&amp;start=1&amp;autoplay='.$autoplay.'&amp;loop=1&amp;background=1';
                 }elseif(strpos("[".$url."]", "vimeo.com")){
                     $par=explode('/', $url);
-                    return 'https://player.vimeo.com/video/'.end($par).'?autoplay='.$autoplay.'&loop=1&background=1';
+                    return 'https://player.vimeo.com/video/'.end($par).'?autoplay='.$autoplay.'&mute='.$muted.'&loop=1&background=1';
                 }
                 return $url;
             },
