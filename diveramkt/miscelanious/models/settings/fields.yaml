@@ -66,7 +66,7 @@ tabs:
             type: dropdown
             tab: 'diveramkt.miscelanious::lang.config.redirects'
         redirect_https:
-            label: 'diveramkt.miscelanious::lang.config.enabled_https'
+            label: SSL
             type: switch
             span: auto
             tab: 'diveramkt.miscelanious::lang.config.redirects'
@@ -84,7 +84,8 @@ tabs:
             label: SSL
             span: full
             type: switch
-            default: true
+            default: false
+            hidden: 1
             tab: 'diveramkt.miscelanious::lang.config.redirects'
         redirect_subdomains:
             label: 'diveramkt.miscelanious::lang.config.disable_subdomains'

@@ -64,6 +64,15 @@ class BackendHelpers {
         return Self::$getIsBlogRainlab;
     }
 
+    public static $getIsBlogTagsBedard=null;
+    public static function isBlogTagsBedard() :bool {
+        if(!Self::$getIsBlogTagsBedard){
+            $plugins=new PluginVersion();
+            Self::$getIsBlogTagsBedard=class_exists('\Bedard\BlogTags\Plugin') && $plugins->where('code','Bedard.BlogTags')->ApplyEnabled()->count();
+        }
+        return Self::$getIsBlogTagsBedard;
+    }
+
     public static $getIsUpload=null;
     public static function isUpload() :bool {
         if(!Self::$getIsUpload){

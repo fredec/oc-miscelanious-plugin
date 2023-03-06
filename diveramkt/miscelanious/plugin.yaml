@@ -42,6 +42,13 @@ navigation:
         icon: icon-asterisk
         permissions:
             - manage_testmonials
+            - manage_contacts
+            - manage_phones
+            - manage_social
+            - manage_company
+            - manage_parceiros
+            - manage_downloads
+            - manage_content_blocks
         sideMenu:
             menu-testmonials:
                 label: 'diveramkt.miscelanious::lang.testmonial.tesmonials'
@@ -83,6 +90,8 @@ navigation:
                 label: 'diveramkt.miscelanious::lang.equipe.name'
                 url: diveramkt/miscelanious/equipecategorias
                 icon: icon-users
+                permissions:
+                    - manage_equipe
             menu-downloads:
                 label: 'diveramkt.miscelanious::lang.downloads.name'
                 url: diveramkt/miscelanious/downloads

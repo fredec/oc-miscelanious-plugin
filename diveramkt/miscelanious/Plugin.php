@@ -430,6 +430,47 @@ class Plugin extends PluginBase
 
     public function boot(){
 
+        \Event::listen('pages.menuitem.listTypes', function() {
+            if(!BackendHelpers::isBlogRainlab() || !BackendHelpers::isBlogTagsBedard()) return;
+            return [
+                'list-bedard-blogtags'      => 'Lista tags do Blog',
+            ];
+        });
+        \Event::listen('pages.menuitem.resolveItem', function($type, $item, $url, $theme) {
+            $return=[];
+            if($item->cmsPage) $page = \Cms\Classes\Page::loadCached($theme, $item->cmsPage);
+            if ($type == 'list-bedard-blogtags' && $item->cmsPage) {
+                $tags=\RainLab\Blog\Models\Post::isPublished()
+                ->join('bedard_blogtags_post_tag as join','join.post_id','=','rainlab_blog_posts.id')
+                ->join('bedard_blogtags_tags as tags','tags.id','=','join.tag_id')
+                ->select('tags.*')->distinct()->orderBy('tags.name','asc')
+                ->get();
+                if(isset($tags[0]->id)){
+                    $items=[];
+                    foreach ($tags as $key => $value) {
+                        $url = \Cms\Classes\Page::url($page->getBaseFileName(), ['tag' => $value->slug]);
+                        $items[] = [
+                            'title' => $value->name,
+                            'url'   => str_replace('/default','',$url),
+                            // 'mtime' => $category->updated_at
+                        ];
+                    }
+                    $return['items']=$items;
+                }
+            }
+            return $return;
+        });
+        \Event::listen('pages.menuitem.getTypeInfo', function ($type) {
+            if ($type === 'list-bedard-blogtags') {
+                $theme = \Cms\Classes\Theme::getActiveTheme();
+                $pages = \Cms\Classes\Page::listInTheme($theme, true);
+                return [
+                    'dynamicItems' => true,
+                    'cmsPages' => $pages,
+                ];
+            }
+        });
+
         Event::listen('backend.page.beforeDisplay', function ($backendController,$action,$params) {
             $backendController->addDynamicMethod('onGetBlocksContent', function($query) use ($backendController) {
                 $blocos=\Diveramkt\Miscelanious\Models\Contentblocks::get();
