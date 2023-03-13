@@ -54,6 +54,13 @@ class Usersbackend extends ComponentBase
 				"default" => 1,
 				"group" => 'Postagens'
 			],
+			'have_post' => [
+				'title' => 'Usuário com postagens',
+				'description' => 'Usuários que tenham ao menos uma postagem',
+				"type" => "checkbox",
+				"default" => 0,
+				"group" => 'Postagens'
+			],
 			'posts_limit' => [
 				'title' => 'Limite de postagens',
 				'description' => 'Limite de postagens para cada usuário',
@@ -134,8 +141,12 @@ class Usersbackend extends ComponentBase
     	$table_join=new ExtendBackendUsers(); $table_join=$table_join->table;
     	if($this->property('id_user')){
     		$user=User::where($table_user.'.id',$this->property('id_user'))
-    		->select($table_user.'.*')->join($table_join.' as join','join.user_id','=',$table_user.'.id')->where('join.infos','like','%"enabled":"1"%')
-    		->first();
+    		->select($table_user.'.*')->join($table_join.' as join','join.user_id','=',$table_user.'.id')->where('join.infos','like','%"enabled":"1"%');
+    		if($this->property('have_post')){
+    			$table_post=new Post();
+    			$user=$user->join($table_post->table.' as post','post.user_id','=',$table_user.'.id');
+    		}
+    		$user=$user->first();
     		if($this->posts_enabled && isset($user->id)){
     			$posts=Post::IsPublished()->where('user_id',$user->id)->take($limite_post)->orderBy('published_at','desc')->get();
     			$user->postagens=$this->urlPost($posts);
@@ -147,6 +158,10 @@ class Usersbackend extends ComponentBase
     		$users=User::where($table_user.'.role_id','>',0)
     		->select($table_user.'.*')->join($table_join.' as join','join.user_id','=',$table_user.'.id')->where('join.infos','like','%"enabled":"1"%');
     		if($this->property('limit') && is_numeric($this->property('limit'))) $users=$users->take($this->property('limit'));
+			if($this->property('have_post')){
+    			$table_post=new Post();
+    			$users=$users->join($table_post->table.' as post','post.user_id','=',$table_user.'.id');
+    		}
     		$roles=$this->property('userroles');
     		if(is_array($roles) && count($roles)){
     			$users->where(function ($query) use ($roles) {
