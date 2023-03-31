@@ -111,3 +111,6 @@
 1.0.38:
     - 'Created table diveramkt_miscelanious_content_blocks'
     - builder_table_create_diveramkt_miscelanious_content_blocks.php
+1.0.39:
+    - 'Updated table diveramkt_miscelanious_companies'
+    - builder_table_update_diveramkt_miscelanious_companies_11.php

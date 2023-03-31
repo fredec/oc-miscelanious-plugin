@@ -36,6 +36,12 @@ tabs:
             type: section
             hidden: 0
             tab: 'diveramkt.miscelanious::lang.tab.company'
+        area_code_mobile:
+            label: 'diveramkt.miscelanious::lang.company.area_code_mobile'
+            span: auto
+            hidden: 1
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.company'
         mobile:
             label: 'diveramkt.miscelanious::lang.company.mobile'
             span: auto
@@ -46,7 +52,7 @@ tabs:
         mobiles:
             label: 'diveramkt.miscelanious::lang.phone.mobiles'
             prompt: 'diveramkt.miscelanious::lang.plugin.add_new'
-            span: auto
+            span: right
             type: repeater
             comment: 'diveramkt.miscelanious::lang.company.first_number'
             tab: 'diveramkt.miscelanious::lang.tab.company'
@@ -69,16 +75,40 @@ tabs:
             type: section
             span: full
             tab: 'diveramkt.miscelanious::lang.tab.company'
+        area_code:
+            label: 'diveramkt.miscelanious::lang.company.area_code'
+            span: auto
+            hidden: 1
+            type: text
+            comment: 'diveramkt.miscelanious::lang.company.area_code_comment'
+            tab: 'diveramkt.miscelanious::lang.tab.company'
         phone:
             label: 'diveramkt.miscelanious::lang.company.phone'
             span: auto
             hidden: 0
             type: text
             tab: 'diveramkt.miscelanious::lang.tab.company'
+        email:
+            label: 'diveramkt.miscelanious::lang.company.primary_email'
+            span: right
+            type: text
+            tab: 'diveramkt.miscelanious::lang.tab.company'
+        emails:
+            label: 'Emails'
+            label: 'diveramkt.miscelanious::lang.company.other_emails'
+            span: right
+            type: repeater
+            tab: 'diveramkt.miscelanious::lang.tab.company'
+            form:
+                fields:
+                    email:
+                        label: 'Email'
+                        span: full
+                        type: text
         phones:
             label: 'diveramkt.miscelanious::lang.phone.phones'
             prompt: 'diveramkt.miscelanious::lang.plugin.add_new'
-            span: auto
+            span: right
             type: repeater
             comment: 'diveramkt.miscelanious::lang.company.first_number'
             tab: 'diveramkt.miscelanious::lang.tab.company'
@@ -92,28 +122,6 @@ tabs:
                     description:
                         label: Descrição
                         span: right
-                        type: text
-        section_email:
-            label: 'Email'
-            type: section
-            span: full
-            tab: 'diveramkt.miscelanious::lang.tab.company'
-        email:
-            label: 'diveramkt.miscelanious::lang.company.primary_email'
-            span: auto
-            type: text
-            tab: 'diveramkt.miscelanious::lang.tab.company'
-        emails:
-            label: 'Emails'
-            label: 'diveramkt.miscelanious::lang.company.other_emails'
-            span: auto
-            type: repeater
-            tab: 'diveramkt.miscelanious::lang.tab.company'
-            form:
-                fields:
-                    email:
-                        label: 'Email'
-                        span: full
                         type: text
         section_hours:
             type: section

@@ -14,6 +14,7 @@
     ],
     'company' => [
         'name' => 'Nome Fantasia',
+        'subtitle' => 'Sub Título',
         'socia' => 'Razão Social',
         'cnpj' => 'CNPJ',
         'area_code' => 'Código de Área',

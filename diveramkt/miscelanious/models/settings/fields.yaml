@@ -156,6 +156,11 @@ tabs:
             type: switch
             default: 1
             tab: Telefones
+        enabled_subtitle_companies:
+            label: 'Habilitar Sub Título'
+            span: auto
+            type: switch
+            tab: Empresas
         enabled_images_companies:
             label: 'diveramkt.miscelanious::lang.config.enabled_images_companies'
             span: auto
