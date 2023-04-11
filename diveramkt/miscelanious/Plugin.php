@@ -375,6 +375,22 @@ class Plugin extends PluginBase
                 }else return $image;
             },
 
+            'logo_email' => function($width=false){
+                $image=false;
+                if(BackendHelpers::isArcaneSeo()) $arcane=\Arcane\Seo\Models\Settings::instance();
+                if(isset($arcane->logo_email->path)) $image=$arcane->logo_email->path;
+                elseif(isset($arcane->logo->path)) $image=$arcane->logo->path;
+                else{
+                    $thema=new \Cms\Classes\Theme();
+                    $thema=$thema->getActiveTheme();
+                    if(isset($thema->site_logo->path)) $image=$thema->site_logo->path;
+                }
+                if($width && BackendHelpers::isUpload()){
+                    $image_resize=new \Diveramkt\Uploads\Classes\Image($image);
+                    return $image_resize->resize($width, auto, []);
+                }else return $image;
+            },
+
             'logo_site_white' => function($width=false){
                 $image=false;
                 if(BackendHelpers::isArcaneSeo()) $arcane=\Arcane\Seo\Models\Settings::instance();
@@ -625,6 +641,7 @@ class Plugin extends PluginBase
                 $array=[
                     'logo' => 'System\Models\File',
                     'logo_white' => 'System\Models\File',
+                    'logo_email' => 'System\Models\File',
                 ];
                 if(isset($model->attachOne)) $model->attachOne=$array;
                 else $model->addDynamicProperty('attachOne', $array);
@@ -645,6 +662,11 @@ class Plugin extends PluginBase
                         ],
                         'logo_white' => [
                             'label'   => 'Logo do site - Branca',
+                            'span' => 'auto',
+                            'type' => 'fileupload',
+                        ],
+                        'logo_email' => [
+                            'label'   => 'Logo no email',
                             'span' => 'auto',
                             'type' => 'fileupload',
                         ],
