@@ -65,8 +65,8 @@ class Contact extends Model
             return null;
     }
 
-    public function getIconOptions(){
-        return [];
-    }
+    // public function getIconOptions(){
+    //     return [];
+    // }
 
 }
