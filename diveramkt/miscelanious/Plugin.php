@@ -713,17 +713,17 @@ class Plugin extends PluginBase
                 }elseif($widget->model instanceof \Diveramkt\Miscelanious\Models\Testmonial) {
                     $settings=Functions::getSettings();
                     if(!$settings->enabled_video_testimonials){
-                     $widget->removeField('video');
-                     $widget->removeField('type');
-                 }
-                 if(!$settings->enabled_testimonials_business) $widget->removeField('business');
-                 if(!$settings->enabled_testimonials_position) $widget->removeField('position');
-                 if(!$settings->enabled_testimonials_link) $widget->removeField('link');
-                 if(!$settings->enabled_testimonials_imagemedia) $widget->removeField('image');
-                 else $widget->removeField('foto');
-             }
-         }
-     });
+                       $widget->removeField('video');
+                       $widget->removeField('type');
+                   }
+                   if(!$settings->enabled_testimonials_business) $widget->removeField('business');
+                   if(!$settings->enabled_testimonials_position) $widget->removeField('position');
+                   if(!$settings->enabled_testimonials_link) $widget->removeField('link');
+                   if(!$settings->enabled_testimonials_imagemedia) $widget->removeField('image');
+                   else $widget->removeField('foto');
+               }
+           }
+       });
 
 $this->validacoes();
 $class=get_declared_classes();
@@ -820,9 +820,19 @@ if(BackendHelpers::IsPolloZenVisits() && BackendHelpers::isBlogRainlab()){
     });
 }
 
-        // //////////////////////CHECK SLUG POST ÚNICOS AUTOMÁTICO
 if(BackendHelpers::isBlogRainlab()){
     \RainLab\Blog\Models\Post::extend(function($model){
+        if(BackendHelpers::isArcaneSeo()){
+            $model->bindEvent('model.beforeSave', function() use ($model) {
+                $arcane_seo_options=$model->arcane_seo_options;
+                $arcane_seo_options['og_title']=str_replace('Defaults to SEO if left blank', '', $arcane_seo_options['og_title']);
+                $arcane_seo_options['og_description']=str_replace('Defaults to SEO if left blank', '', $arcane_seo_options['og_description']);
+                $arcane_seo_options['og_type']=str_replace('website article video etc...', 'article', $arcane_seo_options['og_type']);
+                $arcane_seo_options['og_ref_image']=str_replace('{{ example.image }}', '', $arcane_seo_options['og_ref_image']);
+                $model->arcane_seo_options=$arcane_seo_options;
+            });
+        }
+        // //////////////////////CHECK SLUG POST ÚNICOS AUTOMÁTICO
         $model->bindEvent('model.beforeValidate', function() use ($model) {
             if(!$model->slug || empty($model->slug)){
                 $model->slug=\Str::slug($model->title);
@@ -838,9 +848,9 @@ if(BackendHelpers::isBlogRainlab()){
             }
             $model->slug=$slug;
         });
+        // //////////////////////CHECK SLUG POST ÚNICOS AUTOMÁTICO
     });
 }
-        // //////////////////////CHECK SLUG POST ÚNICOS AUTOMÁTICO
 
 \Backend\Models\User::extend(function($model) {
     if (!Schema::hasTable('diveramkt_miscelanious_extend_backend_users')) return;
@@ -1018,11 +1028,11 @@ public function validacoes(){
              $res = checkdate($m,$d,$y);
              return $res;
              if ($res == 1){
-                 echo "data ok!";
-             } else {
-                 echo "data inválida!";
-             }
-         });
+               echo "data ok!";
+           } else {
+               echo "data inválida!";
+           }
+       });
     Validator::extend('phone', function($attribute, $value, $parameters) {
         return Functions::validPhone($value);
     });
