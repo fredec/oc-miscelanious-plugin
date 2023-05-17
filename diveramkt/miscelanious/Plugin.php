@@ -725,6 +725,16 @@ class Plugin extends PluginBase
            }
        });
 
+       Event::listen('backend.list.extendColumns', function ($listWidget) {
+        // if (!$listWidget->getController() instanceof \Backend\Controllers\Users) {
+        //     return;
+        // }
+        if($listWidget->model instanceof \Diveramkt\Miscelanious\Models\Testmonial) {
+            $settings=Functions::getSettings();
+            if(!$settings->enabled_testimonials_position) $listWidget->removeColumn('position');
+        }
+    });
+
 $this->validacoes();
 $class=get_declared_classes();
 
