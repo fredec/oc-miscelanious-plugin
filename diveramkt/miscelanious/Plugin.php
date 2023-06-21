@@ -835,10 +835,10 @@ if(BackendHelpers::isBlogRainlab()){
         if(BackendHelpers::isArcaneSeo()){
             $model->bindEvent('model.beforeSave', function() use ($model) {
                 $arcane_seo_options=$model->arcane_seo_options;
-                $arcane_seo_options['og_title']=str_replace('Defaults to SEO if left blank', '', $arcane_seo_options['og_title']);
-                $arcane_seo_options['og_description']=str_replace('Defaults to SEO if left blank', '', $arcane_seo_options['og_description']);
-                $arcane_seo_options['og_type']=str_replace('website article video etc...', 'article', $arcane_seo_options['og_type']);
-                $arcane_seo_options['og_ref_image']=str_replace('{{ example.image }}', '', $arcane_seo_options['og_ref_image']);
+                if(isset($arcane_seo_options['og_title'])) $arcane_seo_options['og_title']=str_replace('Defaults to SEO if left blank', '', $arcane_seo_options['og_title']);
+                if(isset($arcane_seo_options['og_description'])) $arcane_seo_options['og_description']=str_replace('Defaults to SEO if left blank', '', $arcane_seo_options['og_description']);
+                if(isset($arcane_seo_options['og_type'])) $arcane_seo_options['og_type']=str_replace('website article video etc...', 'article', $arcane_seo_options['og_type']);
+                if(isset($arcane_seo_options['og_ref_image'])) $arcane_seo_options['og_ref_image']=str_replace('{{ example.image }}', '', $arcane_seo_options['og_ref_image']);
                 $model->arcane_seo_options=$arcane_seo_options;
             });
         }
