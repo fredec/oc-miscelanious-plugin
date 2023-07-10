@@ -4,10 +4,26 @@
 	{% for testimonial in testimonials %}
 	<li>
 		<img src="{{ testimonial.image|media }}" />
-		<p>
-			{{ testimonial.name }} - {{ testimonial.business }}
-			<span>{{ testimonial.testmonial }}</span>
-		</p>
-	</li>
-	{% endfor %}
-</ul>
+		<p>{{ testimonial.name }} - {{ testimonial.business }}</p>
+
+		{% if testimonial.type == 'text' %}
+		<div class="texto_padrao">
+			<p>{{testimonial.testmonial|raw}}</p>
+		</div>
+		{% elseif testimonial.type == 'image' and testimonial.testmonial_image.path %}
+		<a class="image" href="{{testimonial.testmonial_image.path}}">
+			<img src="{{testimonial.testmonial_image.path}}" width="500" height="500" loading="lazy" alt="{{testimonial.name}}">
+		</a>
+		{% elseif testimonial.type == 'video_file' and testimonial.file_video.path %}
+		<video width="500" height="500" controls>
+			<source src="{{testimonial.file_video.path}}" type="{{testimonial.file_video.content_type}}">
+				Necessário atualizar seu navegador ou utilizar um nevegador atualizado
+			</video>
+			{% elseif testimonial.type == 'video' and testimonial.video %}
+			{% set embed=testimonial.video|video_embed %}
+			<iframe width="500" height="500" src="{{embed}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+			{% endif %}
+
+		</li>
+		{% endfor %}
+	</ul>

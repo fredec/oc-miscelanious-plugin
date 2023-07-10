@@ -25,6 +25,11 @@ class Functions
       Self::$getSettingsCache['replace_icons']=$replace_new;
 
     }
+
+    // echo '<pre>';
+    // // print_r(Self::$getSettingsCache->enabled_types_testimonials);
+    // print_r(array_flip(Self::$getSettingsCache->enabled_types_testimonials));
+    // echo '</pre>';
     return Self::$getSettingsCache;
   }
 

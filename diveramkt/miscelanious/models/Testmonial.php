@@ -25,13 +25,17 @@ class Testmonial extends Model
      * Validation
      */
     public $rules = [
-        'name' => 'required',
-        'testmonial' => 'required_if:type,text|required_without:type',
-        'video' => 'required_if:type,video',
+    'name' => 'required',
+    'testmonial' => 'required_if:type,text|required_without:type',
+    'video' => 'required_if:type,video',
+    'file_video' => 'required_if:type,video_file',
+    'testmonial_image' => 'required_if:type,image',
     ];
 
     public $attachOne = [
-        'foto' => 'System\Models\File',
+    'foto' => 'System\Models\File',
+    'file_video' => 'System\Models\File',
+    'testmonial_image' => 'System\Models\File',
     ];
 
     /**
@@ -70,6 +74,19 @@ class Testmonial extends Model
         $settings=Functions::getSettings();
         if(!$settings->enabled_testimonials_imagemedia and isset($this->foto->path)) return $this->foto->path;
         elseif($settings->enabled_testimonials_imagemedia && $this->image) return url(MediaLibrary::url($this->image));
+    }
+
+    public function getTypeOptions(){
+        $settings=Functions::getSettings();
+        $return=['text' => 'Texto'];
+        if(is_array($settings->enabled_types_testimonials)){
+            $types=$settings->enabled_types_testimonials;
+            $types=array_flip($types);
+            if(isset($types['video_youtube'])) $return['video']='Vídeo do youtube';
+            if(isset($types['video_file'])) $return['video_file']='Arquivo de Vídeo';
+            if(isset($types['image'])) $return['image']='Imagem';
+        }
+        return $return;
     }
 
 }

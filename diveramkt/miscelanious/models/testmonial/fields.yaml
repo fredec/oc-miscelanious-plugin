@@ -27,7 +27,7 @@ fields:
         required: 1
         type: richeditor
         size: small
-        toolbarButtons: 'bold|italic|color'
+        toolbarButtons: bold|italic|color
     business:
         label: 'diveramkt.miscelanious::lang.testmonial.business'
         span: left
@@ -46,9 +46,6 @@ fields:
         type: text
     type:
         label: Tipo
-        options:
-            text: Texto
-            video: Vídeo
         showSearch: true
         span: full
         type: dropdown
@@ -60,16 +57,41 @@ fields:
         trigger:
             action: hide
             field: type
-            condition: 'value[video]'
+            condition: 'value[video] or value[video_file] or value[image]'
         type: textarea
     video:
         label: Vídeo
         size: tiny
-        span: full
-        required: 1
+        span: left
         trigger:
             action: show
             field: type
             condition: 'value[video]'
         type: textarea
         commentAbove: 'Link do youtube'
+    file_video:
+        label: 'Arquivo de Vídeo'
+        mode: file
+        fileTypes: 'mp4, webm'
+        useCaption: true
+        thumbOptions:
+            mode: crop
+            extension: auto
+        span: left
+        trigger:
+            action: show
+            field: type
+            condition: 'value[video_file]'
+        type: fileupload
+        commentAbove: 'Extensões permitidas: mp4/webm'
+    testmonial_image:
+        label: 'Imagem do Depoimento'
+        size: tiny
+        span: left
+        required: 1
+        imageWidth: '150'
+        trigger:
+            action: show
+            field: type
+            condition: 'value[image]'
+        type: fileupload

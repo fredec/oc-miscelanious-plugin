@@ -134,6 +134,15 @@ tabs:
         enabled_video_testimonials:
             label: 'diveramkt.miscelanious::lang.config.enabled_video_testimonials'
             type: switch
+            hidden: 1
+            tab: Depoimentos
+        enabled_types_testimonials:
+            label: 'Habilitar tipos de depoimentos'
+            type: checkboxlist
+            options:
+                video_youtube: 'Vídeo do youtube'
+                video_file: 'Arquivo de vídeo'
+                image: 'Depoimento em imagem'
             tab: Depoimentos
         enabled_phones_number:
             label: 'Habilitar número e código de área'
