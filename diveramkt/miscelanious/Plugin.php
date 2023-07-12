@@ -12,6 +12,7 @@ use Diveramkt\Miscelanious\Classes\BackendHelpers;
 use Diveramkt\Miscelanious\Models\ExtendBackendUsers;
 use Db;
 use Schema;
+use Indikator\News\Models\Subscribers;
 
 class Plugin extends PluginBase
 {
@@ -29,6 +30,7 @@ class Plugin extends PluginBase
             'Diveramkt\Miscelanious\Components\Teams' => 'Teams',
             'Diveramkt\Miscelanious\Components\Downloads' => 'Downloads',
             'Diveramkt\Miscelanious\Components\Usersbackend' => 'Usersbackend',
+            'Diveramkt\Miscelanious\Components\Toposts'      => 'Toposts',
         ];
     }
     public function registerPageSnippets()
@@ -68,7 +70,7 @@ class Plugin extends PluginBase
     {
         return [
             'phone_number' => function ($string) {
-            	$search = [' ', '+', '(', ')', '-', '.'];
+                $search = [' ', '+', '(', ')', '-', '.'];
                 return str_replace($search, '', $string);
             },
             'phone_link' => function ($string, $cod='') {
@@ -131,11 +133,18 @@ class Plugin extends PluginBase
                         }else $retorno=$url;
                     }else $retorno=$url;
 
-                    
-                    return $retorno.'?rel=0&controls='.$controls.'&amp;start=1&amp;autoplay='.$autoplay.'&amp;loop=1&amp;background=1';
+                    if(strpos("[".$url."]", "youtube.com/shorts/")){
+                        $exp=explode("youtube.com/shorts/", $retorno);
+                        $exp=end($exp);
+                        $exp=explode("?", $exp);
+                        $retorno='https://www.youtube.com/embed/'.$exp[0];
+                    }
+
+                    $muted=0; if($autoplay) $muted=1;
+                    return $retorno.'?rel=0&controls='.$controls.'&mute='.$muted.'&amp;start=1&amp;autoplay='.$autoplay.'&amp;loop=1&amp;background=1';
                 }elseif(strpos("[".$url."]", "vimeo.com")){
                     $par=explode('/', $url);
-                    return 'https://player.vimeo.com/video/'.end($par).'?autoplay='.$autoplay.'&loop=1&background=1';
+                    return 'https://player.vimeo.com/video/'.end($par).'?autoplay='.$autoplay.'&mute='.$muted.'&loop=1&background=1';
                 }
                 return $url;
             },
@@ -326,6 +335,7 @@ class Plugin extends PluginBase
                 if(!$image) return;
                 $image=trim(str_replace(' /', '', ' '.$image));
                 $image=str_replace('%20', ' ', $image);
+                if(!file_exists($image)) return;
                 $image=getimagesize($image);
                 $height=$image[1];
                 if(!isset($image[0]) || !isset($image[1])) return;
@@ -336,6 +346,7 @@ class Plugin extends PluginBase
                 if(!$image) return;
                 $image=trim(str_replace(' /', '', ' '.$image));
                 $image=str_replace('%20', ' ', $image);
+                if(!file_exists($image)) return;
                 $image=getimagesize($image);
                 if(!isset($image[0]) || !isset($image[1])) return;
                 $width=$image[0];
@@ -351,24 +362,50 @@ class Plugin extends PluginBase
                 // }else return true;
             },
 
-            'logo_site' => function(){
+            'logo_site' => function($width=false){
+                $image=false;
                 if(BackendHelpers::isArcaneSeo()) $arcane=\Arcane\Seo\Models\Settings::instance();
-                if(isset($arcane->logo->path)) return $arcane->logo->path;
+                if(isset($arcane->logo->path)) $image=$arcane->logo->path;
                 else{
                     $thema=new \Cms\Classes\Theme();
                     $thema=$thema->getActiveTheme();
-                    if(isset($thema->site_logo->path)) return $thema->site_logo->path;
+                    if(isset($thema->site_logo->path)) $image=$thema->site_logo->path;
                 }
+                if($width && BackendHelpers::isUpload()){
+                    $image_resize=new \Diveramkt\Uploads\Classes\Image($image);
+                    return $image_resize->resize($width, auto, []);
+                }else return $image;
             },
 
-            'logo_site_white' => function(){
+            'logo_email' => function($width=false){
+                $image=false;
                 if(BackendHelpers::isArcaneSeo()) $arcane=\Arcane\Seo\Models\Settings::instance();
-                if(isset($arcane->logo_white->path)) return $arcane->logo_white->path;
+                if(isset($arcane->logo_email->path)) $image=$arcane->logo_email->path;
+                elseif(isset($arcane->logo->path)) $image=$arcane->logo->path;
                 else{
                     $thema=new \Cms\Classes\Theme();
                     $thema=$thema->getActiveTheme();
-                    if(isset($thema->site_logo_white->path)) return $thema->site_logo_white->path;
+                    if(isset($thema->site_logo->path)) $image=$thema->site_logo->path;
                 }
+                if($width && BackendHelpers::isUpload()){
+                    $image_resize=new \Diveramkt\Uploads\Classes\Image($image);
+                    return $image_resize->resize($width, auto, []);
+                }else return $image;
+            },
+
+            'logo_site_white' => function($width=false){
+                $image=false;
+                if(BackendHelpers::isArcaneSeo()) $arcane=\Arcane\Seo\Models\Settings::instance();
+                if(isset($arcane->logo_white->path)) $image=$arcane->logo_white->path;
+                else{
+                    $thema=new \Cms\Classes\Theme();
+                    $thema=$thema->getActiveTheme();
+                    if(isset($thema->site_logo_white->path)) $image=$thema->site_logo_white->path;
+                }
+                if($width && BackendHelpers::isUpload()){
+                    $image_resize=new \Diveramkt\Uploads\Classes\Image($image);
+                    return $image_resize->resize($width, auto, []);
+                }else return $image;
             },
 
             'name_site' => function(){
@@ -402,7 +439,115 @@ class Plugin extends PluginBase
         ];
     }
 
+    public function registerMailTemplates()
+    {
+        return [
+            'diveramkt.miscelanious::mail.message_default',
+        ];
+    }
+
     public function boot(){
+
+        \Event::listen('pages.menuitem.listTypes', function() {
+            if(!BackendHelpers::isBlogRainlab() || !BackendHelpers::isBlogTagsBedard()) return;
+            return [
+                'list-bedard-blogtags'      => 'Lista tags do Blog',
+            ];
+        });
+        \Event::listen('pages.menuitem.resolveItem', function($type, $item, $url, $theme) {
+            $return=[];
+            if($item->cmsPage) $page = \Cms\Classes\Page::loadCached($theme, $item->cmsPage);
+            if ($type == 'list-bedard-blogtags' && $item->cmsPage) {
+                $tags=\RainLab\Blog\Models\Post::isPublished()
+                ->join('bedard_blogtags_post_tag as join','join.post_id','=','rainlab_blog_posts.id')
+                ->join('bedard_blogtags_tags as tags','tags.id','=','join.tag_id')
+                ->select('tags.*')->distinct()->orderBy('tags.name','asc')
+                ->get();
+                if(isset($tags[0]->id)){
+                    $items=[];
+                    foreach ($tags as $key => $value) {
+                        $url = \Cms\Classes\Page::url($page->getBaseFileName(), ['tag' => $value->slug]);
+                        $items[] = [
+                            'title' => $value->name,
+                            'url'   => str_replace('/default','',$url),
+                            // 'mtime' => $category->updated_at
+                        ];
+                    }
+                    $return['items']=$items;
+                }
+            }
+            return $return;
+        });
+        \Event::listen('pages.menuitem.getTypeInfo', function ($type) {
+            if ($type === 'list-bedard-blogtags') {
+                $theme = \Cms\Classes\Theme::getActiveTheme();
+                $pages = \Cms\Classes\Page::listInTheme($theme, true);
+                return [
+                    'dynamicItems' => true,
+                    'cmsPages' => $pages,
+                ];
+            }
+        });
+
+        Event::listen('backend.page.beforeDisplay', function ($backendController,$action,$params) {
+            $backendController->addDynamicMethod('onGetBlocksContent', function($query) use ($backendController) {
+                $blocos=\Diveramkt\Miscelanious\Models\Contentblocks::get();
+                $return=[];
+                if(isset($blocos[0]->id)){
+                    foreach ($blocos as $key => $value) {
+                        $return[$value->slug]=$value->title;
+                    }
+                }
+                return [
+                    'blocks' => $return,
+                    'count' => count($blocos),
+                ];
+            });
+            $backendController->addJs('/plugins/diveramkt/miscelanious/assets/js/blocks_content.js', 'Diveramkt.Miscelanious');
+            $backendController->addCss('/plugins/diveramkt/miscelanious/assets/css/blocks_content.css', 'Diveramkt.Miscelanious');
+
+            if(!$backendController instanceof \Diveramkt\Miscelanious\Controllers\Contentblocks) {
+                \Backend\FormWidgets\RichEditor::extend(function($widget) {
+            // $widget->addCss('/plugins/diveramkt/lotofacil/assets/style_editor.css','0.0.0');
+                    $widget->addJs('/plugins/diveramkt/miscelanious/assets/js/addblockcontent.js','0.0.2');
+                });
+            }
+
+        });
+
+        Event::listen('cms.page.render', function ($controller,$pageContents) {
+            if(\Diveramkt\Miscelanious\Models\Contentblocks::count()){
+                // $blocks=\Diveramkt\Miscelanious\Models\Contentblocks::get();
+                $replace1=[]; $replace2=[];
+
+                foreach (\Diveramkt\Miscelanious\Models\Contentblocks::get() as $key => $value) {
+                    $blocks[$value->slug]=$value->content;
+                }
+
+                $inicio='<figure '; $fim='</figure>';
+                preg_match_all("#".$inicio."(.*?)".$fim."#s", $pageContents, $figures);
+
+                if(isset($figures[0][0])){
+                    foreach ($figures[0] as $key => $value) {
+                        if(!strpos("[".$figures[1][$key]."]",'data-block-content="true"')) continue;
+
+                        $inicio='data-snippet="'; $fim='"';
+                        preg_match_all("#".$inicio."(.*?)".$fim."#s", $value, $code);
+                        if(!isset($code[1][0])) continue;
+
+                        array_push($replace1, $value);
+                        if(isset($blocks[$code[1][0]])) array_push($replace2, $blocks[$code[1][0]]);
+                        else array_push($replace2, '');
+                    }
+                }
+
+                // foreach ($blocks as $key => $value) {
+                //     array_push($replace1, '{{'.$value->slug.'}}');
+                //     array_push($replace2, $value->content);
+                // }
+                return str_replace($replace1, $replace2, $pageContents);
+            }
+        });
 
         \Diveramkt\Miscelanious\Classes\Sitemapload::load();
         \Event::listen('backend.page.beforeDisplay', function($controller, $action, $params) {
@@ -412,6 +557,35 @@ class Plugin extends PluginBase
                 $controller->addCss(url('plugins/diveramkt/miscelanious/assets/css/styles_custom.css?v=0.0.1'));
             }
         });
+
+        if(BackendHelpers::isIndikatorNews()){
+            Subscribers::extend(function($model) {
+                $model->bindEvent('model.afterCreate', function() use ($model) {
+                    if(!post('email') || strpos("[".Request::url('/')."]",'indikator/news/subscribers')) return;
+
+                    $settings=\Diveramkt\Miscelanious\Models\Settings::instance();
+                    $emails=$settings->indikatornews_newletter_notifications;
+                    $emails=str_replace(['\r\n','\r','\n',';',' '],[',',',',',',',',''],$emails);
+                    $emails=array_filter(explode(',', $emails));
+
+                    if(count($emails)){
+                        $template='diveramkt.miscelanious::mail.message_default';
+                        $data=[
+                            'infos' => [],
+                        ];
+                        $data['infos'][0]=[ 'text' => $settings->indikatornews_newletter_notifications_message];
+                        foreach (post() as $key => $value) {
+                            if($key == 'name') $key='Nome';
+                            $data['infos'][0]['data'][ucfirst($key)]=$value;
+                        }
+                        \Mail::sendTo($emails, $template, $data, function ($message) {
+                            $message->subject('Novo cadastro na newsletter');
+                        });
+                    }
+
+                });
+            });
+        }
 
         \Event::listen('backend.menu.extendItems', function($navigationManager) {
             $settings=Functions::getSettings();
@@ -446,7 +620,7 @@ class Plugin extends PluginBase
                 $translator=\RainLab\Translate\Classes\Translator::instance();
                 $controller->vars['code_lang']=$translator->getLocale();
             });
-            
+
             if(BackendHelpers::isArcaneSeo()){
                 \Arcane\Seo\Models\Settings::extend(function($model) {
                     if (!$model->propertyExists('jsonable')) $model->addDynamicProperty('jsonable', []);
@@ -463,12 +637,13 @@ class Plugin extends PluginBase
                 });
             }
         }
-        
+
         if(BackendHelpers::isArcaneSeo()){
             \Arcane\Seo\Models\Settings::extend(function($model) {
                 $array=[
                     'logo' => 'System\Models\File',
                     'logo_white' => 'System\Models\File',
+                    'logo_email' => 'System\Models\File',
                 ];
                 if(isset($model->attachOne)) $model->attachOne=$array;
                 else $model->addDynamicProperty('attachOne', $array);
@@ -492,145 +667,214 @@ class Plugin extends PluginBase
                             'span' => 'auto',
                             'type' => 'fileupload',
                         ],
+                        'logo_email' => [
+                            'label'   => 'Logo no email',
+                            'span' => 'auto',
+                            'type' => 'fileupload',
+                        ],
                     ]);
                 }elseif($widget->model instanceof \Diveramkt\Miscelanious\Models\Company) {
                     $settings=Functions::getSettings();
                     if(!$settings->enabled_images_companies) $widget->removeField('images');
+                    if(!$settings->enabled_subtitle_companies) $widget->removeField('subtitle');
+
+                    if(!$settings->enabled_companies_phone){
+                        $widget->removeField('phone'); $widget->removeField('area_code');
+                    }
+                    if(!$settings->enabled_companies_telefones) $widget->removeField('phones');
+                    if(!$settings->enabled_companies_phone && !$settings->enabled_companies_telefones) $widget->removeField('section_phone');
+                    
+                    if(!$settings->enabled_companies_skype) $widget->removeField('skype');
+                    if(!$settings->enabled_companies_opening_hours){
+                        $widget->removeField('section_hours');
+                        $widget->removeField('opening_hours');
+                    }
+                    if(!$settings->enabled_companies_social) $widget->removeField('social');
+
+                    if(isset($settings->enabled_companies_cnpj) && !$settings->enabled_companies_cnpj) $widget->removeField('cnpj');
+                    if(isset($settings->enabled_companies_textabout) && !$settings->enabled_companies_textabout){
+                        $widget->removeField('text_about');
+                        $widget->removeField('section_textabout');
+                    }
+                    if(!$settings->enabled_companies_email) $widget->removeField('email');
+                    if(!$settings->enabled_companies_emails) $widget->removeField('emails');
+                    if(!$settings->enabled_companies_email && !$settings->enabled_companies_emails) $widget->removeField('section_email');
+                    
+                    if(!$settings->enabled_companies_mobiles) $widget->removeField('mobiles');
+                    if(!$settings->enabled_companies_mobile) $widget->removeField('mobile'); $widget->removeField('area_code_mobile');
+                    if(!$settings->enabled_companies_mobiles && !$settings->enabled_companies_mobile) $widget->removeField('section_mobile');
+                }elseif($widget->model instanceof \Diveramkt\Miscelanious\Models\Phone) {
+                    $settings=Functions::getSettings();
+                    if(!$settings->enabled_phones_number){
+                        $widget->removeField('number');
+                        $widget->removeField('area_code');
+                    }
+                    if(!$settings->enabled_phones_icon) $widget->removeField('icon');
+                    if(!$settings->enabled_phones_infos) $widget->removeField('info');
+                    if(isset($settings->enabled_phones_numbers) && !$settings->enabled_phones_numbers) $widget->removeField('numbers');
                 }elseif($widget->model instanceof \Diveramkt\Miscelanious\Models\Testmonial) {
                     $settings=Functions::getSettings();
-                    if(!$settings->enabled_video_testimonials){
-                       $widget->removeField('video');
+                   //  if(!$settings->enabled_video_testimonials){
+                   //     $widget->removeField('video');
+                   //     $widget->removeField('type');
+                   // }
+                   if(!is_array($settings->enabled_types_testimonials) || !count($settings->enabled_types_testimonials)){
                        $widget->removeField('type');
                    }
+                   if(!$settings->enabled_testimonials_business) $widget->removeField('business');
+                   if(!$settings->enabled_testimonials_position) $widget->removeField('position');
+                   if(!$settings->enabled_testimonials_link) $widget->removeField('link');
+                   if(!$settings->enabled_testimonials_imagemedia) $widget->removeField('image');
+                   else $widget->removeField('foto');
                }
            }
        });
 
-        $this->validacoes();
-        $class=get_declared_classes();
+       Event::listen('backend.list.extendColumns', function ($listWidget) {
+        // if (!$listWidget->getController() instanceof \Backend\Controllers\Users) {
+        //     return;
+        // }
+        if($listWidget->model instanceof \Diveramkt\Miscelanious\Models\Testmonial) {
+            $settings=Functions::getSettings();
+            if(!$settings->enabled_testimonials_position) $listWidget->removeColumn('position');
+        }
+    });
 
-        $settings = \Diveramkt\Miscelanious\Models\Settings::instance();
-        Functions::redirectPlugin($settings);
+$this->validacoes();
+$class=get_declared_classes();
+
+$settings = \Diveramkt\Miscelanious\Models\Settings::instance();
+Functions::redirectPlugin($settings);
 
 // ///////////////////EXTEND BACKEND USERS
-        Event::listen('backend.form.extendFields', function($widget) {
-            if (!Schema::hasTable('diveramkt_miscelanious_extend_backend_users')) return;
-            if (
-                $widget->model instanceof \Backend\Models\User
-                and $widget->isNested === false
-            ) {
+Event::listen('backend.form.extendFields', function($widget) {
+    if (!Schema::hasTable('diveramkt_miscelanious_extend_backend_users')) return;
+    if (
+        $widget->model instanceof \Backend\Models\User
+        and $widget->isNested === false
+    ) {
 
             // $model=$widget->model;
             // if(isset($model->jsonable)) $model->jsonable[]='social_profiles';
             // else $model->addDynamicProperty('jsonable', ['social_profiles']);
 
-                $widget->addFields([
-                    'enabled' => [
-                        'label'   => 'Habilitado',
-                        'span' => 'full',
-                        'type' => 'switch',
-                        'default' => 1,
-                    ],
-                ]);
+        $widget->addFields([
+            'enabled' => [
+                'label'   => 'Habilitado',
+                'span' => 'full',
+                'type' => 'switch',
+                'default' => 1,
+            ],
+        ]);
 
-                $widget->addTabFields([
-                    'description' => [
-                        'label'   => 'Pequena descrição',
-                        'span' => 'full',
-                        'size' => 'small',
-                        'type' => 'textarea',
-                        'tab' => 'Texto',
-                    ],
-                    'text' => [
-                        'label'   => 'Texto sobre',
-                        'span' => 'full',
-                        'size' => 'large',
-                        'type' => 'richeditor',
-                        'tab' => 'Texto',
-                    ],
-                    'social_profiles' => [
-                        'label'   => 'Redes Sociais',
-                        'span' => 'full',
-                        'prompt' => "Adicionar novo link",
-                        'type' => 'repeater',
-                        'form' => [
-                            'fields' => [
-                                'type' => [
-                                    'label' => 'Tipo',
-                                    'span' => 'auto',
-                                    'type' => 'dropdown',
-                                    'options' => [
-                                        '' => 'Selecionar',
-                                        'facebook' => "Facebook",
-                                        'twitter' => 'Twitter',
-                                        'instagram' => 'Instagram',
-                                        'linkedin' => 'Linkedin',
-                                        'pinterest' => 'Pinterest',
-                                        'tiktok' => 'Tiktok',
-                                        'youtube' => 'Youtube',
-                                        'whatsapp' => 'WhatsApp',
-                                        'phone' => 'Telefone',
-                                        'skype' => 'Skype',
-                                        'flickr' => 'Flickr',
-                                        'spotify' => 'Spotify',
-                                        'email' => 'Email',
-                                    ],
-                                ],
-                                'link' => [
-                                    'label' => 'Link',
-                                    'span' => 'auto',
-                                    'type' => 'text',
-                                ],
+        $widget->addTabFields([
+            'description' => [
+                'label'   => 'Pequena descrição',
+                'span' => 'full',
+                'size' => 'small',
+                'type' => 'textarea',
+                'tab' => 'Texto',
+            ],
+            'text' => [
+                'label'   => 'Texto sobre',
+                'span' => 'full',
+                'size' => 'large',
+                'type' => 'richeditor',
+                'tab' => 'Texto',
+            ],
+            'social_profiles' => [
+                'label'   => 'Redes Sociais',
+                'span' => 'full',
+                'prompt' => "Adicionar novo link",
+                'type' => 'repeater',
+                'form' => [
+                    'fields' => [
+                        'type' => [
+                            'label' => 'Tipo',
+                            'span' => 'auto',
+                            'type' => 'dropdown',
+                            'options' => [
+                                '' => 'Selecionar',
+                                'facebook' => "Facebook",
+                                'twitter' => 'Twitter',
+                                'instagram' => 'Instagram',
+                                'linkedin' => 'Linkedin',
+                                'pinterest' => 'Pinterest',
+                                'tiktok' => 'Tiktok',
+                                'youtube' => 'Youtube',
+                                'whatsapp' => 'WhatsApp',
+                                'phone' => 'Telefone',
+                                'skype' => 'Skype',
+                                'flickr' => 'Flickr',
+                                'spotify' => 'Spotify',
+                                'email' => 'Email',
                             ],
                         ],
-                        'tab' => 'Redes Sociais',
+                        'link' => [
+                            'label' => 'Link',
+                            'span' => 'auto',
+                            'type' => 'text',
+                        ],
                     ],
-                ]);
-            }
-        });
-
-        if(BackendHelpers::IsPolloZenVisits() && BackendHelpers::isBlogRainlab()){
-            \RainLab\Blog\Models\Post::extend(function($model) {
-                $model->addDynamicMethod('getVisitsTotalAttribute', function($query) use ($model) {
-                    $visits=\PolloZen\MostVisited\Models\Visits::
-                    select( \Db::raw('SUM(visits) as total_visits'))
-                    ->distinct()->where('post_id',$model->id)->first();
-                    if($visits->total_visits) return $visits->total_visits;
-                    else return 0;
-                });
-            });
-        }
-
-        // //////////////////////CHECK SLUG POST ÚNICOS AUTOMÁTICO
-        if(BackendHelpers::isBlogRainlab()){
-            \RainLab\Blog\Models\Post::extend(function($model){
-                $model->bindEvent('model.beforeValidate', function() use ($model) {
-                    if(!$model->slug || empty($model->slug)){
-                        $model->slug=\Str::slug($model->title);
-                    }
-                    $stop=1;
-                    for ($i=0; $i < $stop; $i++) { 
-                        $slug=$model->slug;
-                        if($i) $slug.='-'.$i;
-                        $veri=\RainLab\Blog\Models\Post::where('slug',$slug);
-                        if(isset($model->id)) $veri=$veri->where('id','!=',$model->id);
-                        $veri=$veri->first();
-                        if(isset($veri->id)) $stop++;
-                    }
-                    $model->slug=$slug;
-                });
-            });
-        }
-        // //////////////////////CHECK SLUG POST ÚNICOS AUTOMÁTICO
-
-        \Backend\Models\User::extend(function($model) {
-            if (!Schema::hasTable('diveramkt_miscelanious_extend_backend_users')) return;
-            $model->hasOne=[
-                'getExtendInfos' => [
-                    'Diveramkt\Miscelanious\Models\ExtendBackendUsers',
-                    'key' => 'user_id',
                 ],
-            ];
+                'tab' => 'Redes Sociais',
+            ],
+        ]);
+    }
+});
+
+if(BackendHelpers::IsPolloZenVisits() && BackendHelpers::isBlogRainlab()){
+    \RainLab\Blog\Models\Post::extend(function($model) {
+        $model->addDynamicMethod('getVisitsTotalAttribute', function($query) use ($model) {
+            $visits=\PolloZen\MostVisited\Models\Visits::
+            select( \Db::raw('SUM(visits) as total_visits'))
+            ->distinct()->where('post_id',$model->id)->first();
+            if($visits->total_visits) return $visits->total_visits;
+            else return 0;
+        });
+    });
+}
+
+if(BackendHelpers::isBlogRainlab()){
+    \RainLab\Blog\Models\Post::extend(function($model){
+        if(BackendHelpers::isArcaneSeo()){
+            $model->bindEvent('model.beforeSave', function() use ($model) {
+                $arcane_seo_options=$model->arcane_seo_options;
+                if(isset($arcane_seo_options['og_title'])) $arcane_seo_options['og_title']=str_replace('Defaults to SEO if left blank', '', $arcane_seo_options['og_title']);
+                if(isset($arcane_seo_options['og_description'])) $arcane_seo_options['og_description']=str_replace('Defaults to SEO if left blank', '', $arcane_seo_options['og_description']);
+                if(isset($arcane_seo_options['og_type'])) $arcane_seo_options['og_type']=str_replace('website article video etc...', 'article', $arcane_seo_options['og_type']);
+                if(isset($arcane_seo_options['og_ref_image'])) $arcane_seo_options['og_ref_image']=str_replace('{{ example.image }}', '', $arcane_seo_options['og_ref_image']);
+                $model->arcane_seo_options=$arcane_seo_options;
+            });
+        }
+        // //////////////////////CHECK SLUG POST ÚNICOS AUTOMÁTICO
+        $model->bindEvent('model.beforeValidate', function() use ($model) {
+            if(!$model->slug || empty($model->slug)){
+                $model->slug=\Str::slug($model->title);
+            }
+            $stop=1;
+            for ($i=0; $i < $stop; $i++) { 
+                $slug=$model->slug;
+                if($i) $slug.='-'.$i;
+                $veri=\RainLab\Blog\Models\Post::where('slug',$slug);
+                if(isset($model->id)) $veri=$veri->where('id','!=',$model->id);
+                $veri=$veri->first();
+                if(isset($veri->id)) $stop++;
+            }
+            $model->slug=$slug;
+        });
+        // //////////////////////CHECK SLUG POST ÚNICOS AUTOMÁTICO
+    });
+}
+
+\Backend\Models\User::extend(function($model) {
+    if (!Schema::hasTable('diveramkt_miscelanious_extend_backend_users')) return;
+    $model->hasOne=[
+        'getExtendInfos' => [
+            'Diveramkt\Miscelanious\Models\ExtendBackendUsers',
+            'key' => 'user_id',
+        ],
+    ];
             // $model->hasMany=[
             //     'postagens' => [
             //         'RainLab\Blog\Models\Post',
@@ -639,77 +883,77 @@ class Plugin extends PluginBase
             //         'scope' => 'IsPublished',
             //     ],
             // ];
-            $model->addJsonable('social_profiles');
+    $model->addJsonable('social_profiles');
 
-            $model->addDynamicMethod('getTextAttribute', function($query) use ($model) {
-                $infos=$model->getExtendInfos;
-                if(isset($infos->infos['text'])) return $infos->infos['text'];
-            });
-            $model->addDynamicMethod('getDescriptionAttribute', function($query) use ($model) {
-                $infos=$model->getExtendInfos;
-                if(isset($infos->infos['description'])) return $infos->infos['description'];
-            });
-            $model->addDynamicMethod('getSocialProfilesAttribute', function($query) use ($model) {
-                $infos=$model->getExtendInfos;
-                if(isset($infos->infos['social_profiles'])){
-                    if(strpos("[".Request::url('/')."]", '/backend/users')) return $infos->infos['social_profiles'];
-                    else{
-                        $social_profiles=json_decode($infos->infos['social_profiles']);
-                        foreach ($social_profiles as $key => $value) {
-                            $type=$social_profiles[$key]->type;
-                            if($type == 'email') $type='envelope';
-                            $social_profiles[$key]->icon=Functions::getIconClass($type);
-                        }
-                        return json_encode($social_profiles);
-                    }
+    $model->addDynamicMethod('getTextAttribute', function($query) use ($model) {
+        $infos=$model->getExtendInfos;
+        if(isset($infos->infos['text'])) return $infos->infos['text'];
+    });
+    $model->addDynamicMethod('getDescriptionAttribute', function($query) use ($model) {
+        $infos=$model->getExtendInfos;
+        if(isset($infos->infos['description'])) return $infos->infos['description'];
+    });
+    $model->addDynamicMethod('getSocialProfilesAttribute', function($query) use ($model) {
+        $infos=$model->getExtendInfos;
+        if(isset($infos->infos['social_profiles'])){
+            if(strpos("[".Request::url('/')."]", '/backend/users')) return $infos->infos['social_profiles'];
+            else{
+                $social_profiles=json_decode($infos->infos['social_profiles']);
+                foreach ($social_profiles as $key => $value) {
+                    $type=$social_profiles[$key]->type;
+                    if($type == 'email') $type='envelope';
+                    $social_profiles[$key]->icon=Functions::getIconClass($type);
                 }
-            });
+                return json_encode($social_profiles);
+            }
+        }
+    });
 
-            $model->bindEvent('model.beforeSave', function () use ($model) {
-                $infos=$model->infos;
-                $table='backend_users';
+    $model->bindEvent('model.beforeSave', function () use ($model) {
+        $infos=$model->infos;
+        $table='backend_users';
 
-                foreach ($model->attributes as $key => $value) {
-                    if(!\Schema::hasColumn($table, $key)){
-                        if($key == 'social_profiles'){
-                            $value=json_decode($value);
-                            if(count($value)){
-                                foreach ($value as $key2 => $vet) {
-                                    if(!$vet->link || !$vet->type){
-                                        unset($value[$key2]);
-                                        continue;
-                                    }
-                                    if($vet->type == 'email'){
-                                        $value[$key2]->url='mailto:'.$vet->link;
-                                        $value[$key2]->target='';
-                                    }else{
-                                        $value[$key2]->url=Functions::prep_url($vet->link);
-                                        $value[$key2]->target=Functions::target($value[$key2]->url);
-                                    }
-                                }
+        foreach ($model->attributes as $key => $value) {
+            if(!\Schema::hasColumn($table, $key)){
+                if($key == 'social_profiles'){
+                    $value=json_decode($value);
+                    if(count($value)){
+                        foreach ($value as $key2 => $vet) {
+                            if(!$vet->link || !$vet->type){
+                                unset($value[$key2]);
+                                continue;
                             }
-                            $value=array_filter($value);
-                            $value=json_encode($value);
+                            if($vet->type == 'email'){
+                                $value[$key2]->url='mailto:'.$vet->link;
+                                $value[$key2]->target='';
+                            }else{
+                                $value[$key2]->url=Functions::prep_url($vet->link);
+                                $value[$key2]->target=Functions::target($value[$key2]->url);
+                            }
                         }
-
-                        $infos[$key]=$value;
-                        unset($model->$key);
                     }
+                    $value=array_filter($value);
+                    $value=json_encode($value);
                 }
 
-                $get_infos=ExtendBackendUsers::where('user_id',$model->id)->first();
-                if(!isset($get_infos->id)){
-                    $set_infos=new ExtendBackendUsers();
-                    $set_infos->user_id=$model->id;
-                    if(isset($infos['text'])) $set_infos->text=$infos['text'];
-                    $set_infos->infos=$infos;
-                    $set_infos->save();
-                }else{
-                    if(isset($infos['text'])) $get_infos->text=$infos['text'];
-                    $get_infos->infos=$infos;
-                    $get_infos->save();
-                }
-            });
+                $infos[$key]=$value;
+                unset($model->$key);
+            }
+        }
+
+        $get_infos=ExtendBackendUsers::where('user_id',$model->id)->first();
+        if(!isset($get_infos->id)){
+            $set_infos=new ExtendBackendUsers();
+            $set_infos->user_id=$model->id;
+            if(isset($infos['text'])) $set_infos->text=$infos['text'];
+            $set_infos->infos=$infos;
+            $set_infos->save();
+        }else{
+            if(isset($infos['text'])) $get_infos->text=$infos['text'];
+            $get_infos->infos=$infos;
+            $get_infos->save();
+        }
+    });
             // $model->bindEvent('model.afterFetch', function () use ($model) {
             //     if(!isset($model->id)) return;
             //     $get_infos=$model->getExtendInfos;
@@ -725,7 +969,7 @@ class Plugin extends PluginBase
             //     if(isset($get_infos->text)) $attributes['text']=$get_infos->text;
             //     $model->attributes=$attributes;
             // });
-        });
+});
 
     // \Backend\Models\User::extend(function($model) {
         // if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
