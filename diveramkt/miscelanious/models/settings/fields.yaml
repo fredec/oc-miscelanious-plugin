@@ -55,6 +55,10 @@ tabs:
             label: 'diveramkt.miscelanious::lang.config.disabled_trash_backend'
             type: switch
             tab: 'diveramkt.miscelanious::lang.config.configurations'
+        enabled_sender_email_replyTo:
+            label: 'diveramkt.miscelanious::lang.config.enabled_sender_email_replyTo'
+            type: switch
+            tab: 'diveramkt.miscelanious::lang.config.configurations'
         redirect_type:
             label: 'diveramkt.miscelanious::lang.config.redirect_type'
             span: full

@@ -448,6 +448,24 @@ class Plugin extends PluginBase
 
     public function boot(){
 
+        // \Event::listen('mailer.beforeSend', function ($view,$data,$callback) {
+        //     // $texto=json_encode($view).' - '.json_encode($data).' - '.json_encode($callback).' - ';
+        //     // $arquivo = "meu_arquivo.txt";
+        //     // $fp = fopen($arquivo, "a+");
+        //     // fwrite($fp, $texto);
+        //     // fclose($fp);
+        //     // $callback->replyTo('rh@memorialpaxdeminas.com.br');
+        //     $view->replyTo('rh@memorialpaxdeminas.com.br');
+        // });
+
+        Event::listen('mailer.prepareSend', function ($mailerInstance,$view,$message) {
+            $settings=\Diveramkt\Miscelanious\Models\Settings::instance();
+            if($settings->enabled_sender_email_replyTo){
+                $configs=\System\Models\MailSetting::instance();
+                if($configs->sender_email) $message->replyTo($configs->sender_email);
+            }
+        });
+
         \Event::listen('pages.menuitem.listTypes', function() {
             if(!BackendHelpers::isBlogRainlab() || !BackendHelpers::isBlogTagsBedard()) return;
             return [

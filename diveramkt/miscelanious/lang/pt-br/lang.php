@@ -76,6 +76,7 @@
         'newsletter_notifications_comment' => 'E-mail que serão notificados de novo cadastro, separar emails por vírgula.',
         'others' => 'Outros',
         'disabled_trash_backend' => 'Desabilitar lixeiras dentro do backend para excluir cadastros.',
+        'enabled_sender_email_replyTo' => 'Habilitar E-mail do Remetente nos envios de contato automático.',
         'enabled_images_companies' => 'Habilitar imagens nas empresas',
         'enabled_video_testimonials' => 'Habilitar vídeo nos depoimentos',
         'emails' => 'E-mails',
