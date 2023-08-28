@@ -38,6 +38,15 @@ class Toposts extends ComponentBase
             ];
         }
 
+        /**
+     * [getPostPageOptions]
+     * @return [array][Blog]
+     */
+    public function getPostPageOptions()
+    {
+        return Page::sortBy('baseFileName')->lists('baseFileName', 'baseFileName');
+    }
+
         public function onRun()
         {
 
