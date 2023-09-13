@@ -415,6 +415,11 @@ class Plugin extends PluginBase
                 }
             },
 
+            'id_mobile' => function(){
+                $detect = new \Mobile_Detect;
+                if ($detect->isMobile()) return true;
+            },
+
         ];
     }
 
