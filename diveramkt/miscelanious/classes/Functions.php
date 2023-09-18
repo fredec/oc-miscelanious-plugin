@@ -189,7 +189,7 @@ class Functions
   public static function data_formato($data, $for='%A, %d de %B de %Y'){
     $replace1=[]; $replace2=[];
     if(BackendHelpers::isTranslate()) $translator=\RainLab\Translate\Classes\Translator::instance();
-    if(!isset($translator) || ($tranlsator->getLocale() == 'pb' || $translator->getLocale() == 'pt-br')){
+    if(!isset($translator) || ($translator->getLocale() == 'pb' || $translator->getLocale() == 'pt-br')){
       setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
                 // date_default_timezone_set('America/Sao_Paulo');
 
@@ -207,7 +207,7 @@ class Functions
   // 'data_formato' => function($data, $for='%A, %d de %B de %Y'){
 
   //   if($this->isTranslate()) $translator=\RainLab\Translate\Classes\Translator::instance();
-  //   if(!isset($translator) || ($tranlsator->getLocale() == 'pb' || $translator->getLocale() == 'pt-br')) setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
+  //   if(!isset($translator) || ($translator->getLocale() == 'pb' || $translator->getLocale() == 'pt-br')) setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
   //               // date_default_timezone_set('America/Sao_Paulo');
 
   //   if(!$data) $data='today';
