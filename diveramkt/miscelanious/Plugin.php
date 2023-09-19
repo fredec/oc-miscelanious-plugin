@@ -464,7 +464,7 @@ class Plugin extends PluginBase
         // });
 
         Event::listen('mailer.prepareSend', function ($mailerInstance,$view,$message) {
-            $settings=\Diveramkt\Miscelanious\Models\Settings::instance();
+            $settings=Functions::getSettings();
             if($settings->enabled_sender_email_replyTo){
                 $configs=\System\Models\MailSetting::instance();
                 if($configs->sender_email) $message->replyTo($configs->sender_email);
@@ -586,7 +586,7 @@ class Plugin extends PluginBase
                 $model->bindEvent('model.afterCreate', function() use ($model) {
                     if(!post('email') || strpos("[".Request::url('/')."]",'indikator/news/subscribers')) return;
 
-                    $settings=\Diveramkt\Miscelanious\Models\Settings::instance();
+                    $settings=Functions::getSettings();
                     $emails=$settings->indikatornews_newletter_notifications;
                     $emails=str_replace(['\r\n','\r','\n',';',' '],[',',',',',',',',''],$emails);
                     $emails=array_filter(explode(',', $emails));
@@ -643,7 +643,23 @@ class Plugin extends PluginBase
                 $translator=\RainLab\Translate\Classes\Translator::instance();
                 $controller->vars['code_lang']=$translator->getLocale();
             });
-
+            \RainLab\Translate\Models\Locale::extend(function($model){
+                $model->bindEvent('model.afterFetch', function () use ($model) {
+                    $settings=Functions::getSettings();
+                    if(isset($settings->flag_translate[$model->id])) $model->flag=$settings->flag_translate[$model->id];
+                });
+                $model->bindEvent('model.beforeSave', function() use ($model) {
+                    if($model->flag){
+                        $settings=Functions::getSettings();
+                        if(!isset($settings->flag_translate)) $settings->flag_translate=[];
+                        else $flag_translate=$settings->flag_translate;
+                        $flag_translate[$model->id]=$model->flag;
+                        $settings->flag_translate=$flag_translate;
+                        $settings->save();
+                    }
+                    unset($model->flag);
+                });
+            });
             if(BackendHelpers::isArcaneSeo()){
                 \Arcane\Seo\Models\Settings::extend(function($model) {
                     if (!$model->propertyExists('jsonable')) $model->addDynamicProperty('jsonable', []);
@@ -659,114 +675,136 @@ class Plugin extends PluginBase
                     // if(isset($model->translatable)) $model->translatable = ['og_locale'];
                 });
             }
+            if(BackendHelpers::isTranslateExtended()){
+                $confg=\Excodus\TranslateExtended\Models\Settings::instance();
+                if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && $confg->browser_language_detection){
+                 $translator = Translator::instance();
+                 $accepted = BrowserMatching::parseLanguageList($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+                 $available = Locale::listEnabled();
+                 $matches = BrowserMatching::findMatches($accepted, $available);
+                 if (!empty($matches)) {
+                    $match = array_keys($matches)[0];
+                    $translator->setLocale($match);
+                }
+            }
         }
+    }
 
-        if(BackendHelpers::isArcaneSeo()){
-            \Arcane\Seo\Models\Settings::extend(function($model) {
-                $array=[
-                    'logo' => 'System\Models\File',
-                    'logo_white' => 'System\Models\File',
-                    'logo_email' => 'System\Models\File',
-                ];
-                if(isset($model->attachOne)) $model->attachOne=$array;
-                else $model->addDynamicProperty('attachOne', $array);
-            });
-        }
+    if(BackendHelpers::isArcaneSeo()){
+        \Arcane\Seo\Models\Settings::extend(function($model) {
+            $array=[
+                'logo' => 'System\Models\File',
+                'logo_white' => 'System\Models\File',
+                'logo_email' => 'System\Models\File',
+            ];
+            if(isset($model->attachOne)) $model->attachOne=$array;
+            else $model->addDynamicProperty('attachOne', $array);
+        });
+    }
 
-        Event::listen('backend.form.extendFields', function($widget) {
-            if($widget->isNested === false){
-                if (
-                    $widget->model instanceof \Arcane\Seo\Models\Settings
-                    && BackendHelpers::isArcaneSeo()
-                ) {
-                    $widget->addFields([
-                        'logo' => [
-                            'label'   => 'Logo do site',
-                            'span' => 'auto',
-                            'type' => 'fileupload',
-                        ],
-                        'logo_white' => [
-                            'label'   => 'Logo do site - Branca',
-                            'span' => 'auto',
-                            'type' => 'fileupload',
-                        ],
-                        'logo_email' => [
-                            'label'   => 'Logo no email',
-                            'span' => 'auto',
-                            'type' => 'fileupload',
-                        ],
-                    ]);
-                }elseif($widget->model instanceof \Diveramkt\Miscelanious\Models\Company) {
-                    $settings=Functions::getSettings();
-                    if(!$settings->enabled_images_companies) $widget->removeField('images');
-                    if(!$settings->enabled_subtitle_companies) $widget->removeField('subtitle');
+    Event::listen('backend.form.extendFields', function($widget) {
+        if($widget->isNested === false){
+            if (
+                $widget->model instanceof \Arcane\Seo\Models\Settings
+                && BackendHelpers::isArcaneSeo()
+            ) {
+                $widget->addFields([
+                    'logo' => [
+                        'label'   => 'Logo do site',
+                        'span' => 'auto',
+                        'type' => 'fileupload',
+                    ],
+                    'logo_white' => [
+                        'label'   => 'Logo do site - Branca',
+                        'span' => 'auto',
+                        'type' => 'fileupload',
+                    ],
+                    'logo_email' => [
+                        'label'   => 'Logo no email',
+                        'span' => 'auto',
+                        'type' => 'fileupload',
+                    ],
+                ]);
+            }elseif($widget->model instanceof \RainLab\Translate\Models\Locale) {
+                $widget->addFields([
+                    'flag' => [
+                        'label'   => 'Bandeira',
+                        'span' => 'auto',
+                        'type' => 'mediafinder',
+                        'mode' => 'image',
+                    ],
+                ]);
+            }elseif($widget->model instanceof \Diveramkt\Miscelanious\Models\Company) {
+                $settings=Functions::getSettings();
+                if(!$settings->enabled_images_companies) $widget->removeField('images');
+                if(!$settings->enabled_subtitle_companies) $widget->removeField('subtitle');
 
-                    if(!$settings->enabled_companies_phone){
-                        $widget->removeField('phone'); $widget->removeField('area_code');
-                    }
-                    if(!$settings->enabled_companies_telefones) $widget->removeField('phones');
-                    if(!$settings->enabled_companies_phone && !$settings->enabled_companies_telefones) $widget->removeField('section_phone');
-                    
-                    if(!$settings->enabled_companies_skype) $widget->removeField('skype');
-                    if(!$settings->enabled_companies_opening_hours){
-                        $widget->removeField('section_hours');
-                        $widget->removeField('opening_hours');
-                    }
-                    if(!$settings->enabled_companies_social) $widget->removeField('social');
+                if(!$settings->enabled_companies_phone){
+                    $widget->removeField('phone'); $widget->removeField('area_code');
+                }
+                if(!$settings->enabled_companies_telefones) $widget->removeField('phones');
+                if(!$settings->enabled_companies_phone && !$settings->enabled_companies_telefones) $widget->removeField('section_phone');
+                
+                if(!$settings->enabled_companies_skype) $widget->removeField('skype');
+                if(!$settings->enabled_companies_opening_hours){
+                    $widget->removeField('section_hours');
+                    $widget->removeField('opening_hours');
+                }
+                if(!$settings->enabled_companies_social) $widget->removeField('social');
 
-                    if(isset($settings->enabled_companies_cnpj) && !$settings->enabled_companies_cnpj) $widget->removeField('cnpj');
-                    if(isset($settings->enabled_companies_textabout) && !$settings->enabled_companies_textabout){
-                        $widget->removeField('text_about');
-                        $widget->removeField('section_textabout');
-                    }
-                    if(!$settings->enabled_companies_email) $widget->removeField('email');
-                    if(!$settings->enabled_companies_emails) $widget->removeField('emails');
-                    if(!$settings->enabled_companies_email && !$settings->enabled_companies_emails) $widget->removeField('section_email');
-                    
-                    if(!$settings->enabled_companies_mobiles) $widget->removeField('mobiles');
-                    if(!$settings->enabled_companies_mobile) $widget->removeField('mobile'); $widget->removeField('area_code_mobile');
-                    if(!$settings->enabled_companies_mobiles && !$settings->enabled_companies_mobile) $widget->removeField('section_mobile');
-                }elseif($widget->model instanceof \Diveramkt\Miscelanious\Models\Phone) {
-                    $settings=Functions::getSettings();
-                    if(!$settings->enabled_phones_number){
-                        $widget->removeField('number');
-                        $widget->removeField('area_code');
-                    }
-                    if(!$settings->enabled_phones_icon) $widget->removeField('icon');
-                    if(!$settings->enabled_phones_infos) $widget->removeField('info');
-                    if(isset($settings->enabled_phones_numbers) && !$settings->enabled_phones_numbers) $widget->removeField('numbers');
-                }elseif($widget->model instanceof \Diveramkt\Miscelanious\Models\Testmonial) {
-                    $settings=Functions::getSettings();
+                if(isset($settings->enabled_companies_cnpj) && !$settings->enabled_companies_cnpj) $widget->removeField('cnpj');
+                if(isset($settings->enabled_companies_textabout) && !$settings->enabled_companies_textabout){
+                    $widget->removeField('text_about');
+                    $widget->removeField('section_textabout');
+                }
+                if(!$settings->enabled_companies_email) $widget->removeField('email');
+                if(!$settings->enabled_companies_emails) $widget->removeField('emails');
+                if(!$settings->enabled_companies_email && !$settings->enabled_companies_emails) $widget->removeField('section_email');
+                
+                if(!$settings->enabled_companies_mobiles) $widget->removeField('mobiles');
+                if(!$settings->enabled_companies_mobile) $widget->removeField('mobile'); $widget->removeField('area_code_mobile');
+                if(!$settings->enabled_companies_mobiles && !$settings->enabled_companies_mobile) $widget->removeField('section_mobile');
+            }elseif($widget->model instanceof \Diveramkt\Miscelanious\Models\Phone) {
+                $settings=Functions::getSettings();
+                if(!$settings->enabled_phones_number){
+                    $widget->removeField('number');
+                    $widget->removeField('area_code');
+                }
+                if(!$settings->enabled_phones_icon) $widget->removeField('icon');
+                if(!$settings->enabled_phones_infos) $widget->removeField('info');
+                if(isset($settings->enabled_phones_numbers) && !$settings->enabled_phones_numbers) $widget->removeField('numbers');
+            }elseif($widget->model instanceof \Diveramkt\Miscelanious\Models\Testmonial) {
+                $settings=Functions::getSettings();
                    //  if(!$settings->enabled_video_testimonials){
                    //     $widget->removeField('video');
                    //     $widget->removeField('type');
                    // }
-                   if(!is_array($settings->enabled_types_testimonials) || !count($settings->enabled_types_testimonials)){
-                       $widget->removeField('type');
-                   }
-                   if(!$settings->enabled_testimonials_business) $widget->removeField('business');
-                   if(!$settings->enabled_testimonials_position) $widget->removeField('position');
-                   if(!$settings->enabled_testimonials_link) $widget->removeField('link');
-                   if(!$settings->enabled_testimonials_imagemedia) $widget->removeField('image');
-                   else $widget->removeField('foto');
-               }
-           }
-       });
+                if(!is_array($settings->enabled_types_testimonials) || !count($settings->enabled_types_testimonials)){
+                 $widget->removeField('type');
+             }
+             if(!$settings->enabled_testimonials_business) $widget->removeField('business');
+             if(!$settings->enabled_testimonials_position) $widget->removeField('position');
+             if(!$settings->enabled_testimonials_link) $widget->removeField('link');
+             if(!$settings->enabled_testimonials_imagemedia) $widget->removeField('image');
+             else $widget->removeField('foto');
+         }
+     }
+ });
 
-       Event::listen('backend.list.extendColumns', function ($listWidget) {
+Event::listen('backend.list.extendColumns', function ($listWidget) {
         // if (!$listWidget->getController() instanceof \Backend\Controllers\Users) {
         //     return;
         // }
-        if($listWidget->model instanceof \Diveramkt\Miscelanious\Models\Testmonial) {
-            $settings=Functions::getSettings();
-            if(!$settings->enabled_testimonials_position) $listWidget->removeColumn('position');
-        }
-    });
+    if($listWidget->model instanceof \Diveramkt\Miscelanious\Models\Testmonial) {
+        $settings=Functions::getSettings();
+        if(!$settings->enabled_testimonials_position) $listWidget->removeColumn('position');
+    }
+});
 
 $this->validacoes();
 $class=get_declared_classes();
 
-$settings = \Diveramkt\Miscelanious\Models\Settings::instance();
+$settings=Functions::getSettings();
 Functions::redirectPlugin($settings);
 
 // ///////////////////EXTEND BACKEND USERS
@@ -1066,11 +1104,11 @@ public function validacoes(){
              $res = checkdate($m,$d,$y);
              return $res;
              if ($res == 1){
-               echo "data ok!";
-           } else {
-               echo "data inválida!";
-           }
-       });
+                 echo "data ok!";
+             } else {
+                 echo "data inválida!";
+             }
+         });
     Validator::extend('phone', function($attribute, $value, $parameters) {
         return Functions::validPhone($value);
     });

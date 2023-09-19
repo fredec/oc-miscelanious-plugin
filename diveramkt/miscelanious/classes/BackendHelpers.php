@@ -18,6 +18,14 @@ class BackendHelpers {
         }
         return Self::$getIsTranslate;
     }
+    public static $getIsTranslateExtended=null;
+    public static function isTranslateExtended() :bool {
+        if(!Self::$getIsTranslate){
+            $plugins=new PluginVersion();
+            Self::$getIsTranslate=class_exists('\Excodus\TranslateExtended\Plugin') && $plugins->where('code','Excodus.TranslateExtended')->ApplyEnabled()->count();
+        }
+        return Self::$getIsTranslate;
+    }
 
     public static $getIsPolloZenVisits=null;
     public static function IsPolloZenVisits() :bool {
