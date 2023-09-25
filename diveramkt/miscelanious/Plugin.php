@@ -238,47 +238,37 @@ class Plugin extends PluginBase
             },
 
             'get_translate' => function($translate=false, $parent=false, $get=false){
+                // return Functions::get_translate($translate, $parent, $get);
                 if(!BackendHelpers::isTranslate()) return $translate;
-                if(!$this->translator){
+                if(!$this->translator or !$this->activeLocale){
                     $this->translator = Translator::instance();
                     $this->activeLocale = $this->translator->getLocale();
                 }
 
                 if(!$translate) return;
+                // echo 'teste: '.$translate->id;
+                // if($this->translate_active_infos){
+                //     if(isset($this->translate_active_infos[$translate->id][$this->activeLocale])) echo json_encode($this->translate_active_infos[$translate->id][$this->activeLocale]);
+                // }
+                // if(!$this->translate_active && isset($translate->id) && isset($this->translate_active_infos[$translate->id][$this->activeLocale])){
+                //     $this->translate_active=$this->translate_active_infos[$translate->id][$this->activeLocale];
+                // }
+
                 if(!$this->translate_active || (isset($translate->translations) && count($translate->translations) > 0)){
                     foreach ($translate->translations as $key => $value) {
+                        // $this->translate_active_infos[$translate->id][$value->locale]=$value;
                         if($value->locale!=$this->activeLocale) continue;
                         $this->translate_active=$value;
                     }
                 }
-
                 if(isset($this->translate_active['attribute_data']) && !empty($this->translate_active['attribute_data'])){
                     $trans=json_decode($this->translate_active['attribute_data']);
-                    if(!$parent){
-                        foreach ($trans as $key => $value) {
-                            if(isset($translate->$key)) $translate->$key=$value; 
-                        }
-                        return $translate;
-                    }elseif($get && isset($trans->$parent->$get)){
-                        if($trans->$parent->$get) return $trans->$parent->$get;
-                        elseif(isset($translate->$parent[$get])) return $translate->$parent[$get];
-                    }elseif(!$get && isset($trans->$parent)){
-                        $retorno=[];
-
-                        foreach ($trans->$parent as $key => $value) {
-                            if(!empty($value)) $retorno[$key]=$value;
-                            else $retorno[$key]=$translate->$parent[$key];
-                        }
-                        return $retorno;
-                        // if($trans->$parent) return $trans->$parent;
-                        // elseif(isset($translate->$parent)) return $translate->$parent;
-                    }
-                }elseif($parent){
-                    if(isset($translate->$parent[$get])) return $translate->$parent[$get];
-                    elseif(isset($translate->$parent)) return $translate->$parent;
+                    if($get && isset($trans->$parent[$get]) && !empty(trim(strip_tags($trans->$parent[$get])))) return $trans->$parent[$get];
+                    elseif(isset($trans->$parent) && !empty(trim(strip_tags($trans->$parent)))) return $trans->$parent;
                 }
-                // return false;
-                return $translate;
+
+                if($get && $parent && isset($translate->$parent[$get])) return $translate->$parent[$get];
+                elseif($parent && isset($translate->$parent)) return $translate->$parent;
             },
 
             'formatValue' => function($value){
@@ -415,7 +405,7 @@ class Plugin extends PluginBase
                 }
             },
 
-            'id_mobile' => function(){
+            'is_mobile' => function(){
                 $detect = new \Mobile_Detect;
                 if ($detect->isMobile()) return true;
             },
