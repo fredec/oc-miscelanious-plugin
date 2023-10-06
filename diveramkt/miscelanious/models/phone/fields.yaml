@@ -49,3 +49,11 @@ fields:
                     options:
                         0: Telefone
                         1: Whatsapp
+                default_message:
+                    label: 'Mensagem padrão'
+                    span: full
+                    trigger:
+                        action: show
+                        field: type
+                        condition: 'value[1]'
+                    type: text
