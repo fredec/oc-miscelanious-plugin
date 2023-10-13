@@ -373,4 +373,15 @@ class Functions
   }
   // ////////////////////////VALIDAÇÕES
 
+  public static $is_mobile_cache=null;
+  public static function is_mobile(){
+    if(Self::$is_mobile_cache != null) return Self::$is_mobile_cache;
+    else{
+      $detect = new \Mobile_Detect;
+      if ($detect->isMobile()) Self::$is_mobile_cache=true;
+      else Self::$is_mobile_cache=false;
+    }
+    return Self::$is_mobile_cache;
+  }
+
 }

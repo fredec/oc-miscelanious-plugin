@@ -407,8 +407,7 @@ class Plugin extends PluginBase
             },
 
             'is_mobile' => function(){
-                $detect = new \Mobile_Detect;
-                if ($detect->isMobile()) return true;
+                return Functions::is_mobile();
             },
 
         ];
