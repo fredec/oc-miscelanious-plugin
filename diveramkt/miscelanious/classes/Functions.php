@@ -384,4 +384,17 @@ class Functions
     return Self::$is_mobile_cache;
   }
 
+  public static $webspeed_cache=false;
+  public static function webspeed(){
+    if(Self::$webspeed_cache) return Self::$webspeed_cache;
+    if(isset($_SERVER['HTTP_USER_AGENT']) && (strpos("[".$_SERVER['HTTP_USER_AGENT']."]", 'GTmetrix') || strpos("[".$_SERVER['HTTP_USER_AGENT']."]", 'Chrome-Lighthouse') || strpos("[".$_SERVER['HTTP_USER_AGENT']."]", 'Speed Insights'))){
+      Self::$webspeed_cache=true;
+    }else Self::$webspeed_cache=false;
+
+    return Self::$webspeed_cache;
+                // if (!isset($_SERVER['HTTP_USER_AGENT']) || stripos($_SERVER['HTTP_USER_AGENT'], 'Speed Insights') === false){
+                //     return false;
+                // }else return true;
+  }
+
 }
