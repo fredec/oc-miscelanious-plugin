@@ -1097,6 +1097,9 @@ public function validacoes(){
     Validator::extend('phone', function($attribute, $value, $parameters) {
         return Functions::validPhone($value);
     });
+    Validator::extend('cep', function($attribute, $value, $parameters) {
+        return Functions::ValidCep($value);
+    });
 
 }
 

@@ -371,6 +371,16 @@ class Functions
       return false;
     }
   }
+  public static function ValidCep($cep)
+  {
+    $regexcep = '/[0-9]{5}-[0-9]{3}/';
+    if (preg_match($regexcep, $cep)) return true;
+    else{
+     $cep = preg_replace('/[^0-9]/', '', $cep);
+     if(strlen($cep) == 8) return true;
+   }
+   return false;
+ }
   // ////////////////////////VALIDAÇÕES
 
   public static $is_mobile_cache=null;
