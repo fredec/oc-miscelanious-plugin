@@ -379,6 +379,13 @@ class Plugin extends PluginBase
                 }else return $image;
             },
 
+            'bottom_email' => function($width=false){
+                $image=false;
+                if(BackendHelpers::isArcaneSeo()) $arcane=\Arcane\Seo\Models\Settings::instance();
+                if(isset($arcane->bottom_email->path)) $image=$arcane->bottom_email->path;
+                return $image;
+            },
+
             'logo_site_white' => function($width=false){
                 $image=false;
                 if(BackendHelpers::isArcaneSeo()) $arcane=\Arcane\Seo\Models\Settings::instance();
@@ -681,6 +688,7 @@ class Plugin extends PluginBase
                 'logo' => 'System\Models\File',
                 'logo_white' => 'System\Models\File',
                 'logo_email' => 'System\Models\File',
+                'bottom_email' => 'System\Models\File',
             ];
             if(isset($model->attachOne)) $model->attachOne=$array;
             else $model->addDynamicProperty('attachOne', $array);
@@ -704,8 +712,18 @@ class Plugin extends PluginBase
                         'span' => 'auto',
                         'type' => 'fileupload',
                     ],
+                    'section_images_email' => [
+                        'label'   => 'Imagens no email',
+                        'span' => 'full',
+                        'type' => 'section',
+                    ],
                     'logo_email' => [
                         'label'   => 'Logo no email',
+                        'span' => 'auto',
+                        'type' => 'fileupload',
+                    ],
+                    'bottom_email' => [
+                        'label'   => 'Rodapé no email',
                         'span' => 'auto',
                         'type' => 'fileupload',
                     ],
