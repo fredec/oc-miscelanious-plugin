@@ -70,6 +70,10 @@ class Testmonial extends Model
         return strip_tags($this->name);
     }
 
+    public function scopeEnabled($query){
+        $query->where($this->table.'.enabled',1);
+    }
+
     public function getCoverAttribute(){
         $settings=Functions::getSettings();
         if(!$settings->enabled_testimonials_imagemedia and isset($this->foto->path)) return $this->foto->path;

@@ -690,7 +690,7 @@ class Plugin extends PluginBase
                 'logo_email' => 'System\Models\File',
                 'bottom_email' => 'System\Models\File',
             ];
-            if(isset($model->attachOne)) $model->attachOne=$array;
+            if(isset($model->attachOne)) $model->attachOne=array_merge($model->attachOne,$array);
             else $model->addDynamicProperty('attachOne', $array);
         });
     }

@@ -78,17 +78,19 @@ class Testimonials extends ComponentBase
 
 	protected function getAllTestimonials() {
 
-		$query = Testmonial::where('enabled', true);
-		$query = $query->orderBy('sort_order',$this->property('sortOrder'));
+		// $query = Testmonial::where('enabled', true);
+		$query = Testmonial::enabled()->orderBy('sort_order',$this->property('sortOrder'));
 
 		if($this->property('type')){
-			if($this->property('type') == 1) $query=$query->whereNull('video');
-			elseif($this->property('type') == 2) $query=$query->whereNotNull('video');
+			$type=$this->property('type');
+			$query=$query->where(function($query) use ($type){
+				if($type == 1) $query->whereNull('video');
+				elseif($type == 2) $query->whereNotNull('video');
+			});
 		}
 
 		$this->total=$query->count();
 		if ($this->property('total') > 0) $query = $query->take($this->property('total'));
-
 		return $query->get();
 	}
 
