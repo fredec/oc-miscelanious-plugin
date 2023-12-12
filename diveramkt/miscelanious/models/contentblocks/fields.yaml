@@ -3,8 +3,29 @@ fields:
         label: Título
         span: full
         type: text
+    type:
+        label: Tipo
+        options:
+            - Texto
+            - Código/script
+        showSearch: true
+        span: full
+        type: dropdown
     content:
         label: Conteúdo
         size: giant
         span: full
+        trigger:
+            action: show
+            field: type
+            condition: 'value[0]'
         type: richeditor
+    content_code:
+        label: Código
+        size: giant
+        span: full
+        trigger:
+            action: show
+            field: type
+            condition: 'value[1]'
+        type: textarea

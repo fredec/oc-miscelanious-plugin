@@ -536,7 +536,8 @@ class Plugin extends PluginBase
                 $replace1=[]; $replace2=[];
 
                 foreach (\Diveramkt\Miscelanious\Models\Contentblocks::get() as $key => $value) {
-                    $blocks[$value->slug]=$value->content;
+                    if(isset($value->type) && $value->type == 1) $blocks[$value->slug]=$value->content_code;
+                    else $blocks[$value->slug]=$value->content;
                 }
 
                 $inicio='<figure '; $fim='</figure>';
