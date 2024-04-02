@@ -459,6 +459,8 @@ class Plugin extends PluginBase
             $settings=Functions::getSettings();
             if($settings->enabled_sender_email_replyTo){
                 $configs=\System\Models\MailSetting::instance();
+                if($view != 'martin.forms::mail.autoresponse') return;
+                // throw new ApplicationException(json_encode($view));
                 if($configs->sender_email) $message->replyTo($configs->sender_email);
             }
         });
