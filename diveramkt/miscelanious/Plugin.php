@@ -277,9 +277,9 @@ class Plugin extends PluginBase
             },
 
             'limit_word' => function($string, $limit=10, $com='...'){
-                $exp=array_filter(explode(' ', strip_tags($string)));
+                $exp=array_filter(explode(' ', strip_tags($string))); $total=$exp;
                 $return=implode(' ', array_splice($exp, 0, $limit));
-                if(count($exp)>$limit) $return.=$com;
+                if(count($total)>$limit) $return.=$com;
                 return $return;
             },
 
