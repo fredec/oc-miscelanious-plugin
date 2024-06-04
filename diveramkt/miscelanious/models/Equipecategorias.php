@@ -9,6 +9,8 @@ class Equipecategorias extends Model
 {
     use \October\Rain\Database\Traits\Validation;
     use \October\Rain\Database\Traits\Sortable;
+    use \October\Rain\Database\Traits\Sluggable;
+    protected $slugs = ['slug' => 'title'];
 
     public $implement = [];
     public $translatable = [];

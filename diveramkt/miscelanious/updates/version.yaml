@@ -117,3 +117,9 @@
 1.0.40:
     - 'Updated table diveramkt_miscelanious_content_blocks'
     - builder_table_update_diveramkt_miscelanious_content_blocks.php
+1.0.41:
+    - 'Updated table diveramkt_miscelanious_equipe'
+    - builder_table_update_diveramkt_miscelanious_equipe.php
+1.0.42:
+    - 'Updated table diveramkt_miscelanious_equipe_categorias'
+    - builder_table_update_diveramkt_miscelanious_equipe_categorias.php
