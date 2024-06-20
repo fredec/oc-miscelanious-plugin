@@ -721,12 +721,14 @@ class Plugin extends PluginBase
                         'type' => 'section',
                     ],
                     'logo_email' => [
-                        'label'   => 'Logo no email',
+                        'label'   => 'Header no email',
+                        'commentAbove' => 'Necessário ser jpg/png',
                         'span' => 'auto',
                         'type' => 'fileupload',
                     ],
                     'bottom_email' => [
                         'label'   => 'Rodapé no email',
+                        'commentAbove' => 'Necessário ser jpg/png',
                         'span' => 'auto',
                         'type' => 'fileupload',
                     ],
