@@ -457,6 +457,7 @@ class Plugin extends PluginBase
 
         Event::listen('mailer.prepareSend', function ($mailerInstance,$view,$message) {
             $settings=Functions::getSettings();
+            if($view == 'diveramkt.goldsystem::mail.message_default') return;
             if($settings->enabled_sender_email_replyTo){
                 $configs=\System\Models\MailSetting::instance();
                 if($view != 'martin.forms::mail.autoresponse') return;
