@@ -155,7 +155,7 @@ class Usersbackend extends ComponentBase
     		}
     	}else{
 
-    		$users=User::where($table_user.'.role_id','>',0)
+    		$users=User::where($table_user.'.role_id','>',0)->orderBy($table_user.'.first_name','asc')
     		->select($table_user.'.*')->join($table_join.' as join','join.user_id','=',$table_user.'.id')->where('join.infos','like','%"enabled":"1"%');
     		if($this->property('limit') && is_numeric($this->property('limit'))) $users=$users->take($this->property('limit'));
 			if($this->property('have_post')){
