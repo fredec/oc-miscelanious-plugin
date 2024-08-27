@@ -20,11 +20,11 @@ class BackendHelpers {
     }
     public static $getIsTranslateExtended=null;
     public static function isTranslateExtended() :bool {
-        if(!Self::$getIsTranslate){
+        if(!Self::$getIsTranslateExtended){
             $plugins=new PluginVersion();
-            Self::$getIsTranslate=class_exists('\Excodus\TranslateExtended\Plugin') && $plugins->where('code','Excodus.TranslateExtended')->ApplyEnabled()->count();
+            Self::$getIsTranslateExtended=class_exists('\Excodus\TranslateExtended\Plugin') && $plugins->where('code','Excodus.TranslateExtended')->ApplyEnabled()->count();
         }
-        return Self::$getIsTranslate;
+        return Self::$getIsTranslateExtended;
     }
 
     public static $getIsPolloZenVisits=null;
