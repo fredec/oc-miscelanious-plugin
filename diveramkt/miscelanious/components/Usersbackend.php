@@ -141,7 +141,7 @@ class Usersbackend extends ComponentBase
     	$table_join=new ExtendBackendUsers(); $table_join=$table_join->table;
     	if($this->property('id_user')){
     		$user=User::where($table_user.'.id',$this->property('id_user'))
-    		->select($table_user.'.*')->join($table_join.' as join','join.user_id','=',$table_user.'.id')->where('join.infos','like','%"enabled":"1"%');
+    		->select($table_user.'.*')->join($table_join.' as join','join.user_id','=',$table_user.'.id')->where('join.infos','like','%"enabled":"1"%')->distinct();
     		if($this->property('have_post')){
     			$table_post=new Post();
     			$user=$user->join($table_post->table.' as post','post.user_id','=',$table_user.'.id');
@@ -156,7 +156,7 @@ class Usersbackend extends ComponentBase
     	}else{
 
     		$users=User::where($table_user.'.role_id','>',0)->orderBy($table_user.'.first_name','asc')
-    		->select($table_user.'.*')->join($table_join.' as join','join.user_id','=',$table_user.'.id')->where('join.infos','like','%"enabled":"1"%');
+    		->select($table_user.'.*')->join($table_join.' as join','join.user_id','=',$table_user.'.id')->where('join.infos','like','%"enabled":"1"%')->distinct();
     		if($this->property('limit') && is_numeric($this->property('limit'))) $users=$users->take($this->property('limit'));
 			if($this->property('have_post')){
     			$table_post=new Post();

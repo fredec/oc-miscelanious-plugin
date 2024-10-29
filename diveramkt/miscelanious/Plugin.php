@@ -955,6 +955,10 @@ if(BackendHelpers::isBlogRainlab()){
             // ];
     $model->addJsonable('social_profiles');
 
+    $model->addDynamicMethod('getEnabledAttribute', function($query) use ($model) {
+        $infos=$model->getExtendInfos;
+        if(isset($infos->infos['enabled'])) return $infos->infos['enabled'];
+    });
     $model->addDynamicMethod('getTextAttribute', function($query) use ($model) {
         $infos=$model->getExtendInfos;
         if(isset($infos->infos['text'])) return $infos->infos['text'];
