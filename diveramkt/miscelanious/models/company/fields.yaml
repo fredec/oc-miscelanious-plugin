@@ -104,7 +104,6 @@ tabs:
             type: text
             tab: 'diveramkt.miscelanious::lang.tab.company'
         emails:
-            label: 'Emails'
             label: 'diveramkt.miscelanious::lang.company.other_emails'
             span: auto
             type: repeater
