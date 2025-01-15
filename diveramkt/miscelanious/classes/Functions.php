@@ -7,6 +7,11 @@ use Diveramkt\Miscelanious\Models\Settings;
 class Functions
 {
 
+  public static function isJson($string) {
+    json_decode($string);
+    return (json_last_error() === JSON_ERROR_NONE);
+  }
+
   public static $getSettingsCache=null;
   public static function getSettings(){
     if(strpos("[".Request::url('/')."]",'diveramkt/miscelanious/settings')) return;

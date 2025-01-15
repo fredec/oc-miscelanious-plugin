@@ -264,12 +264,18 @@ class Plugin extends PluginBase
                 }
                 if(isset($this->translate_active['attribute_data']) && !empty($this->translate_active['attribute_data'])){
                     $trans=json_decode($this->translate_active['attribute_data']);
+
                     if($get && isset($trans->$parent[$get]) && !empty(trim(strip_tags($trans->$parent[$get])))) return $trans->$parent[$get];
-                    elseif(isset($trans->$parent) && !empty(trim(strip_tags($trans->$parent)))) return $trans->$parent;
+                    elseif(isset($trans->$parent) && !is_array($trans->$parent) && !empty(trim(strip_tags($trans->$parent)))) return $trans->$parent;
+                    elseif(isset($trans->$parent) && is_array($trans->$parent) && count($trans->$parent)) return $trans->$parent;
                 }
 
-                if($get && $parent && isset($translate->$parent[$get])) return $translate->$parent[$get];
-                elseif($parent && isset($translate->$parent)) return $translate->$parent;
+                $return_parent=$translate->$parent;
+                if(!is_array($return_parent)){
+                    if(Functions::isJson($return_parent)) $return_parent=json_decode($return_parent);
+                }
+                if($get && $parent && isset($return_parent[$get])) return $return_parent[$get];
+                elseif($parent && isset($return_parent)) return $return_parent;
             },
 
             'formatValue' => function($value){
