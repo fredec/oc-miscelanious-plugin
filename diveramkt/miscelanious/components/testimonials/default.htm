@@ -6,6 +6,16 @@
 		<img src="{{ testimonial.image|media }}" />
 		<p>{{ testimonial.name }} - {{ testimonial.business }}</p>
 
+		{% if testimonial.midias_social[0].link %}
+		<div>
+			{% for link in testimonial.midias_social %}
+			<a href="{{link.link|prep_url}}" {{link.link|prep_url|target}}>
+				<i class="{{link.type|icon_settings}}"></i>
+			</a>
+			{% endfor %}
+		</div>
+		{% endif %}
+
 		{% if testimonial.type == 'text' %}
 		<div class="texto_padrao">
 			<p>{{testimonial.testmonial|raw}}</p>

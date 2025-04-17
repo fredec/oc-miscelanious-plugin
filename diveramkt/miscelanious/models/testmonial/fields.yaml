@@ -39,6 +39,37 @@ fields:
         oc.commentPosition: ''
         span: left
         type: text
+    midias_social:
+        label: 'Redes sociais'
+        prompt: 'Acrescentar novo item'
+        style: default
+        span: left
+        type: repeater
+        form:
+            fields:
+                link:
+                    label: Link
+                    span: auto
+                    type: text
+                type:
+                    label: 'diveramkt.miscelanious::lang.social.social_name'
+                    options:
+                        facebook: Facebook
+                        twitter: Twitter
+                        instagram: Instagram
+                        linkedin: Linkedin
+                        pinterest: Pinterest
+                        tiktok: Tiktok
+                        youtube: Youtube
+                        whatsapp: WhatsApp
+                        phone: Telefone
+                        skype: Skype
+                        flickr: Flickr
+                        spotify: Spotify
+                        soundcloud: Soundcloud
+                        email: Email
+                    span: auto
+                    type: dropdown
     link:
         label: Link
         span: full
@@ -58,7 +89,8 @@ fields:
             action: hide
             field: type
             condition: 'value[video] or value[video_file] or value[image]'
-        type: textarea
+        type: richeditor
+        toolbarButtons: bold|italic
     video:
         label: Vídeo
         size: tiny

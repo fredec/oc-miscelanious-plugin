@@ -7,6 +7,8 @@ use Request;
 use System\Models\PluginVersion;
 use Event;
 use RainLab\Translate\Classes\Translator;
+use RainLab\Translate\Models\Locale;
+use Excodus\TranslateExtended\Classes\BrowserMatching;
 use Diveramkt\Miscelanious\Classes\Functions;
 use Diveramkt\Miscelanious\Classes\BackendHelpers;
 use Diveramkt\Miscelanious\Models\ExtendBackendUsers;
@@ -293,7 +295,7 @@ class Plugin extends PluginBase
                 $text=str_replace(' ','',strip_tags($text_html));
                 $conter='a-zA-Z0-9';
                 $text= preg_replace("/[^".$conter."]/", "", $text);
-                if(empty($text)) return 1;
+                if(empty($text) && !strpos("[".$text_html."]", "<img ")) return 1;
                 else return 0;
             },
 
@@ -416,6 +418,25 @@ class Plugin extends PluginBase
 
             'is_mobile' => function(){
                 return Functions::is_mobile();
+            },
+
+            'formatarData' => function($data){
+                return Functions::formatarData($data);
+            },
+
+            'formatarDataHora' => function($data){
+                return Functions::formatarDataHora($data);
+            },
+            'formatarDataDefault' => function($data){
+                return Functions::formatarDataDefault($data);
+            },
+
+            'src_iframe' => function($iframe=false) {
+                if($iframe){
+                    $inicio='src="'; $fim='"';
+                    preg_match_all("#".$inicio."(.*?)".$fim."#s", $iframe, $result);
+                    if(isset($result[1][0])) return $result[1][0];
+                }
             },
 
         ];
@@ -802,6 +823,7 @@ class Plugin extends PluginBase
              if(!$settings->enabled_testimonials_link) $widget->removeField('link');
              if(!$settings->enabled_testimonials_imagemedia) $widget->removeField('image');
              else $widget->removeField('foto');
+             if(!$settings->enabled_midias_sociais) $widget->removeField('midias_social');
          }
      }
  });

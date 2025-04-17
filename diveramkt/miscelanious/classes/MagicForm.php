@@ -84,6 +84,13 @@ abstract class MagicForm extends ComponentBase
             $post = post();
         }
 
+        $send_secondary=0;
+        if(isset($post['send_secondary'])){
+            $send_secondary=$post['send_secondary'];
+            unset($post['send_secondary']);
+        }
+        Session::put('token_'.Session::token(), json_encode($post));
+
         // SANITIZE FORM DATA
         if ($this->property('sanitize_data') == 'htmlspecialchars') {
             $post = $this->array_map_recursive(function ($value) {
@@ -200,13 +207,14 @@ abstract class MagicForm extends ComponentBase
             $record->save(null, post('_session_key'));
         }
 
+        Session::put('token_'.Session::token().'_record_id', $record->id);
         // SEND NOTIFICATION EMAIL
-        if ($this->property('mail_enabled')) {
+        if ($this->property('mail_enabled') && !$send_secondary) {
             SendMail::sendNotification($this->getProperties(), $post, $record, $record->files);
         }
 
         // SEND AUTORESPONSE EMAIL
-        if ($this->property('mail_resp_enabled')) {
+        if ($this->property('mail_resp_enabled') && !$send_secondary) {
             SendMail::sendAutoResponse($this->getProperties(), $post, $record);
         }
 

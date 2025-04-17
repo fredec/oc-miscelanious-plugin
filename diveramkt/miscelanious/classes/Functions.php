@@ -3,6 +3,7 @@
 use Request;
 use Diveramkt\Miscelanious\Classes\BackendHelpers;
 use Diveramkt\Miscelanious\Models\Settings;
+use RainLab\Translate\Classes\Translator;
 
 class Functions
 {
@@ -411,5 +412,91 @@ class Functions
                 //     return false;
                 // }else return true;
   }
+
+
+public static $getActiveLanguageCache=false;
+public static function getActiveLanguage(){
+  if(!Self::$getActiveLanguageCache){
+    $translator=Translator::instance();
+    Self::$getActiveLanguageCache = $translator->getLocale();
+  }
+  return Self::$getActiveLanguageCache;
+}
+
+public static function formatarData($data, $idioma = false, $formato = '%d de %B de %Y') {
+  $idioma=Self::getActiveLanguage();
+  if(!$idioma) $idioma='pt';
+
+        // $idioma = 'pt_BR'
+        // $locales = [
+        //     'pt_BR' => 'pt_BR.utf8',
+        //     'en_US' => 'en_US.utf8',
+        //     'es_ES' => 'es_ES.utf8',
+        //     'fr_FR' => 'fr_FR.utf8',
+        //     'de_DE' => 'de_DE.utf8'
+        // ];
+  $locales = [
+    'pt' => 'pt_BR.utf8',
+    'en' => 'en_US.utf8',
+    'es' => 'es_ES.utf8',
+    'fr' => 'fr_FR.utf8',
+    'de' => 'de_DE.utf8'
+  ];
+
+  if (isset($locales[$idioma])) {
+    setlocale(LC_TIME, $locales[$idioma]);
+  } else {
+    setlocale(LC_TIME, $locales['pt_BR']); 
+  }
+  $timestamp = strtotime($data);
+  return strftime($formato, $timestamp);
+}
+
+public static function formatarDataHora($dataHora, $idioma = false) {
+  $idioma=Self::getActiveLanguage();
+  if(!$idioma) $idioma='pt';
+        // $idioma = 'pt_BR'
+        // $formatos = [
+        //     'pt_BR' => 'd/m/Y \à\s H:i',
+        //     'en_US' => 'm/d/Y \a\t H:i',
+        //     'es_ES' => 'd/m/Y \a\s H:i',
+        //     'fr_FR' => 'd/m/Y \à H:i',
+        //     'de_DE' => 'd.m.Y \um H:i'
+        // ];
+  $formatos = [
+    'pt' => 'd/m/Y \à\s H:i',
+    'en' => 'm/d/Y \a\t H:i',
+    'es' => 'd/m/Y \a\s H:i',
+    'fr' => 'd/m/Y \à H:i',
+    'de' => 'd.m.Y \um H:i'
+  ];
+  $formato = isset($formatos[$idioma]) ? $formatos[$idioma] : $formatos['pt_BR'];
+  $timestamp = strtotime($dataHora);
+  return date($formato, $timestamp);
+}
+
+public static function formatarDataDefault($dataHora, $idioma = false) {
+  $idioma=Self::getActiveLanguage();
+  if(!$idioma) $idioma='pt';
+        // $idioma = 'pt_BR'
+        // $formatos = [
+        //     'pt_BR' => 'd/m/Y \à\s H:i',
+        //     'en_US' => 'm/d/Y \a\t H:i',
+        //     'es_ES' => 'd/m/Y \a\s H:i',
+        //     'fr_FR' => 'd/m/Y \à H:i',
+        //     'de_DE' => 'd.m.Y \um H:i'
+        // ];
+  $formatos = [
+    'pt' => 'd/m/Y',
+    'en' => 'm/d/Y',
+    'es' => 'd/m/Y',
+    'fr' => 'd/m/Y',
+    'de' => 'd.m.Y'
+  ];
+  $formato = isset($formatos[$idioma]) ? $formatos[$idioma] : $formatos['pt_BR'];
+  $timestamp = strtotime($dataHora);
+  return date($formato, $timestamp);
+}
+
 
 }

@@ -10,7 +10,7 @@ class Testmonials extends Controller
     public $listConfig = 'config_list.yaml';
     public $formConfig = 'config_form.yaml';
     public $reorderConfig = 'config_reorder.yaml';
-   
+
     public $requiredPermissions = [
         'manage_testmonials' 
     ];
@@ -31,6 +31,12 @@ class Testmonials extends Controller
     {
         $query->orderBy('sort_order', 'desc');
         return $query;
+    }
+
+    public function formExtendFields($form)
+    {
+        $settings=\Diveramkt\Miscelanious\Classes\Functions::getSettings();
+        if(!$settings->enabled_testimonials_name_html) $form->getField('name')->type = 'text';
     }
 
 }

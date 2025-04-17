@@ -10,9 +10,9 @@ fields:
         type: text
     description:
         label: Descrição
-        size: tiny
+        size: large
         span: full
-        type: textarea
+        type: richeditor
 tabs:
     fields:
         equipe_backend:

@@ -115,6 +115,11 @@ tabs:
             default: 'Novo email cadastro no sistema de newsletter'
             span: full
             tab: 'diveramkt.miscelanious::lang.config.newsletter'
+        enabled_testimonials_name_html:
+            label: 'Habilitar campo nome com html'
+            span: auto
+            type: switch
+            tab: Depoimentos
         enabled_testimonials_business:
             label: 'Habilitar campo empresa'
             span: auto
@@ -132,6 +137,11 @@ tabs:
             tab: Depoimentos
         enabled_testimonials_imagemedia:
             label: 'Image cadastrada pelo media'
+            span: auto
+            type: switch
+            tab: Depoimentos
+        enabled_midias_sociais:
+            label: 'Habilitado redes sociais'
             span: auto
             type: switch
             tab: Depoimentos

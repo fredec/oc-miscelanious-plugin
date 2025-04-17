@@ -14,7 +14,7 @@ class Testmonial extends Model
 
     public $implement = array();
     public $translatable = array();
-    public $jsonable = ['infos'];
+    public $jsonable = ['infos','midias_social'];
 
     // \Diveramkt\Miscelanious\Models\Testmonial::extend(function($model) {
     //     $model->implement = ['RainLab.Translate.Behaviors.TranslatableModel'];
@@ -64,6 +64,10 @@ class Testmonial extends Model
 
     public function getTypeAttribute(){
         if(isset($this->infos['type'])) return $this->infos['type'];
+    }
+
+    public function getMidiasSocialAttribute(){
+        if(isset($this->infos['midias_social'])) return $this->infos['midias_social'];
     }
 
     public function getNameNoHtmlAttribute(){
