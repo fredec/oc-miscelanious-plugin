@@ -34,6 +34,7 @@ class Plugin extends PluginBase
             'Diveramkt\Miscelanious\Components\Usersbackend' => 'Usersbackend',
             'Diveramkt\Miscelanious\Components\Toposts'      => 'Toposts',
             'Diveramkt\Miscelanious\Components\GenericForm' => 'genericForm',
+            'Diveramkt\Miscelanious\Components\UploadForm' => 'uploadForm',
         ];
     }
     public function registerPageSnippets()
