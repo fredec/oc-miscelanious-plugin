@@ -235,6 +235,30 @@ abstract class MagicForm extends ComponentBase
         }
 
         // DISPLAY SUCCESS MESSAGE
+
+        // return [
+        //     '#' . $this->alias . '_forms_flash' => $this->renderPartial($flash_partial, [
+        //         'status'  => 'success',
+        //         'type'    => 'success',
+        //         'content' => $message,
+        //         'jscript' => "console.log('outro ckljdsn clkjdnsclkj dsnjklcn dslkj interno'); alert('outro teste hehe 1');",
+        //     ]),
+
+        //     // 'jscript' => "console.log('outro ckljdsn clkjdnsclkj dsnjklcn dslkj interno'); alert('outro teste hehe 1');",
+        //     // '_meta' => [
+        //     //     'X_OCTOBER_COMMAND' => [[
+        //     //         'command' => 'eval',
+        //     //         'data'    => "console.log('ckljdsn clkjdnsclkj dsnjklcn dslkj interno'); alert('teste hehe 1');"
+        //     //     ]]
+        //     // ],
+
+        //     // 'X_OCTOBER_COMMAND' => [[
+        //     //     'command' => 'eval',
+        //     //     'data'    => "console.log('teste interno'); alert('teste hehe 1');"
+        //     // ]]
+        // ];
+        // 'data'    => "initFlashSuccess();"
+
         return ['#' . $this->alias . '_forms_flash' => $this->renderPartial($flash_partial, [
             'status'  => 'success',
             'type'    => 'success',
@@ -278,7 +302,7 @@ abstract class MagicForm extends ComponentBase
         /* RESET FORM JS */
         if ($this->property('reset_form')) {
             $params = ['id' => '#' . $this->alias . '_forms_flash'];
-            $code .= $this->renderPartial('@js/reset-form.htm', $params);
+            $code .= $this->renderPartial('@reset-form.htm', $params);
         }
 
         /* RESET UPLOAD FORM */

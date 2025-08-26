@@ -44,58 +44,58 @@ class Functions
     if(!$base) $base=str_replace(['https://','http://','www.','/'], ['','','',''], url(''));
     return $base;
   }
-  public static function redirectPlugin($settings=false){
-    if(!$settings) $settings = Self::getSettings();
-    if(!isset($settings['redirect_type']) || !$settings['redirect_type']) $settings['redirect_type']=0;
-    if(!isset($settings['redirect_subdomains_ssl'])) $settings['redirect_subdomains_ssl']=1;
-    if(!$settings['redirect_type']) return;
-    if(!isset($settings['redirect_www']) || !is_numeric($settings['redirect_www'])) $settings['redirect_www']=0;
+  // public static function redirectPlugin($settings=false){
+  //   if(!$settings) $settings = Self::getSettings();
+  //   if(!isset($settings['redirect_type']) || !$settings['redirect_type']) $settings['redirect_type']=0;
+  //   if(!isset($settings['redirect_subdomains_ssl'])) $settings['redirect_subdomains_ssl']=1;
+  //   if(!$settings['redirect_type']) return;
+  //   if(!isset($settings['redirect_www']) || !is_numeric($settings['redirect_www'])) $settings['redirect_www']=0;
 
-    $url=Request::url();
-    $sub_active=false;
-    if(isset($settings['redirect_subdomains'])){
-      $subs = array_filter(explode("\n", trim($settings['redirect_subdomains'])));
-      if(isset($subs[0])){
-        foreach ($subs as $key => $sub) {
-          $sub=str_replace('\n', '', trim($sub));
-          if(strpos("[".$url."]", 'https://'.$sub.'.') || strpos("[".$url."]", 'http://'.$sub.'.')) $sub_active=true;
-        }
-      }
-    }
+  //   $url=Request::url();
+  //   $sub_active=false;
+  //   if(isset($settings['redirect_subdomains'])){
+  //     $subs = array_filter(explode("\n", trim($settings['redirect_subdomains'])));
+  //     if(isset($subs[0])){
+  //       foreach ($subs as $key => $sub) {
+  //         $sub=str_replace('\n', '', trim($sub));
+  //         if(strpos("[".$url."]", 'https://'.$sub.'.') || strpos("[".$url."]", 'http://'.$sub.'.')) $sub_active=true;
+  //       }
+  //     }
+  //   }
 
-    // !Request::is('https://')
-    // echo Request::secure();
-    // Request::server('HTTPS') == 'on' && 
-    $url_current=Request::url();
-    // if($settings['redirect_https'] && !strpos($url, 'https://') && ($settings['redirect_subdomains_ssl'] || !$sub_active)){
-    if($settings['redirect_https'] && !strpos($url, 'https://') && !$sub_active){
-      $url=str_replace('http://', 'https://', $url);
-      // $url_current=str_replace('http://', 'https://', $url_current);
-    }
+  //   // !Request::is('https://')
+  //   // echo Request::secure();
+  //   // Request::server('HTTPS') == 'on' && 
+  //   $url_current=Request::url();
+  //   // if($settings['redirect_https'] && !strpos($url, 'https://') && ($settings['redirect_subdomains_ssl'] || !$sub_active)){
+  //   if($settings['redirect_https'] && !strpos($url, 'https://') && !$sub_active){
+  //     $url=str_replace('http://', 'https://', $url);
+  //     // $url_current=str_replace('http://', 'https://', $url_current);
+  //   }
 
-    if($settings['redirect_www'] && !strpos($url, 'www.') && !$sub_active){
-      $url=str_replace(['http://','https://'], ['http://www.','https://www.'], $url);
-    }
+  //   if($settings['redirect_www'] && !strpos($url, 'www.') && !$sub_active){
+  //     $url=str_replace(['http://','https://'], ['http://www.','https://www.'], $url);
+  //   }
 
-    if($url != $url_current){
-      if(!isset($settings['redirect_base_saved'])){
-        $settings['redirect_base_saved']=Self::getBaseurl();
-        $settings->save();
-        $settings['redirect_base_saved']=Self::getBaseurl();
-      }
+  //   if($url != $url_current){
+  //     if(!isset($settings['redirect_base_saved'])){
+  //       $settings['redirect_base_saved']=Self::getBaseurl();
+  //       $settings->save();
+  //       $settings['redirect_base_saved']=Self::getBaseurl();
+  //     }
 
-      // if(isset($settings['redirect_base_saved']) && !strpos("[".$url."/]", $settings['redirect_base_saved'])){
-      //   $settings['redirect_base_saved']=Self::getBaseurl();
-      //   $settings['redirect_type']=0;
-      //   $settings->save();
-      //   return;
-      // }
+  //     // if(isset($settings['redirect_base_saved']) && !strpos("[".$url."/]", $settings['redirect_base_saved'])){
+  //     //   $settings['redirect_base_saved']=Self::getBaseurl();
+  //     //   $settings['redirect_type']=0;
+  //     //   $settings->save();
+  //     //   return;
+  //     // }
 
-      header("HTTP/1.1 ".$settings['redirect_type']." Moved Temporary");
-      header("Location:".$url);
-      exit();
-    }
-  }
+  //     header("HTTP/1.1 ".$settings['redirect_type']." Moved Temporary");
+  //     header("Location:".$url);
+  //     exit();
+  //   }
+  // }
 
   // public static function prep_url($url) {
   //   if(!strpos("[".$url."]", "http://") && !strpos("[".$url."]", "https://")){

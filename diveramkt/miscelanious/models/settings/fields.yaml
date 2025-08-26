@@ -80,23 +80,23 @@ tabs:
             showSearch: true
             type: switch
             tab: 'diveramkt.miscelanious::lang.config.redirects'
-        section_subdomais:
-            label: 'diveramkt.miscelanious::lang.config.subdomains'
-            type: section
-            tab: 'diveramkt.miscelanious::lang.config.redirects'
-        redirect_subdomains_ssl:
-            label: SSL
-            span: full
-            type: switch
-            default: false
-            hidden: 1
-            tab: 'diveramkt.miscelanious::lang.config.redirects'
-        redirect_subdomains:
-            label: 'diveramkt.miscelanious::lang.config.disable_subdomains'
-            comment: 'diveramkt.miscelanious::lang.config.subdomains_comment'
-            span: full
-            type: textarea
-            tab: 'diveramkt.miscelanious::lang.config.redirects'
+        # section_subdomais:
+        #     label: 'diveramkt.miscelanious::lang.config.subdomains'
+        #     type: section
+        #     tab: 'diveramkt.miscelanious::lang.config.redirects'
+        # redirect_subdomains_ssl:
+        #     label: SSL
+        #     span: full
+        #     type: switch
+        #     default: false
+        #     hidden: 1
+        #     tab: 'diveramkt.miscelanious::lang.config.redirects'
+        # redirect_subdomains:
+        #     label: 'diveramkt.miscelanious::lang.config.disable_subdomains'
+        #     comment: 'diveramkt.miscelanious::lang.config.subdomains_comment'
+        #     span: full
+        #     type: textarea
+        #     tab: 'diveramkt.miscelanious::lang.config.redirects'
         indikatornews_newletter:
             label: 'diveramkt.miscelanious::lang.config.indikatornews_newletter'
             type: switch
@@ -117,6 +117,11 @@ tabs:
             tab: 'diveramkt.miscelanious::lang.config.newsletter'
         enabled_testimonials_name_html:
             label: 'Habilitar campo nome com html'
+            span: auto
+            type: switch
+            tab: Depoimentos
+        enabled_testimonials_testmonial_html:
+            label: 'Habilitar campo depoimento com html'
             span: auto
             type: switch
             tab: Depoimentos
@@ -249,3 +254,14 @@ tabs:
             type: switch
             default: 1
             tab: Empresas
+        enabled_partial_cache:
+            label: 'Habilitar partial cache'
+            span: auto
+            type: switch
+            tab: 'Partial Cache'
+        partial_cache_time:
+            label: 'Tempo padrao do cache em segundos'
+            span: auto
+            type: number
+            default: 86400
+            tab: 'Partial Cache'

@@ -15,6 +15,7 @@ use Diveramkt\Miscelanious\Models\ExtendBackendUsers;
 use Db;
 use Schema;
 use Indikator\News\Models\Subscribers;
+use Diveramkt\Miscelanious\Classes\PartialCache;
 
 class Plugin extends PluginBase
 {
@@ -458,9 +459,14 @@ class Plugin extends PluginBase
         $filters = [];
         // add PHP functions
         $filters += $this->getPhpFunctions();
-
         return [
             'filters'   => $filters,
+            'functions' => [
+                'partialCache' => function ($name, $params = [], $key = null, $minutes = 0) {
+                    // {{ partialCache('teste', { var1: var1 }, 'chave-unica1', 60) }}
+                    return PartialCache::render($name,$params, $key,$minutes);
+                },
+            ],
         ];
     }
 
@@ -472,6 +478,10 @@ class Plugin extends PluginBase
     }
 
     public function boot(){
+
+        \Event::listen('backend.page.beforeDisplay', function() {
+            PartialCache::clear();
+        });
 
         // \Event::listen('mailer.beforeSend', function ($view,$data,$callback) {
         //     // $texto=json_encode($view).' - '.json_encode($data).' - '.json_encode($callback).' - ';
@@ -702,11 +712,11 @@ class Plugin extends PluginBase
             if(BackendHelpers::isTranslateExtended()){
                 $confg=\Excodus\TranslateExtended\Models\Settings::instance();
                 if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && $confg->browser_language_detection){
-                 $translator = Translator::instance();
-                 $accepted = BrowserMatching::parseLanguageList($_SERVER['HTTP_ACCEPT_LANGUAGE']);
-                 $available = Locale::listEnabled();
-                 $matches = BrowserMatching::findMatches($accepted, $available);
-                 if (!empty($matches)) {
+                   $translator = Translator::instance();
+                   $accepted = BrowserMatching::parseLanguageList($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+                   $available = Locale::listEnabled();
+                   $matches = BrowserMatching::findMatches($accepted, $available);
+                   if (!empty($matches)) {
                     $match = array_keys($matches)[0];
                     $translator->setLocale($match);
                 }
@@ -817,17 +827,17 @@ class Plugin extends PluginBase
                    //     $widget->removeField('type');
                    // }
                 if(!is_array($settings->enabled_types_testimonials) || !count($settings->enabled_types_testimonials)){
-                 $widget->removeField('type');
-             }
-             if(!$settings->enabled_testimonials_business) $widget->removeField('business');
-             if(!$settings->enabled_testimonials_position) $widget->removeField('position');
-             if(!$settings->enabled_testimonials_link) $widget->removeField('link');
-             if(!$settings->enabled_testimonials_imagemedia) $widget->removeField('image');
-             else $widget->removeField('foto');
-             if(!$settings->enabled_midias_sociais) $widget->removeField('midias_social');
-         }
-     }
- });
+                   $widget->removeField('type');
+               }
+               if(!$settings->enabled_testimonials_business) $widget->removeField('business');
+               if(!$settings->enabled_testimonials_position) $widget->removeField('position');
+               if(!$settings->enabled_testimonials_link) $widget->removeField('link');
+               if(!$settings->enabled_testimonials_imagemedia) $widget->removeField('image');
+               else $widget->removeField('foto');
+               if(!$settings->enabled_midias_sociais) $widget->removeField('midias_social');
+           }
+       }
+   });
 
 Event::listen('backend.list.extendColumns', function ($listWidget) {
         // if (!$listWidget->getController() instanceof \Backend\Controllers\Users) {
@@ -842,8 +852,38 @@ Event::listen('backend.list.extendColumns', function ($listWidget) {
 $this->validacoes();
 $class=get_declared_classes();
 
-$settings=Functions::getSettings();
-Functions::redirectPlugin($settings);
+Event::listen('cms.page.beforeDisplay', function ($controller, $url, $page) {
+    $settings=Functions::getSettings();
+    if(!$settings->redirect_type) return;
+    $request = request();
+    $host = $request->getHost();
+    $fullUrl = $request->fullUrl();
+
+            // Detecta se é HTTPS de forma segura (com fallback)
+    $isSecure = $request->isSecure()
+    || (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+    || (isset($_SERVER['HTTP_CF_VISITOR']) && strpos($_SERVER['HTTP_CF_VISITOR'], 'https') !== false);
+
+    $redirect = false;
+    $newUrl = $fullUrl;
+
+            // Forçar HTTPS
+    if (!$isSecure && $settings->redirect_https) {
+      $redirect = true;
+      $newUrl = preg_replace('/^http:/i', 'https:', $newUrl);
+  }
+
+            // Forçar WWW
+  if (strpos($host, 'www.') !== 0 && $settings->redirect_www) {
+      $redirect = true;
+      $newUrl = preg_replace('/:\/\/' . preg_quote($host, '/') . '/i', '://www.' . $host, $newUrl);
+  }
+
+  if ($redirect && $newUrl !== $fullUrl) return redirect()->to($newUrl, $settings->redirect_type);
+});
+// $settings=Functions::getSettings();
+// Functions::redirectPlugin($settings);
 
 // ///////////////////EXTEND BACKEND USERS
 Event::listen('backend.form.extendFields', function($widget) {
@@ -1146,11 +1186,11 @@ public function validacoes(){
              $res = checkdate($m,$d,$y);
              return $res;
              if ($res == 1){
-                 echo "data ok!";
-             } else {
-                 echo "data inválida!";
-             }
-         });
+               echo "data ok!";
+           } else {
+               echo "data inválida!";
+           }
+       });
     Validator::extend('phone', function($attribute, $value, $parameters) {
         return Functions::validPhone($value);
     });

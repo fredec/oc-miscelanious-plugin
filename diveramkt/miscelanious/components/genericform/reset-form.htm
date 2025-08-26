@@ -1,0 +1,5 @@
+// $('{{ id }}').parents('form')[0].reset();
+
+var el = document.querySelector('{{ id }}');
+var form = el.closest('form');
+if (form) form.reset();

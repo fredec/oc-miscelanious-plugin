@@ -37,6 +37,7 @@ class Testmonials extends Controller
     {
         $settings=\Diveramkt\Miscelanious\Classes\Functions::getSettings();
         if(!$settings->enabled_testimonials_name_html) $form->getField('name')->type = 'text';
+        if(!$settings->enabled_testimonials_testmonial_html) $form->getField('testmonial')->type = 'textarea';
     }
 
 }
