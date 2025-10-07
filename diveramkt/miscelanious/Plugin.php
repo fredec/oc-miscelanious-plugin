@@ -36,6 +36,7 @@ class Plugin extends PluginBase
             'Diveramkt\Miscelanious\Components\Toposts'      => 'Toposts',
             'Diveramkt\Miscelanious\Components\GenericForm' => 'genericForm',
             'Diveramkt\Miscelanious\Components\UploadForm' => 'uploadForm',
+            'Diveramkt\Miscelanious\Components\BlogTagSearch' => 'blogTagSearch',
         ];
     }
     public function registerPageSnippets()
@@ -432,6 +433,9 @@ class Plugin extends PluginBase
             'formatarDataDefault' => function($data){
                 return Functions::formatarDataDefault($data);
             },
+            'formatarDataLangs' => function($data){
+                return Functions::formatarDataLangs($data);
+            },
 
             'src_iframe' => function($iframe=false) {
                 if($iframe){
@@ -680,18 +684,27 @@ class Plugin extends PluginBase
             \RainLab\Translate\Models\Locale::extend(function($model){
                 $model->bindEvent('model.afterFetch', function () use ($model) {
                     $settings=Functions::getSettings();
-                    if(isset($settings->flag_translate[$model->id])) $model->flag=$settings->flag_translate[$model->id];
+                    if(isset($settings->code_locale_translate[$model->code])) $model->code_locale=$settings->code_locale_translate[$model->code];
+                    if(isset($settings->flag_translate[$model->code])) $model->flag=$settings->flag_translate[$model->code];
                 });
                 $model->bindEvent('model.beforeSave', function() use ($model) {
+                    $settings=Functions::getSettings();
+                    if($model->code_locale){
+                        if(!isset($settings->code_locale_translate)) $settings->code_locale_translate=[];
+                        else $code_locale_translate=$settings->code_locale_translate;
+                        $code_locale_translate[$model->code]=$model->code_locale;
+                        $settings->code_locale_translate=$code_locale_translate;
+                    }
+                    unset($model->code_locale);
+
                     if($model->flag){
-                        $settings=Functions::getSettings();
                         if(!isset($settings->flag_translate)) $settings->flag_translate=[];
                         else $flag_translate=$settings->flag_translate;
-                        $flag_translate[$model->id]=$model->flag;
+                        $flag_translate[$model->code]=$model->flag;
                         $settings->flag_translate=$flag_translate;
-                        $settings->save();
                     }
                     unset($model->flag);
+                    $settings->save();
                 });
             });
             if(BackendHelpers::isArcaneSeo()){
@@ -773,6 +786,14 @@ class Plugin extends PluginBase
                     ],
                 ]);
             }elseif($widget->model instanceof \RainLab\Translate\Models\Locale) {
+                $widget->addFields([
+                    'code_locale' => [
+                        'label'   => 'Código locale',
+                        'span' => 'auto',
+                        'type' => 'text',
+                        'comment' => 'Exemplo: pt => pt_BR | en_US | es_ES',
+                    ],
+                ]);
                 $widget->addFields([
                     'flag' => [
                         'label'   => 'Bandeira',

@@ -302,7 +302,7 @@ abstract class MagicForm extends ComponentBase
         /* RESET FORM JS */
         if ($this->property('reset_form')) {
             $params = ['id' => '#' . $this->alias . '_forms_flash'];
-            $code .= $this->renderPartial('@reset-form.htm', $params);
+            $code .= $this->renderPartial('@js/reset-form.htm', $params);
         }
 
         /* RESET UPLOAD FORM */

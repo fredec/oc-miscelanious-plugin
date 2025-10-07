@@ -498,5 +498,23 @@ public static function formatarDataDefault($dataHora, $idioma = false) {
   return date($formato, $timestamp);
 }
 
+public static function formatarDataLangs($data) {
+    // , $idioma = 'pt_BR'
+    $idioma=Self::getActiveLanguage();
+    if(!$idioma) $idioma='pt';
+    // Cria um objeto DateTime a partir da string fornecida
+    $date = new \DateTime($data);
+
+    // Configura o formato da data
+    $formatter = new \IntlDateFormatter(
+        $idioma,                       // idioma (pt_BR, en_US, etc)
+        \IntlDateFormatter::LONG,       // formato de data longo
+        \IntlDateFormatter::NONE        // sem hora
+      );
+
+    // Retorna a data formatada
+    return $formatter->format($date);
+  }
+
 
 }
