@@ -154,7 +154,7 @@ class Functions
       } else {
         $link='https://web.whatsapp.com/send?phone='.$extra;
       }
-      $link=$link.preg_replace("/[^0-9]/", "", $tel);
+      $link=$link.preg_replace("/[^0-9+]/", "", $tel);
       if($msg) $link.='&text='.$msg;
       return $link;
     }else return $tel;
@@ -179,11 +179,20 @@ class Functions
 
   public static function phone_link($string, $cod=''){
     $link='';
-    $link.=$cod.preg_replace("/[^0-9]/", "", $string);
+    $link.=$cod.preg_replace("/[^0-9+]/", "", $string);
     if(!strpos("[".$string."]", "+") && strncmp($string, "0800", 4) !== 0){
       $link='+55'.$link;
     }
     return 'tel:'.$link;
+  }
+
+  public static function sms_link($string, $cod=''){
+    $link='';
+    $link.=$cod.preg_replace("/[^0-9+]/", "", $string);
+    if(!strpos("[".$string."]", "+") && strncmp($string, "0800", 4) !== 0){
+      $link='+55'.$link;
+    }
+    return 'sms:'.$link;
   }
 
   public static function formatValue($number=false){
@@ -363,12 +372,12 @@ class Functions
   }
   public static function validPhone($value){
   //  $telefone= trim(str_replace('/', '', str_replace(' ', '', str_replace('-', '', str_replace(')', '', str_replace('(', '', $value))))));
-  $conter='0-9';
-  $telefone=preg_replace("/[^".$conter."]/", "", $value);
+    $conter='0-9';
+    $telefone=preg_replace("/[^".$conter."]/", "", $value);
 
         // $regexTelefone = "^[0-9]{11}$";
   //  $regexTelefone = "/[0-9]{11}/";
-   $regexTelefone = "/[0-9]{10}/";
+    $regexTelefone = "/[0-9]{10}/";
 
     $regexCel = '/[0-9]{2}[6789][0-9]{3,4}[0-9]{4}/'; // Regex para validar somente celular
     if (preg_match($regexTelefone, $telefone) or preg_match($regexCel, $telefone)) {
@@ -389,29 +398,29 @@ class Functions
  }
   // ////////////////////////VALIDAÇÕES
 
-  public static $is_mobile_cache=null;
-  public static function is_mobile(){
-    if(Self::$is_mobile_cache != null) return Self::$is_mobile_cache;
-    else{
-      $detect = new \Mobile_Detect;
-      if ($detect->isMobile()) Self::$is_mobile_cache=true;
-      else Self::$is_mobile_cache=false;
-    }
-    return Self::$is_mobile_cache;
+ public static $is_mobile_cache=null;
+ public static function is_mobile(){
+  if(Self::$is_mobile_cache != null) return Self::$is_mobile_cache;
+  else{
+    $detect = new \Mobile_Detect;
+    if ($detect->isMobile()) Self::$is_mobile_cache=true;
+    else Self::$is_mobile_cache=false;
   }
+  return Self::$is_mobile_cache;
+}
 
-  public static $webspeed_cache=false;
-  public static function webspeed(){
-    if(Self::$webspeed_cache) return Self::$webspeed_cache;
-    if(isset($_SERVER['HTTP_USER_AGENT']) && (strpos("[".$_SERVER['HTTP_USER_AGENT']."]", 'GTmetrix') || strpos("[".$_SERVER['HTTP_USER_AGENT']."]", 'Chrome-Lighthouse') || strpos("[".$_SERVER['HTTP_USER_AGENT']."]", 'Speed Insights'))){
-      Self::$webspeed_cache=true;
-    }else Self::$webspeed_cache=false;
+public static $webspeed_cache=false;
+public static function webspeed(){
+  if(Self::$webspeed_cache) return Self::$webspeed_cache;
+  if(isset($_SERVER['HTTP_USER_AGENT']) && (strpos("[".$_SERVER['HTTP_USER_AGENT']."]", 'GTmetrix') || strpos("[".$_SERVER['HTTP_USER_AGENT']."]", 'Chrome-Lighthouse') || strpos("[".$_SERVER['HTTP_USER_AGENT']."]", 'Speed Insights'))){
+    Self::$webspeed_cache=true;
+  }else Self::$webspeed_cache=false;
 
-    return Self::$webspeed_cache;
+  return Self::$webspeed_cache;
                 // if (!isset($_SERVER['HTTP_USER_AGENT']) || stripos($_SERVER['HTTP_USER_AGENT'], 'Speed Insights') === false){
                 //     return false;
                 // }else return true;
-  }
+}
 
 
 public static $getActiveLanguageCache=false;
@@ -500,21 +509,21 @@ public static function formatarDataDefault($dataHora, $idioma = false) {
 
 public static function formatarDataLangs($data) {
     // , $idioma = 'pt_BR'
-    $idioma=Self::getActiveLanguage();
-    if(!$idioma) $idioma='pt';
+  $idioma=Self::getActiveLanguage();
+  if(!$idioma) $idioma='pt';
     // Cria um objeto DateTime a partir da string fornecida
-    $date = new \DateTime($data);
+  $date = new \DateTime($data);
 
     // Configura o formato da data
-    $formatter = new \IntlDateFormatter(
+  $formatter = new \IntlDateFormatter(
         $idioma,                       // idioma (pt_BR, en_US, etc)
         \IntlDateFormatter::LONG,       // formato de data longo
         \IntlDateFormatter::NONE        // sem hora
       );
 
     // Retorna a data formatada
-    return $formatter->format($date);
-  }
+  return $formatter->format($date);
+}
 
 
 }
