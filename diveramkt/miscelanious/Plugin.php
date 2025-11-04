@@ -305,7 +305,7 @@ class Plugin extends PluginBase
             },
 
             'empty_text' => function($text_html){
-                $text=str_replace(' ','',strip_tags($text_html));
+                $text=str_replace([' ','&nbsp;'],['',''],strip_tags($text_html));
                 $conter='a-zA-Z0-9';
                 $text= preg_replace("/[^".$conter."]/", "", $text);
                 if(empty($text) && !strpos("[".$text_html."]", "<img ")) return 1;
