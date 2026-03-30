@@ -5,7 +5,7 @@
 // use Response;
 // use Validator;
 // use ValidationException;
-// use ApplicationException;
+use ApplicationException;
 // use System\Models\File;
 // use October\Rain\Support\Collection;
 // use Exception;
@@ -45,6 +45,10 @@ trait Extendtranslate
 
 
 	public function getValueJsonTranslate($parent, $name){
+		if(strpos("[".\Request::url('/')."]", "/backend")){
+			if(isset($parent[$name])) return $parent[$name];
+			return;
+		}
 		$return=$this->getValueJsonTranslateReturn($parent, $name);
 		if(is_object($return)){
 			$return=(array)$return;
@@ -52,15 +56,40 @@ trait Extendtranslate
 		}
 		if(is_array($return)){
 			$parent=json_decode($parent[$name],true);
+
 			foreach ($parent as $key => $value) {
 				if(!isset($return[$key])) $return[$key]=$value;
 				else{
 					if(is_array($return[$key]) && !count($return[$key])){
 						$return[$key]=$value;
-					}elseif(!is_array($return[$key]) && empty(strip_tags($return[$key]))){
+					}elseif(!is_array($return[$key]) && is_string($return[$key]) && empty(strip_tags($return[$key]))){
 						$return[$key]=$value;
+					}else{
+						return $return;
 					}
 				}
+
+
+				// if (!isset($return[$key])) {
+				// 	$return[$key] = $value;
+				// 	continue;
+				// }
+
+				// if (is_array($return[$key]) && empty($return[$key])) {
+				// 	$return[$key] = $value;
+				// 	continue;
+				// }
+
+				// if (!is_array($return[$key])) {
+				// 	if(is_scalar($return[$key])) $text=(string)$return[$key];
+				// 	else $text='';
+				// 	// $text = is_scalar($return[$key]) ? (string)$return[$key] : '';
+
+				// 	// if (empty(trim(strip_tags($text)))) {
+				// 	if(strlen(trim(strip_tags($text))) === 0){
+				// 		$return[$key] = $value;
+				// 	}
+				// }
 			}
 			return json_encode($return,true);
 		}

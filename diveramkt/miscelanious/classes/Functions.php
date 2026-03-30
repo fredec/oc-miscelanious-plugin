@@ -139,25 +139,34 @@ class Functions
     else return 'target=_parent';
   }
 
+  // public static function whats_link($tel, $msg=false){
+  //   if(isset($_SERVER['HTTP_USER_AGENT'])){
+  //     $iphone = strpos($_SERVER['HTTP_USER_AGENT'],"iPhone");
+  //     $android = strpos($_SERVER['HTTP_USER_AGENT'],"Android");
+  //     $palmpre = strpos($_SERVER['HTTP_USER_AGENT'],"webOS");
+  //     $berry = strpos($_SERVER['HTTP_USER_AGENT'],"BlackBerry");
+  //     $ipod = strpos($_SERVER['HTTP_USER_AGENT'],"iPod");
+
+  //     $extra=''; if(!strpos("[".$tel."]", "+")) $extra='55';
+
+  //     if ($iphone || $android || $palmpre || $ipod || $berry == true) {
+  //       $link='https://api.whatsapp.com/send?phone='.$extra;
+  //     } else {
+  //       $link='https://web.whatsapp.com/send?phone='.$extra;
+  //     }
+  //     $link=$link.preg_replace("/[^0-9+]/", "", $tel);
+  //     if($msg) $link.='&text='.$msg;
+  //     return $link;
+  //   }else return $tel;
+  // }
+
   public static function whats_link($tel, $msg=false){
-    if(isset($_SERVER['HTTP_USER_AGENT'])){
-      $iphone = strpos($_SERVER['HTTP_USER_AGENT'],"iPhone");
-      $android = strpos($_SERVER['HTTP_USER_AGENT'],"Android");
-      $palmpre = strpos($_SERVER['HTTP_USER_AGENT'],"webOS");
-      $berry = strpos($_SERVER['HTTP_USER_AGENT'],"BlackBerry");
-      $ipod = strpos($_SERVER['HTTP_USER_AGENT'],"iPod");
-
-      $extra=''; if(!strpos("[".$tel."]", "+")) $extra='55';
-
-      if ($iphone || $android || $palmpre || $ipod || $berry == true) {
-        $link='https://api.whatsapp.com/send?phone='.$extra;
-      } else {
-        $link='https://web.whatsapp.com/send?phone='.$extra;
-      }
-      $link=$link.preg_replace("/[^0-9+]/", "", $tel);
-      if($msg) $link.='&text='.$msg;
-      return $link;
-    }else return $tel;
+    $extra=''; if(!strpos("[".$tel."]", "+")) $extra='55';
+    // $link='https://wa.me/'.$extra;
+    $link='https://api.whatsapp.com/send/?phone='.$extra;
+    $link=$link.preg_replace("/[^0-9+]/", "", str_replace('+', '', $tel));
+    if($msg) $link.='&text='.$msg;
+    return $link;
   }
 
   public static function whats_share($text){
@@ -278,6 +287,10 @@ class Functions
       $sub=$settings['others_icons'];
       if(empty($sub)) $sub='fa fa-';
       return $sub.$icon;
+    }
+
+    if($settings['version_icons'] == '65'){
+      return 'fa-brands fa-'.$icon;
     }
 
     if($settings['version_icons'] == '5'){

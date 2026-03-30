@@ -801,7 +801,7 @@ class Plugin extends PluginBase
                         'label'   => 'Código locale',
                         'span' => 'auto',
                         'type' => 'text',
-                        'comment' => 'Exemplo: pt => pt_BR | en_US | es_ES',
+                        'comment' => 'Exemplo: pt => pt-BR | en-US | es-ES',
                     ],
                 ]);
                 $widget->addFields([

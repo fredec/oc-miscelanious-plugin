@@ -70,6 +70,7 @@
         'version_icons' => 'Versão dos ícons',
         'awesome_4_7' => 'Awesome - Menor ou igual a versão 4.7',
         'awesome_5' => 'Awesome - Maior ou igual a versão 5',
+        'awesome_65' => 'Awesome - Maior ou igual a versão 6.5',
         'indikatornews_newletter' => 'Caso o plugin Indikator.News esteja instalado, habilitar apenas o menu de newsletter.',
         'newsletter' => 'Newsletter',
         'message' => 'Mensagem',
