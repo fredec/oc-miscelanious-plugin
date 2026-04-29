@@ -1,0 +1,18 @@
+<div data-control="toolbar" data-disposable="">
+
+    <a data-control="popup" data-size="huge" data-handler="onRelationButtonCreate" href="javascript:;" class="btn btn-sm btn-secondary oc-icon-file" data-disposable="">
+    Criar</a>
+
+    <button class="btn btn-sm btn-secondary oc-icon-trash-o control-disabled" onclick="$(this).data('request-data', {
+        checked: $('#Posts-update-RelationController-schemafaq-view .control-list').listWidget('getChecked')
+    })" disabled="" data-request="onRelationButtonDelete" data-request-confirm="Você tem certeza?" data-request-success="$.oc.relationBehavior.changed('schemafaq', 'deleted')" data-trigger-action="enable" data-trigger="#Posts-update-RelationController-schemafaq-view .control-list input[type=checkbox]" data-trigger-condition="checked" data-stripe-load-indicator="">Excluir    </button>
+
+    <?php
+        $id_='';
+        if(isset($this->params[0]) && is_numeric($this->params[0])) $id_=$this->params[0];
+        if(strpos("[".\Request::url('/')."]", "rainlab/blog/posts")) $id_='blog_'.$id_;
+    ?>
+    <!-- https://octobercms.com/forum/post/how-to-add-custom-toolbarbuttons-in-relation-controllers -->
+    <a href="<?= Backend::url('diveramkt/miscelanious/schemafaq/reorder/'.$id_) ?>" class="btn btn-sm btn-secondary oc-icon-list"><?= e(trans('backend::lang.reorder.default_title')) ?></a>
+
+</div>

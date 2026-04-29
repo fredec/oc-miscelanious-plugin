@@ -1,0 +1,11 @@
+columns:
+    title:
+        label: Pergunta
+        type: text
+        searchable: true
+    enabled:
+        label: Habilitdo
+        type: switch
+    sort_order:
+        label: Ordem
+        type: number

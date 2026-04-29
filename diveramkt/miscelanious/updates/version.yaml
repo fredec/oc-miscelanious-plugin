@@ -123,3 +123,6 @@
 1.0.42:
     - 'Updated table diveramkt_miscelanious_equipe_categorias'
     - builder_table_update_diveramkt_miscelanious_equipe_categorias.php
+1.0.43:
+    - 'Created table diveramkt_miscelanious_schema_faq'
+    - builder_table_create_diveramkt_miscelanious_schema_faq.php

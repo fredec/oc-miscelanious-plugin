@@ -1,0 +1,10 @@
+name: Schemafaq
+form: $/diveramkt/miscelanious/models/schemafaq/fields.yaml
+modelClass: Diveramkt\Miscelanious\Models\Schemafaq
+defaultRedirect: diveramkt/miscelanious/schemafaq
+create:
+    redirect: 'diveramkt/miscelanious/schemafaq/update/:id'
+    redirectClose: diveramkt/miscelanious/schemafaq
+update:
+    redirect: diveramkt/miscelanious/schemafaq
+    redirectClose: diveramkt/miscelanious/schemafaq

@@ -65,6 +65,7 @@ trait Extendtranslate
 					}elseif(!is_array($return[$key]) && is_string($return[$key]) && empty(strip_tags($return[$key]))){
 						$return[$key]=$value;
 					}else{
+						if(is_array($return)) return json_encode($return);
 						return $return;
 					}
 				}

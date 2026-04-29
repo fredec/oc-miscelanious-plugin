@@ -1,0 +1,5 @@
+title: Schemafaq
+nameFrom: title
+modelClass: Diveramkt\Miscelanious\Models\Schemafaq
+toolbar:
+    buttons: reorder_toolbar
