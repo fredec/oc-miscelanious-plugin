@@ -22,7 +22,8 @@ class BackendHelpers {
     public static function isTranslateExtended() :bool {
         if(!Self::$getIsTranslateExtended){
             $plugins=new PluginVersion();
-            Self::$getIsTranslateExtended=class_exists('\Excodus\TranslateExtended\Plugin') && $plugins->where('code','Excodus.TranslateExtended')->ApplyEnabled()->count();
+            // Self::$getIsTranslateExtended=class_exists('\Excodus\TranslateExtended\Plugin') && $plugins->where('code','Excodus.TranslateExtended')->ApplyEnabled()->count();
+            Self::$getIsTranslateExtended=class_exists('\Excodus\TranslateExtended\Plugin');
         }
         return Self::$getIsTranslateExtended;
     }

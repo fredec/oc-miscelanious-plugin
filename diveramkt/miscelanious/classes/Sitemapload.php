@@ -114,9 +114,12 @@ class Sitemapload {
                     // );
                     $xDefault = $dom->createElement('xhtml:link');
 
+                    if($path) $defaultUrl_noidioma=url('/').url('/'.$path);
+                    else $defaultUrl_noidioma=url('/'.$path);
+
                     $xDefault->setAttribute('rel', 'alternate');
                     $xDefault->setAttribute('hreflang', 'x-default');
-                    $xDefault->setAttribute('href', url('/'));
+                    $xDefault->setAttribute('href', $defaultUrl_noidioma);
 
                     $urlNode->appendChild($xDefault);
 

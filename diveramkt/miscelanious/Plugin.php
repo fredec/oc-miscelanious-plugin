@@ -17,6 +17,7 @@ use Db;
 use Schema;
 use Indikator\News\Models\Subscribers;
 use Diveramkt\Miscelanious\Classes\PartialCache;
+use October\Rain\Exception\ApplicationException;
 
 class Plugin extends PluginBase
 {
@@ -492,6 +493,10 @@ class Plugin extends PluginBase
         ];
     }
 
+    public function validarEmail(string $email){
+        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+    }
+
     public function boot(){
 
         \Event::listen('backend.page.beforeDisplay', function() {
@@ -509,6 +514,14 @@ class Plugin extends PluginBase
         // });
 
         Event::listen('mailer.prepareSend', function ($mailerInstance,$view,$message) {
+
+            // \App::instance('dynamicReplyTo', $mail_recipients[0]);
+            // \App::instance('dynamicReplyToView', 'diveramkt.rmsimulacao::mail.financiamentocliente');
+            if(app()->bound('dynamicReplyToView') && app()->bound('dynamicReplyTo') && app('dynamicReplyToView') == $view && $this->validarEmail(app('dynamicReplyTo'))){
+                $message->replyTo(app('dynamicReplyTo'));
+                return;
+            }
+
             $settings=Functions::getSettings();
             if($view == 'diveramkt.goldsystem::mail.message_default') return;
             if($settings->enabled_sender_email_replyTo){
@@ -741,17 +754,14 @@ class Plugin extends PluginBase
                     // if(isset($model->translatable)) $model->translatable = ['og_locale'];
                 });
             }
-            if(BackendHelpers::isTranslateExtended()){
-                $confg=\Excodus\TranslateExtended\Models\Settings::instance();
-                if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && $confg->browser_language_detection){
-                   $translator = Translator::instance();
-                   $accepted = BrowserMatching::parseLanguageList($_SERVER['HTTP_ACCEPT_LANGUAGE']);
-                   $available = Locale::listEnabled();
-                   $matches = BrowserMatching::findMatches($accepted, $available);
-                   if (!empty($matches)) {
-                    $match = array_keys($matches)[0];
-                    $translator->setLocale($match);
-                }
+            if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && BackendHelpers::isTranslateExtended()){
+               $translator = Translator::instance();
+               $accepted = BrowserMatching::parseLanguageList($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+               $available = Locale::listEnabled();
+               $matches = BrowserMatching::findMatches($accepted, $available);
+               if (!empty($matches)) {
+                $match = array_keys($matches)[0];
+                $translator->setLocale($match);
             }
         }
     }
@@ -867,17 +877,17 @@ class Plugin extends PluginBase
                    //     $widget->removeField('type');
                    // }
                 if(!is_array($settings->enabled_types_testimonials) || !count($settings->enabled_types_testimonials)){
-                   $widget->removeField('type');
-               }
-               if(!$settings->enabled_testimonials_business) $widget->removeField('business');
-               if(!$settings->enabled_testimonials_position) $widget->removeField('position');
-               if(!$settings->enabled_testimonials_link) $widget->removeField('link');
-               if(!$settings->enabled_testimonials_imagemedia) $widget->removeField('image');
-               else $widget->removeField('foto');
-               if(!$settings->enabled_midias_sociais) $widget->removeField('midias_social');
-           }
-       }
-   });
+                 $widget->removeField('type');
+             }
+             if(!$settings->enabled_testimonials_business) $widget->removeField('business');
+             if(!$settings->enabled_testimonials_position) $widget->removeField('position');
+             if(!$settings->enabled_testimonials_link) $widget->removeField('link');
+             if(!$settings->enabled_testimonials_imagemedia) $widget->removeField('image');
+             else $widget->removeField('foto');
+             if(!$settings->enabled_midias_sociais) $widget->removeField('midias_social');
+         }
+     }
+ });
 
 Event::listen('backend.list.extendColumns', function ($listWidget) {
         // if (!$listWidget->getController() instanceof \Backend\Controllers\Users) {
@@ -1184,7 +1194,7 @@ if(in_array('RainLab\Translate\Plugin', $class) || in_array('RainLab\Translate\C
 
     \Diveramkt\Miscelanious\Models\Company::extend(function($model) {
         if(!in_array('RainLab.Translate.Behaviors.TranslatableModel',$model->implement)) $model->implement[] = 'RainLab.Translate.Behaviors.TranslatableModel';
-        $model->translatable = ['name','city','neighborhood','street','addon','number','state','opening_hours','mobiles','phones'];
+        $model->translatable = ['name','city','neighborhood','street','addon','number','state','opening_hours','mobiles','phones','maps_link'];
     });
 
     \Diveramkt\Miscelanious\Models\Testmonial::extend(function($model) {
@@ -1236,11 +1246,11 @@ public function validacoes(){
              $res = checkdate($m,$d,$y);
              return $res;
              if ($res == 1){
-               echo "data ok!";
-           } else {
-               echo "data inválida!";
-           }
-       });
+                 echo "data ok!";
+             } else {
+                 echo "data inválida!";
+             }
+         });
     Validator::extend('phone', function($attribute, $value, $parameters) {
         return Functions::validPhone($value);
     });

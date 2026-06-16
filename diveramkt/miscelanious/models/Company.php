@@ -32,6 +32,20 @@ class Company extends Model
         'images' => 'System\Models\File',
     ];
 
+    public function beforeSave(){
+        if($this->maps_link){
+            $inicio='src="'; $fim='"';
+            preg_match_all("#$inicio(.*?)$fim#s", $this->maps_link, $result);
+            if(isset($result[1][0])){
+                $this->maps_link=$result[1][0];
+            }else{
+                $inicio="src='"; $fim="'";
+                preg_match_all("#$inicio(.*?)$fim#s", $this->maps_link, $result);
+                if(isset($result[1][0])) $this->maps_link=$result[1][0];
+            }
+        }
+    }
+
     /**
      * @var string The database table used by the model.
      */
